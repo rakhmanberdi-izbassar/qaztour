@@ -1,7 +1,17 @@
 import React from 'react'
+import Header from '../components/Header'
+import SlideShow from '../components/SlideShow'
+import DestinationCard from '../components/DestinationCard'
 
 function HomePage() {
-  return <div className="center">HomePage</div>
+  return (
+    <>
+      <Header />
+      <SlideShow />
+      <DestinationCard />
+      <div className="center">HomePage</div>
+    </>
+  )
 }
 
 export default HomePage
