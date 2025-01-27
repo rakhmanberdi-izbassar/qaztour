@@ -10,7 +10,14 @@
   height: 100%;
 }
 
-.carousel-img-container {
-  width: 100%;
-  height: 50%;
+.bg-image {
+  background-image: url('./assets/photos/traveller-bag-mountains-isolation-1151553.jpg'); /* Немесе жергілікті жол */
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  filter: brightness(50%);
+}
+
+.header{
+  filter: blur(10px);
 }

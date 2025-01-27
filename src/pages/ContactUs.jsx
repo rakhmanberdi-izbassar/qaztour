@@ -1,7 +1,8 @@
 import React from 'react'
+import Header from '../components/Header'
 
 function ContactUs() {
-  return <div className="center">ContactUs</div>
+  return <Header />
 }
 
 export default ContactUs
