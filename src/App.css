@@ -1,0 +1,40 @@
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+}
+
+.bg-image {
+  background-image: url('./assets/photos/traveller-bag-mountains-isolation-1151553.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative; /* Box-қа қатысты орналастыру үшін */
+}
+
+.bg-image::after {
+  content: ''; /* Суреттің үстінде қараңғыландыру қабатын қосу үшін */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Суретті қараңғыландыру */
+  z-index: 0; /* Суреттегі қараңғылану фоннан кейін болады */
+}
+
+
+.header{
+  filter: blur(10px);
+}
+
+.label-card{
+  
+}
+
