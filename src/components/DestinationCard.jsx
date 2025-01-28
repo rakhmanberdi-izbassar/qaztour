@@ -12,17 +12,17 @@ import Typography from '@mui/joy/Typography'
 import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined'
 
 export default function DestinationCard() {
-  const Item = styled(Sheet)(({ theme }) => ({
-    backgroundColor: '#fff',
-    ...theme.typography['body-sm'],
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    borderRadius: 4,
-    color: theme.vars.palette.text.secondary,
-    ...theme.applyStyles('dark', {
-      backgroundColor: theme.palette.background.level1,
-    }),
-  }))
+    const Item = styled(Sheet)(({ theme }) => ({
+      backgroundColor: '#fff',
+      ...theme.typography['body-sm'],
+      padding: theme.spacing(1),
+      textAlign: 'center',
+      borderRadius: 4,
+      color: theme.vars.palette.text.secondary,
+      ...theme.applyStyles('dark', {
+        backgroundColor: theme.palette.background.level1,
+      }),
+    }))
   return (
     <Container>
       <Grid

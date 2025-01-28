@@ -106,6 +106,15 @@ export default function Header() {
       },
       
     },
+    components: {
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            backgroundColor: 'rgba(255, 255, 255, 0.8)', // Мөлдірлік
+          },
+        },
+      },
+    },
   });
   
 
@@ -266,7 +275,6 @@ export default function Header() {
       }}>
         <Container fixed>
           <Toolbar>
-        {/* Логотип және бет атауы */}
         <Typography
           variant="h6"
           noWrap
