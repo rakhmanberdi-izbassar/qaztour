@@ -4,13 +4,14 @@ import SlideShow from '../components/SlideShow'
 import DestinationCard from '../components/DestinationCard'
 
 
+
 function HomePage() {
   return (
     <>
+  
       <Header />
       <SlideShow />
-      <DestinationCard />
-      <div className="center">HomePage</div>
+     <DestinationCard />
     </>
   )
 }
