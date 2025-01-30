@@ -53,3 +53,31 @@
   position: relative;
   z-index: 0;
 }
+
+
+
+.carousel .slide img {
+  max-width: 300px;
+  max-height: 300px; /* Суреттердің биіктігін шектеу */
+  object-fit: cover; /* Суреттерді пропорционалды қылу */
+}
+
+.carousel .legend {
+  color: #fff;
+  padding: 10px;
+  font-size: 16px;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 5px;
+}
+
+
+.carousel .control-next.control-arrow:before {
+  border-left-color: #fff;
+}
+
+.carousel .control-prev.control-arrow:before {
+  border-right-color: #fff;
+}
