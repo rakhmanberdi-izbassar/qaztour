@@ -37,7 +37,7 @@ const DestinationCard = () => {
   };
 
   return (
-    <Container>
+    <Container sx={{paddingBottom: 5}}>
     <div style={{ textAlign: "center", padding: "20px" }}>
       <h2>Top Destinations</h2>
       <p>Planning for a trip? We will organize your trip with the best places and within best budget!</p>

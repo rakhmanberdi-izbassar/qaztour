@@ -34,10 +34,6 @@
   filter: blur(10px);
 }
 
-.label-card{
-  
-}
-
 .wave-container {
   position: relative;
 }
@@ -80,4 +76,8 @@
 
 .carousel .control-prev.control-arrow:before {
   border-right-color: #fff;
+}
+
+.footer{
+  background-color: #002569;
 }

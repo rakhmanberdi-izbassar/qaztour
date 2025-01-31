@@ -1,6 +1,11 @@
 import * as React from "react";
-import { useState, useEffect } from 'react';
-import { styled, alpha, ThemeProvider, createTheme } from "@mui/material/styles";
+import { useState, useEffect } from "react";
+import {
+  styled,
+  alpha,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -19,7 +24,6 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { Container } from "@mui/system";
 import { NavLink } from "react-router-dom";
 import Stack from "@mui/material/Stack";
-
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -97,26 +101,23 @@ export default function Header() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#ffffff',
-        dark: '#0066CC',
-        
+        main: "#ffffff",
+        dark: "#0066CC",
       },
       success: {
-        main: '#4caf50', // Жасыл түстің негізгі HEX коды
+        main: "#4caf50", // Жасыл түстің негізгі HEX коды
       },
-      
     },
     components: {
       MuiPaper: {
         styleOverrides: {
           root: {
-            backgroundColor: 'rgba(255, 255, 255, 0.8)', // Мөлдірлік
+            backgroundColor: "rgba(255, 255, 255, 0.8)", // Мөлдірлік
           },
         },
       },
     },
   });
-  
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -232,141 +233,157 @@ export default function Header() {
     </Menu>
   );
 
-  const [bgColor, setBgColor] = useState('transparent');
-  const [logoColor, setLogoColor] = useState('white'); 
-  const [pageTitleColor, setPageTitleColor] = useState('white'); 
+  const [bgColor, setBgColor] = useState("transparent");
+  const [logoColor, setLogoColor] = useState("white");
+  const [pageTitleColor, setPageTitleColor] = useState("white");
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) { 
-        setBgColor('#ffffff'); 
-        setLogoColor('#161c2d'); 
-        setPageTitleColor('#161c2d');
+      if (window.scrollY > 50) {
+        setBgColor("#ffffff");
+        setLogoColor("#161c2d");
+        setPageTitleColor("#161c2d");
       } else {
-        setBgColor('transparent'); 
-        setLogoColor('#ffffff'); 
-        setPageTitleColor('#ffffff');
+        setBgColor("transparent");
+        setLogoColor("#ffffff");
+        setPageTitleColor("#ffffff");
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  
-
   return (
-    <ThemeProvider
-    theme={theme}
-    >
-    <Box sx={{ flexGrow: 1, 
-      bgcolor: 'primary.main',
-      '&:hover': {
-        bgcolor: 'primary.dark',
-      }, }}>
-      <AppBar position="fixed" 
-      style={{
-        backgroundColor: bgColor, 
-        transition: 'background-color 0.3s ease', // Анимация қосу
-        boxShadow: bgColor === 'transparent' ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.1)' // Түссіз болғанда көлеңке жоқ
-      }}>
-        <Container fixed>
-          <Toolbar>
-        <Typography
-          variant="h6"
-          noWrap
-          component="div"
-          sx={{ display: { xs: "none", sm: "block" }, color: logoColor }}
+    <ThemeProvider theme={theme}>
+      <Box 
+        sx={{
+          flexGrow: 1,
+          bgcolor: "primary.main",
+          "&:hover": {
+            bgcolor: "primary.dark",
+          },
+        }}
+      >
+        <AppBar 
+          position="fixed"
+          style={{
+            backgroundColor: bgColor,
+            transition: "background-color 0.3s ease", // Анимация қосу
+            boxShadow:
+              bgColor === "transparent"
+                ? "none"
+                : "0px 2px 5px rgba(0, 0, 0, 0.1)", // Түссіз болғанда көлеңке жоқ
+          }}
         >
-          LOGO
-        </Typography>
-        <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <Stack direction="row" spacing={3}>
-            <Button
-              component={NavLink}
-              to="/"
-              className={({ isActive }) => (isActive ? "active" : "inactive")}
-              sx={{ color: pageTitleColor }}
-            >
-              Home
-            </Button>
-            <Button
-              component={NavLink}
-              to="/"
-              className={({ isActive }) => (isActive ? "active" : "inactive")}
-              sx={{ color: pageTitleColor }}
-            >
-              Tours
-            </Button>
-            <Button
-              component={NavLink}
-              to="/listing"
-              className={({ isActive }) => (isActive ? "active" : "inactive")}
-              sx={{ color: pageTitleColor }}
-            >
-              About us
-            </Button>
-            <Button
-              component={NavLink}
-              to="/"
-              className={({ isActive }) => (isActive ? "active" : "inactive")}
-              sx={{ color: pageTitleColor }}
-            >
-              Blog
-            </Button>
-            <Button
-              component={NavLink}
-              to="/contact"
-              className={({ isActive }) => (isActive ? "active" : "inactive")}
-              sx={{ color: pageTitleColor }}
-            >
-              Contact us
-            </Button>
-          </Stack>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            color="inherit"
-            aria-controls={searchId} // Мұны өзіңіз қосыңыз
-            onClick={handleSearchOpen} // Мұны өзіңіз қосыңыз
-          >
-            <Badge color="error">
-              <SearchIcon />
-            </Badge>
-          </IconButton>
-          <IconButton
-            size="large"
-            edge="end"
-            aria-label="account of current user"
-            aria-controls={menuId} // Мұны өзіңіз қосыңыз
-            onClick={handleProfileMenuOpen} // Мұны өзіңіз қосыңыз
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
-        </Box>
-        <Box sx={{ display: { xs: "flex", md: "none" } }}>
-          <IconButton
-            size="large"
-            aria-label="show more"
-            aria-controls={mobileMenuId} // Мұны өзіңіз қосыңыз
-            onClick={handleMobileMenuOpen} // Мұны өзіңіз қосыңыз
-            color="inherit"
-          >
-            <MoreIcon />
-          </IconButton>
-        </Box>
-      </Toolbar>
-        </Container>
-      </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
-      {renderSearch}
-    </Box>
+          <Container fixed >
+            <Toolbar>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ display: { xs: "none", sm: "block" }, color: logoColor }}
+              >
+                LOGO
+              </Typography>
+              <Box sx={{ flexGrow: 1 }} />
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <Stack direction="row" spacing={3}>
+                  <Button
+                    component={NavLink}
+                    to="/"
+                    className={({ isActive }) =>
+                      isActive ? "active" : "inactive"
+                    }
+                    sx={{ color: pageTitleColor }}
+                  >
+                    Home
+                  </Button>
+                  <Button
+                    component={NavLink}
+                    to="/"
+                    className={({ isActive }) =>
+                      isActive ? "active" : "inactive"
+                    }
+                    sx={{ color: pageTitleColor }}
+                  >
+                    Tours
+                  </Button>
+                  <Button
+                    component={NavLink}
+                    to="/listing"
+                    className={({ isActive }) =>
+                      isActive ? "active" : "inactive"
+                    }
+                    sx={{ color: pageTitleColor }}
+                  >
+                    About us
+                  </Button>
+                  <Button
+                    component={NavLink}
+                    to="/"
+                    className={({ isActive }) =>
+                      isActive ? "active" : "inactive"
+                    }
+                    sx={{ color: pageTitleColor }}
+                  >
+                    Blog
+                  </Button>
+                  <Button
+                    component={NavLink}
+                    to="/contact"
+                    className={({ isActive }) =>
+                      isActive ? "active" : "inactive"
+                    }
+                    sx={{ color: pageTitleColor }}
+                  >
+                    Contact us
+                  </Button>
+                </Stack>
+                <IconButton
+                  size="large"
+                  aria-label="show 4 new mails"
+                  color="inherit"
+                  aria-controls={searchId} // Мұны өзіңіз қосыңыз
+                  onClick={handleSearchOpen} // Мұны өзіңіз қосыңыз
+                >
+                  <Badge color="error">
+                    <SearchIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId} // Мұны өзіңіз қосыңыз
+                  onClick={handleProfileMenuOpen} // Мұны өзіңіз қосыңыз
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+              <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                <IconButton
+                  size="large"
+                  aria-label="show more"
+                  aria-controls={mobileMenuId} // Мұны өзіңіз қосыңыз
+                  onClick={handleMobileMenuOpen} // Мұны өзіңіз қосыңыз
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </Box>
+            </Toolbar>
+          </Container>
+          
+        </AppBar>
+        {renderMobileMenu}
+        {renderMenu}
+        {renderSearch}
+      </Box>
     </ThemeProvider>
   );
 }
