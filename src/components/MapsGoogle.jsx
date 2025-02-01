@@ -11,7 +11,7 @@ import Input from '@mui/joy/Input';
 import FormLabel from '@mui/joy/FormLabel';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
-import myImage from './../assets/photos/4849052.png'
+import myImage from './../assets/photos/5118759.jpg'
 
 
 const MapsGoogle = () => {

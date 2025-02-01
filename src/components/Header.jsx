@@ -304,7 +304,7 @@ export default function Header() {
                   </Button>
                   <Button
                     component={NavLink}
-                    to="/"
+                    to="/tours"
                     className={({ isActive }) =>
                       isActive ? "active" : "inactive"
                     }
