@@ -281,26 +281,28 @@ export default function Header() {
         >
           <Container fixed >
             <Toolbar>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ display: { xs: "none", sm: "block" }, color: logoColor }}
+              <Button
+                component={NavLink}
+                to="/"
+                className={({ isActive }) =>
+                  isActive ? "active" : "inactive"
+                }
+                sx={{ color: pageTitleColor }}
               >
                 LOGO
-              </Typography>
+              </Button>
               <Box sx={{ flexGrow: 1 }} />
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <Stack direction="row" spacing={3}>
                   <Button
                     component={NavLink}
-                    to="/"
+                    to="/auth"
                     className={({ isActive }) =>
                       isActive ? "active" : "inactive"
                     }
                     sx={{ color: pageTitleColor }}
                   >
-                    Home
+                    Login
                   </Button>
                   <Button
                     component={NavLink}

@@ -4,6 +4,7 @@ import ListingPage from './pages/ListingPage'
 import ContactUs from './pages/ContactUs'
 import './App.css'
 import ToursPage from './pages/ToursPage'
+import LoginPage from './pages/LoginPage'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/tours" element={<ToursPage />} />
         <Route path="/listing" element={<ListingPage />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/auth" element={<LoginPage />} />
       </Routes>
     </Router>
   )
