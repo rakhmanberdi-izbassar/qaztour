@@ -65,7 +65,9 @@ function ToursList() {
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             <Grid item xs={6} md={4}>
-              <Card sx={{ minWidth: 275 }}>
+              <Card
+                sx={{ boxShadow: '0 4px 6px rgba(0,0,0,0.3)', minWidth: 275 }}
+              >
                 <CardContent>
                   <FormLabel>Price Filter</FormLabel>
                   <Box sx={{ width: 300 }}>
@@ -91,7 +93,14 @@ function ToursList() {
             </Grid>
             <Grid item xs={6} md={8}>
               {itemData.map((item, index) => (
-                <Card key={index} sx={{ minWidth: 275, marginBottom: 5 }}>
+                <Card
+                  key={index}
+                  sx={{
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                    minWidth: 275,
+                    marginBottom: 5,
+                  }}
+                >
                   <CardContent>
                     <Grid container spacing={2}>
                       <Grid item xs={6} md={4}>

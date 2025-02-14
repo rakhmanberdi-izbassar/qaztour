@@ -7,7 +7,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid2'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import { Description } from '@mui/icons-material'
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {

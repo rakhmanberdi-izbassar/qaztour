@@ -11,15 +11,27 @@ import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined'
 
 export default function TourCard() {
   return (
-    <Container sx={{paddingBottom: 5}}>
-      <div style={{ textAlign: "center", padding: "20px" }}>
-          <h2>Tours Packages</h2>
-          <p>Planning for a trip? We will organize your trip with the best places and within best budget!</p>
-        </div>
+    <Container sx={{ paddingBottom: 5 }}>
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h2>Tours Packages</h2>
+        <p>
+          Planning for a trip? We will organize your trip with the best places
+          and within best budget!
+        </p>
+      </div>
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ flexGrow: 1 }}>
         {Array.from(Array(6)).map((_, index) => (
           <Grid key={index} xs={12} sm={6} md={4}>
-            <Card sx={{ borderRadius: 15, maxWidth: 345, mx: "auto", p: 2 }}>
+            <Card
+              sx={{
+                border: 'none',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                borderRadius: 15,
+                maxWidth: 345,
+                mx: 'auto',
+                p: 2,
+              }}
+            >
               <div>
                 <Typography variant="h6" fontWeight="bold">
                   Yosemite National Park
