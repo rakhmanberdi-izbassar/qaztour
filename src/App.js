@@ -5,6 +5,7 @@ import ContactUs from './pages/ContactUs'
 import './App.css'
 import ToursPage from './pages/ToursPage'
 import LoginPage from './pages/LoginPage'
+import TourDetail from './components/TourDetail'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/listing" element={<ListingPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/auth" element={<LoginPage />} />
+        <Route path="/tour/:id" element={<TourDetail />} />
       </Routes>
     </Router>
   )

@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import FormLabel from '@mui/joy/FormLabel'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
+import { useNavigate } from 'react-router-dom'
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -25,6 +26,7 @@ function srcset(image, size, rows = 1, cols = 1) {
 const minDistance = 10
 
 function ToursList() {
+  const navigate = useNavigate()
   const [value1, setValue1] = useState([20, 37])
   const [value2, setValue2] = useState([20, 37])
 
@@ -64,7 +66,17 @@ function ToursList() {
       <Container>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={6} md={4}>
+            <Grid
+              item
+              xs={6}
+              md={4}
+              sx={{
+                position: 'sticky',
+                top: 80,
+                height: '100vh',
+                overflowY: 'auto',
+              }}
+            >
               <Card
                 sx={{ boxShadow: '0 4px 6px rgba(0,0,0,0.3)', minWidth: 275 }}
               >
@@ -91,6 +103,8 @@ function ToursList() {
                 </CardContent>
               </Card>
             </Grid>
+
+            {/* Контент (оң жақтағы жылжитын элементтер) */}
             <Grid item xs={6} md={8}>
               {itemData.map((item, index) => (
                 <Card
@@ -100,6 +114,7 @@ function ToursList() {
                     minWidth: 275,
                     marginBottom: 5,
                   }}
+                  onClick={() => navigate(`/tour/${item.id}`)}
                 >
                   <CardContent>
                     <Grid container spacing={2}>
@@ -132,6 +147,7 @@ function ToursList() {
 
 const itemData = [
   {
+    id: 1,
     img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
     title: 'Breakfast',
     Description: 'Sample text',
@@ -139,28 +155,33 @@ const itemData = [
     cols: 2,
   },
   {
+    id: 2,
     img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
     title: 'Burger',
     Description: 'Sample text',
   },
   {
+    id: 3,
     img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
     title: 'Camera',
     Description: 'Sample text',
   },
   {
+    id: 4,
     img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
     title: 'Coffee',
     Description: 'Sample text',
     cols: 2,
   },
   {
+    id: 5,
     img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
     title: 'Hats',
     Description: 'Sample text',
     cols: 2,
   },
   {
+    id: 6,
     img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
     title: 'Honey',
     Description: 'Sample text',
@@ -168,16 +189,19 @@ const itemData = [
     cols: 2,
   },
   {
+    id: 7,
     img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
     title: 'Basketball',
     Description: 'Sample text',
   },
   {
+    id: 8,
     img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
     title: 'Fern',
     Description: 'Sample text',
   },
   {
+    id: 9,
     img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
     title: 'Mushrooms',
     Description: 'Sample text',
@@ -185,16 +209,19 @@ const itemData = [
     cols: 2,
   },
   {
+    id: 10,
     img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
     title: 'Tomato basil',
     Description: 'Sample text',
   },
   {
+    id: 11,
     img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
     title: 'Sea star',
     Description: 'Sample text',
   },
   {
+    id: 12,
     img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
     title: 'Bike',
     Description: 'Sample text',
