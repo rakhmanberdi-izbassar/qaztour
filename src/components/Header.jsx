@@ -1,21 +1,26 @@
 import React, { useState } from 'react'
-import { AppBar, Container } from '@mui/material'
+import {
+  AppBar,
+  Container,
+  Typography,
+  Box,
+  IconButton,
+  Badge,
+  Button,
+  Stack,
+} from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { motion } from 'framer-motion'
-import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import Badge from '@mui/material/Badge'
-import Button from '@mui/material/Button'
 import SearchIcon from '@mui/icons-material/Search'
 import { NavLink } from 'react-router-dom'
-import Stack from '@mui/material/Stack'
+import LogoImg from './../assets/photos/location.png'
 
 const DynamicIsland = styled(motion.div)(({ theme }) => ({
   position: 'fixed',
   top: 10,
   left: '50%',
   transform: 'translateX(-50%)',
-  background: 'rgba(255, 255, 255, 0.8)',
+  background: 'rgba(255, 255, 255, 0.63)',
   borderRadius: '20px',
   padding: '10px 20px',
   display: 'flex',
@@ -36,7 +41,10 @@ export default function Header() {
       <Container fixed>
         <DynamicIsland initial={{ height: 50 }}>
           <Button component={NavLink} to="/" sx={{ color: pageTitleColor }}>
-            LOGO
+            {/* <img src={LogoImg} alt="a logo" style={{ width: '80px' }} /> */}
+            <Typography className="font-css" variant="h5">
+              QazTour
+            </Typography>
           </Button>
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" spacing={3}>

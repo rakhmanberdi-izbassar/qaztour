@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import { 
-  Container, 
-  Paper, 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  Tabs, 
-  Tab, 
+import React, { useState } from 'react'
+import {
+  Container,
+  Paper,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Tabs,
+  Tab,
   InputAdornment,
-  Divider
-} from "@mui/material";
-import { Email, Lock, Person } from "@mui/icons-material";
-import Header from "../components/Header";
+  Divider,
+} from '@mui/material'
+import { Email, Lock, Person } from '@mui/icons-material'
+import Header from '../components/Header'
 
 const LoginPage = () => {
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0)
 
   const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
-  };
+    setTabIndex(newValue)
+  }
 
   const LoginForm = () => (
     <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
@@ -31,9 +31,9 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Email sx={{ color: "#0c7c59" }} />
+              <Email sx={{ color: '#0c7c59' }} />
             </InputAdornment>
-          )
+          ),
         }}
       />
       <TextField
@@ -45,25 +45,25 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Lock sx={{ color: "#0c7c59" }} />
+              <Lock sx={{ color: '#0c7c59' }} />
             </InputAdornment>
-          )
+          ),
         }}
       />
       <Button
         variant="contained"
         fullWidth
-        sx={{ 
-          mt: 2, 
-          backgroundColor: "#29339b", 
-          "&:hover": { backgroundColor: "#0c7c59" } 
+        sx={{
+          mt: 2,
+          backgroundColor: '#29339b',
+          '&:hover': { backgroundColor: '#0c7c59' },
         }}
         type="submit"
       >
         Login
       </Button>
     </Box>
-  );
+  )
 
   const RegisterForm = () => (
     <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
@@ -75,9 +75,9 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Person sx={{ color: "#0c7c59" }} />
+              <Person sx={{ color: '#0c7c59' }} />
             </InputAdornment>
-          )
+          ),
         }}
       />
       <TextField
@@ -88,9 +88,9 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Email sx={{ color: "#0c7c59" }} />
+              <Email sx={{ color: '#0c7c59' }} />
             </InputAdornment>
-          )
+          ),
         }}
       />
       <TextField
@@ -102,9 +102,9 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Lock sx={{ color: "#0c7c59" }} />
+              <Lock sx={{ color: '#0c7c59' }} />
             </InputAdornment>
-          )
+          ),
         }}
       />
       <TextField
@@ -116,39 +116,38 @@ const LoginPage = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Lock sx={{ color: "#0c7c59" }} />
+              <Lock sx={{ color: '#0c7c59' }} />
             </InputAdornment>
-          )
+          ),
         }}
       />
       <Button
         variant="contained"
         fullWidth
-        sx={{ 
-          mt: 2, 
-          backgroundColor: "#29339b", 
-          "&:hover": { backgroundColor: "#0c7c59" } 
+        sx={{
+          mt: 2,
+          backgroundColor: '#29339b',
+          '&:hover': { backgroundColor: '#0c7c59' },
         }}
         type="submit"
       >
         Register
       </Button>
     </Box>
-  );
+  )
 
   return (
     <>
-      <Header />
       <Container maxWidth="sm" sx={{ py: 5 }}>
-        <Paper 
-          elevation={5} 
-          sx={{ 
-            p: 4, 
-            borderRadius: 3, 
+        <Paper
+          elevation={5}
+          sx={{
+            p: 4,
+            borderRadius: 3,
             background: 'linear-gradient(135deg, #ffffff 0%, #ffffff 100%)',
             border: '2px solid #29339b',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
           }}
         >
           {/* Декоративные элементы */}
@@ -190,10 +189,10 @@ const LoginPage = () => {
 
           {tabIndex === 0 && (
             <Box sx={{ position: 'relative', zIndex: 1 }}>
-              <Typography 
-                variant="h5" 
-                textAlign="center" 
-                sx={{ fontWeight: 600, color: "#241715", mb: 2 }}
+              <Typography
+                variant="h5"
+                textAlign="center"
+                sx={{ fontWeight: 600, color: '#241715', mb: 2 }}
               >
                 Welcome Back!
               </Typography>
@@ -203,10 +202,10 @@ const LoginPage = () => {
 
           {tabIndex === 1 && (
             <Box sx={{ position: 'relative', zIndex: 1 }}>
-              <Typography 
-                variant="h5" 
-                textAlign="center" 
-                sx={{ fontWeight: 600, color: "#241715", mb: 2 }}
+              <Typography
+                variant="h5"
+                textAlign="center"
+                sx={{ fontWeight: 600, color: '#241715', mb: 2 }}
               >
                 Create an Account
               </Typography>
@@ -214,14 +213,18 @@ const LoginPage = () => {
             </Box>
           )}
 
-          <Divider sx={{ my: 3, backgroundColor: "#7d7e75", opacity: 0.5 }} />
-          <Typography variant="body2" textAlign="center" sx={{ color: "#7d7e75" }}>
+          <Divider sx={{ my: 3, backgroundColor: '#7d7e75', opacity: 0.5 }} />
+          <Typography
+            variant="body2"
+            textAlign="center"
+            sx={{ color: '#7d7e75' }}
+          >
             By continuing, you agree to our Terms & Conditions.
           </Typography>
         </Paper>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

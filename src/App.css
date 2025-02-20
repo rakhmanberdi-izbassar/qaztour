@@ -29,8 +29,7 @@
   z-index: 0; /* Суреттегі қараңғылану фоннан кейін болады */
 }
 
-
-.header{
+.header {
   filter: blur(10px);
 }
 
@@ -50,8 +49,6 @@
   z-index: 0;
 }
 
-
-
 .carousel .slide img {
   max-width: 300px;
   max-height: 300px; /* Суреттердің биіктігін шектеу */
@@ -69,7 +66,6 @@
   border-radius: 5px;
 }
 
-
 .carousel .control-next.control-arrow:before {
   border-left-color: #fff;
 }
@@ -78,10 +74,10 @@
   border-right-color: #fff;
 }
 
-.footer{
+.footer {
   background-color: #002569;
 }
 
-.tour-bg{
+.tour-bg {
   width: 100%;
 }
