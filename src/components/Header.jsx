@@ -42,8 +42,8 @@ export default function Header() {
         <DynamicIsland initial={{ height: 50 }}>
           <Button component={NavLink} to="/" sx={{ color: pageTitleColor }}>
             {/* <img src={LogoImg} alt="a logo" style={{ width: '80px' }} /> */}
-            <Typography className="font-css" variant="h5">
-              QazTour
+            <Typography className="font-css" variant="h6">
+              Aventra
             </Typography>
           </Button>
           <Box sx={{ flexGrow: 1 }} />

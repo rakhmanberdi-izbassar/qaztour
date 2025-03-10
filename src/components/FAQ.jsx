@@ -27,6 +27,10 @@ function FAQ() {
   return (
     <>
       <Container sx={{ paddingBottom: 5 }}>
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h2>FAQ</h2>
+       
+      </div>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             <Grid size={6}>
@@ -81,7 +85,7 @@ function FAQ() {
                       aliqua.
                     </AccordionDetails>
                   </Accordion>
-                  <Accordion defaultExpanded>
+                  <Accordion >
                     <AccordionSummary>First accordion</AccordionSummary>
                     <AccordionDetails variant="soft">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -89,7 +93,7 @@ function FAQ() {
                       aliqua.
                     </AccordionDetails>
                   </Accordion>
-                  <Accordion defaultExpanded>
+                  <Accordion >
                     <AccordionSummary>First accordion</AccordionSummary>
                     <AccordionDetails variant="soft">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -97,7 +101,7 @@ function FAQ() {
                       aliqua.
                     </AccordionDetails>
                   </Accordion>
-                  <Accordion defaultExpanded>
+                  <Accordion >
                     <AccordionSummary>First accordion</AccordionSummary>
                     <AccordionDetails variant="soft">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,

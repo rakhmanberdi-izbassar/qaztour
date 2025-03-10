@@ -71,7 +71,7 @@ function SlideShow() {
       <Option value="5">5</Option>
     </Select>
 
-
+    <Button sx={{width:"100%", backgroundColor:'rgb(5, 127, 228)', color:'white'}}>Search</Button>
       </CardContent>
       <CardActions></CardActions>
     </React.Fragment>
@@ -144,7 +144,7 @@ function SlideShow() {
     </Box>
   </Container>
 </div>
-<div style={{ position: 'absolute', top: "770px", left: 0, width: '100%', height:"200px", zIndex: 0 }}>
+<Box sx={{ position: 'relative', width: '100%', height: "200px", mt: "-190px" }}>
     <svg
       viewBox="0 0 500 150"
       preserveAspectRatio="none"
@@ -152,10 +152,11 @@ function SlideShow() {
     >
       <path
         d="M-2.54,95.23 C222.63,199.84 369.35,37.02 501.97,99.19 L500.00,150.00 L0.00,150.00 Z"
-        style={{ stroke: "none", fill: "#fff" }}
+        style={{ stroke: "none", fill: "aliceblue" }}
       />
     </svg>
-  </div>
+</Box>
+
 </>
   );
 }

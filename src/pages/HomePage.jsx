@@ -5,6 +5,7 @@ import DestinationCard from '../components/DestinationCard'
 import TourCard from '../components/TourCard'
 import Footer from '../components/Footer'
 import FAQ from '../components/FAQ'
+import TouristInfo from '../components/TouristInfo'
 
 
 
@@ -15,6 +16,7 @@ function HomePage() {
       <SlideShow />
      <DestinationCard />
      <TourCard/>
+     <TouristInfo/>
      <FAQ/>
      <Footer/>
     </>

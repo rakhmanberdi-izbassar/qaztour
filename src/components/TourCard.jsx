@@ -1,23 +1,24 @@
-import * as React from 'react'
-import { Container } from '@mui/material'
-import Grid from '@mui/joy/Grid'
-import AspectRatio from '@mui/joy/AspectRatio'
-import Button from '@mui/joy/Button'
-import Card from '@mui/joy/Card'
-import CardContent from '@mui/joy/CardContent'
-import IconButton from '@mui/joy/IconButton'
-import Typography from '@mui/joy/Typography'
-import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined'
+import * as React from 'react';
+import { Container } from '@mui/material';
+import Grid from '@mui/joy/Grid';
+import AspectRatio from '@mui/joy/AspectRatio';
+import Button from '@mui/joy/Button';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import IconButton from '@mui/joy/IconButton';
+import Typography from '@mui/joy/Typography';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 export default function TourCard() {
   return (
-    <Container sx={{ paddingBottom: 5 }}>
+    <Container sx={{ pb: 8, pt: 5, background: 'linear-gradient(to bottom, aliceblue, aliceblue)' }}>
       <div style={{ textAlign: 'center', padding: '20px' }}>
-        <h2>Tours Packages</h2>
-        <p>
-          Planning for a trip? We will organize your trip with the best places
-          and within best budget!
-        </p>
+        <Typography variant="h4" fontWeight="bold" sx={{ color: '#002569' }}>
+          Tours Packages
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Planning for a trip? We will organize your trip with the best places and within the best budget!
+        </Typography>
       </div>
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ flexGrow: 1 }}>
         {Array.from(Array(6)).map((_, index) => (
@@ -25,15 +26,21 @@ export default function TourCard() {
             <Card
               sx={{
                 border: 'none',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                boxShadow: '0 6px 15px rgba(0,0,0,0.15)',
                 borderRadius: 15,
-                maxWidth: 345,
+                maxWidth: 350,
                 mx: 'auto',
                 p: 2,
+                backgroundColor: 'white',
+                transition: 'transform 0.3s ease-in-out',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+                },
               }}
             >
               <div>
-                <Typography variant="h6" fontWeight="bold">
+                <Typography variant="h6" fontWeight="bold" color="#002569">
                   Yosemite National Park
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -48,23 +55,26 @@ export default function TourCard() {
                     position: 'absolute',
                     top: '0.875rem',
                     right: '0.5rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderRadius: '50%',
                   }}
                 >
-                  <BookmarkAdd />
+                  <FavoriteBorderIcon />
                 </IconButton>
               </div>
-              <AspectRatio minHeight="120px" maxHeight="200px">
+              <AspectRatio minHeight="150px" maxHeight="250px" ratio="16/9">
                 <img
-                  src="https://images.unsplash.com/photo-1527549993586-dff825b37782?auto=format&fit=crop&w=286"
-                  srcSet="https://images.unsplash.com/photo-1527549993586-dff825b37782?auto=format&fit=crop&w=286&dpr=2 2x"
-                  loading="lazy"
+                  src="https://images.unsplash.com/photo-1527549993586-dff825b37782?auto=format&fit=crop&w=400"
                   alt="Yosemite National Park"
+                  style={{ borderRadius: '10px' }}
                 />
               </AspectRatio>
               <CardContent orientation="horizontal">
                 <div>
-                  <Typography variant="body2">Total price:</Typography>
-                  <Typography sx={{ fontSize: 'lg', fontWeight: 'lg' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Total price:
+                  </Typography>
+                  <Typography sx={{ fontSize: 'lg', fontWeight: 'lg', color: '#ff9800' }}>
                     $2,900
                   </Typography>
                 </div>
@@ -73,7 +83,15 @@ export default function TourCard() {
                   size="md"
                   color="primary"
                   aria-label="Explore Yosemite Park"
-                  sx={{ ml: 'auto', alignSelf: 'center', fontWeight: 600 }}
+                  sx={{
+                    ml: 'auto',
+                    alignSelf: 'center',
+                    fontWeight: 600,
+                    backgroundColor: '#002569',
+                    '&:hover': {
+                      backgroundColor: '#001e50',
+                    },
+                  }}
                 >
                   Explore
                 </Button>
@@ -83,5 +101,5 @@ export default function TourCard() {
         ))}
       </Grid>
     </Container>
-  )
+  );
 }
