@@ -13,7 +13,6 @@ import { styled } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 import SearchIcon from '@mui/icons-material/Search'
 import { NavLink } from 'react-router-dom'
-import LogoImg from './../assets/photos/location.png'
 
 const DynamicIsland = styled(motion.div)(({ theme }) => ({
   position: 'fixed',
@@ -34,7 +33,7 @@ const DynamicIsland = styled(motion.div)(({ theme }) => ({
 }))
 
 export default function Header() {
-  const [pageTitleColor, setPageTitleColor] = useState('black')
+  const [pageTitleColor] = useState('black')
 
   return (
     <AppBar position="fixed" color="transparent">
@@ -71,7 +70,7 @@ export default function Header() {
             </Button>
             <Button
               component={NavLink}
-              to="/blog"
+              to="/blogs"
               sx={{ color: pageTitleColor }}
             >
               Blog

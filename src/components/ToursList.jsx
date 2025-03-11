@@ -9,36 +9,19 @@ import {
   ImageListItem,
   Rating,
   Stack,
+  Button,
+  Typography
 } from '@mui/material'
 import FormLabel from '@mui/joy/FormLabel'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
 import { useNavigate } from 'react-router-dom'
 import itemData from './../data_example'
 
-function srcset(image, size, rows = 1, cols = 1) {
-  return {
-    src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
-    srcSet: `${image}?w=${size * cols}&h=${
-      size * rows
-    }&fit=crop&auto=format&dpr=2 2x`,
-  }
-}
-
 const minDistance = 10
 
 function ToursList() {
   const navigate = useNavigate()
-  const [value1, setValue1] = useState([20, 37])
   const [value2, setValue2] = useState([20, 37])
-
-  const handleChange1 = (event, newValue, activeThumb) => {
-    if (!Array.isArray(newValue)) return
-    if (activeThumb === 0) {
-      setValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]])
-    } else {
-      setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)])
-    }
-  }
 
   const handleChange2 = (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) return
@@ -55,88 +38,96 @@ function ToursList() {
     }
   }
 
-  function valuetext(value) {
-    return `${value}°C`
-  }
-
   return (
     <>
       <div style={{ paddingBottom: '30px' }}>
-        <img style={{ width: '100%' }} src={tourImg} alt="For back" />
+        <img style={{ width: '100%', borderRadius: '10px' }} src={tourImg} alt="For back" />
       </div>
       <Container>
         <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
-            <Grid
-              item
-              xs={6}
-              md={4}
-              sx={{
-                position: 'sticky',
-                top: 80,
-                height: '100vh',
-                overflowY: 'auto',
-              }}
-            >
-              <Card
-                sx={{ boxShadow: '0 4px 6px rgba(0,0,0,0.3)', minWidth: 275 }}
-              >
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={3} sx={{ position: 'sticky', top: 80, height: '100vh', overflowY: 'auto' }}>
+              <Card sx={{ boxShadow: '0 6px 10px rgba(0,0,0,0.2)', padding: 2, borderRadius: '15px' }}>
                 <CardContent>
                   <FormLabel>Price Filter</FormLabel>
-                  <Box sx={{ width: 300 }}>
+                  <Box sx={{ width: '100%' }}>
                     <Slider
-                      getAriaLabel={() => 'Minimum distance shift'}
                       value={value2}
                       onChange={handleChange2}
                       valueLabelDisplay="auto"
-                      getAriaValueText={valuetext}
                       disableSwap
                     />
                   </Box>
                   <FormLabel>Reviews</FormLabel>
                   <Stack spacing={1}>
-                    <Rating name="size-medium" defaultValue={5} />
-                    <Rating name="size-medium" defaultValue={4} />
-                    <Rating name="size-medium" defaultValue={3} />
-                    <Rating name="size-medium" defaultValue={2} />
-                    <Rating name="size-medium" defaultValue={1} />
+                    {[5, 4, 3, 2, 1].map((star) => (
+                      <Rating key={star} name="rating" defaultValue={star} />
+                    ))}
                   </Stack>
                 </CardContent>
               </Card>
             </Grid>
-
-            {/* Контент (оң жақтағы жылжитын элементтер) */}
-            <Grid item xs={6} md={8}>
+            <Grid item xs={12} md={9} container spacing={3}>
               {itemData.map((item, index) => (
-                <Card
-                  key={index}
-                  sx={{
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-                    minWidth: 275,
-                    marginBottom: 5,
-                  }}
-                  onClick={() => navigate(`/tour/${item.id}`)} // ✅ id орнына item.id
-                >
-                  <CardContent>
-                    <Grid container spacing={2}>
-                      <Grid item xs={6} md={4}>
-                        <ImageListItem
-                          cols={item.cols || 1}
-                          rows={item.rows || 1}
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+                      borderRadius: '15px',
+                      overflow: 'hidden',
+                      transition: 'transform 0.3s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        boxShadow: '0 15px 30px rgba(0,0,0,0.3)',
+                      },
+                    }}
+                    onClick={() => navigate(`/tour/${item.id}`)}
+                  >
+                    <ImageListItem>
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                        loading="lazy"
+                      />
+                    </ImageListItem>
+                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div>
+                        <Typography variant="h6" fontWeight="bold" sx={{ color: '#002569' }}>
+                          {item.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          {item.Description}
+                        </Typography>
+                      </div>
+                      <div>
+                        <Typography variant="h6" sx={{ color: '#ff9800', fontWeight: 'bold', mt: 1 }}>
+                          ${item.price}
+                        </Typography>
+                        <Button
+                          variant="contained"
+                          fullWidth
+                          sx={{
+                            background: 'linear-gradient(135deg, #002569, #0051a3)',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            mt: 2,
+                            padding: '10px 15px',
+                            borderRadius: '8px',
+                            '&:hover': { background: '#001e50' },
+                          }}
                         >
-                          <img
-                            {...srcset(item.img, 121, item.rows, item.cols)}
-                            alt={item.title}
-                            loading="lazy"
-                          />
-                        </ImageListItem>
-                      </Grid>
-                      <Grid item xs={6} md={8}>
-                        <p>{item.Description}</p>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
+                          Explore Now
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Grid>
               ))}
             </Grid>
           </Grid>

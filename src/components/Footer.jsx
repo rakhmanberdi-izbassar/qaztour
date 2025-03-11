@@ -71,9 +71,9 @@ export default function Footer() {
                                 <Input
                                     startDecorator={<MailIcon />}
                                     placeholder="Your email"
-                                    sx={{ width: '100%', backgroundColor: '#fff', borderRadius: 1 }}
+                                    sx={{ width: '100%', backgroundColor: '#fff', borderRadius: 6 }}
                                 />
-                                <Button variant="contained" sx={{ backgroundColor: '#ff9800', color: '#fff' }}>
+                                <Button variant="contained" sx={{ width: 200, backgroundColor: '#ff9800', color: '#fff' }}>
                                     Subscribe
                                 </Button>
                             </Box>
