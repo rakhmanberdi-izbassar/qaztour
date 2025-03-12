@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import BlogPage from './pages/BlogPage'
 import ContactUs from './pages/ContactUs'
+import GalleryPage from './pages/GalleryPage'
 import './App.css'
 import ToursPage from './pages/ToursPage'
 import LoginPage from './pages/LoginPage'
@@ -16,6 +17,7 @@ function App() {
         <Route path="/blogs" element={<BlogPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/auth" element={<LoginPage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/tour/:id" element={<TourDetail />} />
       </Routes>
     </Router>
