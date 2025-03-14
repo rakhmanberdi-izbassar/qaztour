@@ -15,10 +15,11 @@ import { styled } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 import SearchIcon from '@mui/icons-material/Search'
 import { NavLink } from 'react-router-dom'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 
 const DynamicIsland = styled(motion.div)(({ theme }) => ({
   position: 'fixed',
-  zIndex: 1100, // Хедер басқа элементтердің үстінде тұрады
+  zIndex: 1100,
   top: 10,
   left: '50%',
   transform: 'translateX(-50%)',
@@ -38,6 +39,7 @@ const DynamicIsland = styled(motion.div)(({ theme }) => ({
 export default function Header() {
   const [pageTitleColor] = useState('black')
   const [anchorEl, setAnchorEl] = useState(null)
+  const [userMenuEl, setUserMenuEl] = useState(null)
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
@@ -45,6 +47,14 @@ export default function Header() {
 
   const handleMenuClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleUserMenuOpen = (event) => {
+    setUserMenuEl(event.currentTarget)
+  }
+
+  const handleUserMenuClose = () => {
+    setUserMenuEl(null)
   }
 
   return (
@@ -58,19 +68,15 @@ export default function Header() {
           </Button>
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" spacing={3}>
-            <Button
-              component={NavLink}
-              to="/auth"
-              sx={{ color: pageTitleColor }}
-            >
-              Login
+            <Button component={NavLink} to="/" sx={{ color: pageTitleColor }}>
+              Басты
             </Button>
             <Button
               component={NavLink}
               to="/tours"
               sx={{ color: pageTitleColor }}
             >
-              Tours
+              Турлар
             </Button>
 
             {/* ЗЕРТТЕУ (Explore) БӨЛІМІ */}
@@ -89,20 +95,14 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
               onMouseLeave={handleMenuClose}
-              disableScrollLock={true} // Бұл мәзір ашылғанда скролл өзгермеуін қамтамасыз етеді
+              disableScrollLock={true}
               MenuListProps={{
                 'aria-labelledby': 'explore-menu',
-                onMouseEnter: () => setAnchorEl(anchorEl), // Мәзір ашық күйінде қалсын
-                onMouseLeave: handleMenuClose, // Курсор шыққанда жабылады
+                onMouseEnter: () => setAnchorEl(anchorEl),
+                onMouseLeave: handleMenuClose,
               }}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
               <MenuItem
                 component={NavLink}
@@ -139,14 +139,14 @@ export default function Header() {
               to="/blogs"
               sx={{ color: pageTitleColor }}
             >
-              Blog
+              Блог
             </Button>
             <Button
               component={NavLink}
               to="/contact"
               sx={{ color: pageTitleColor }}
             >
-              Contact us
+              Бізбен байланыс
             </Button>
           </Stack>
 
@@ -155,6 +155,58 @@ export default function Header() {
               <SearchIcon />
             </Badge>
           </IconButton>
+
+          {/* Пайдаланушы мәзірі */}
+          <Button
+            aria-controls="user-menu"
+            aria-haspopup="true"
+            onMouseEnter={handleUserMenuOpen}
+            sx={{
+              color: pageTitleColor,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <AccountCircleIcon />
+          </Button>
+
+          <Menu
+            id="user-menu"
+            anchorEl={userMenuEl}
+            open={Boolean(userMenuEl)}
+            onClose={handleUserMenuClose}
+            onMouseLeave={handleUserMenuClose}
+            disableScrollLock={true}
+            MenuListProps={{
+              'aria-labelledby': 'user-menu',
+              onMouseEnter: () => setUserMenuEl(userMenuEl),
+              onMouseLeave: handleUserMenuClose,
+            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <MenuItem
+              component={NavLink}
+              to="/profile"
+              onClick={handleUserMenuClose}
+            >
+              Профиль
+            </MenuItem>
+            <MenuItem
+              component={NavLink}
+              to="/settings"
+              onClick={handleUserMenuClose}
+            >
+              Баптаулар
+            </MenuItem>
+            <MenuItem
+              component={NavLink}
+              to="/auth"
+              onClick={handleUserMenuClose}
+            >
+              Шығу
+            </MenuItem>
+          </Menu>
         </DynamicIsland>
       </Container>
     </AppBar>

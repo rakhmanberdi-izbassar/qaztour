@@ -7,6 +7,9 @@ import './App.css'
 import ToursPage from './pages/ToursPage'
 import LoginPage from './pages/LoginPage'
 import TourDetail from './components/TourDetail'
+import ProfilePage from './pages/ProfilePage'
+import ProviderPage from './components/Provider'
+import VideoTravelPage from './pages/VideoTravelPage'
 
 function App() {
   return (
@@ -17,7 +20,10 @@ function App() {
         <Route path="/blogs" element={<BlogPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/auth" element={<LoginPage />} />
+        <Route path="/video-travel" element={<VideoTravelPage />} />
+        <Route path="/provider/:id" element={<ProviderPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/tour/:id" element={<TourDetail />} />
       </Routes>
     </Router>
