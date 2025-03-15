@@ -79,13 +79,7 @@ const TourDetail = () => {
       image: 'https://via.placeholder.com/50',
       profile: '/provider/3',
     },
-    {
-      id: 4,
-      name: 'Holiday Makers',
-      rating: 4.3,
-      image: 'https://via.placeholder.com/50',
-      profile: '/provider/4',
-    },
+    
   ]
 
   return (

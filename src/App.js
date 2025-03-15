@@ -5,6 +5,7 @@ import ContactUs from './pages/ContactUs'
 import GalleryPage from './pages/GalleryPage'
 import './App.css'
 import ToursPage from './pages/ToursPage'
+import HotelBookingPage from './pages/HotelBookingPage'
 import LoginPage from './pages/LoginPage'
 import TourDetail from './components/TourDetail'
 import ProfilePage from './pages/ProfilePage'
@@ -20,6 +21,7 @@ function App() {
         <Route path="/blogs" element={<BlogPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/auth" element={<LoginPage />} />
+        <Route path="/hotel-booking" element={<HotelBookingPage />} />
         <Route path="/video-travel" element={<VideoTravelPage />} />
         <Route path="/provider/:id" element={<ProviderPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
