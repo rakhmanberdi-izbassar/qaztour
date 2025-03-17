@@ -17,6 +17,8 @@ import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import Stack from "@mui/material/Stack";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -33,28 +35,43 @@ const handleChange = (event, newValue) => {
 };
 
 function SlideShow() {
+const [searchTerm, setSearchTerm] = useState("");
+const [selectedDate, setSelectedDate] = useState("");
+const [peopleCount, setPeopleCount] = useState("1");
+
+const navigate = useNavigate();
+
+const handleSearch = () => {
+  const queryParams = new URLSearchParams();
+  if (searchTerm) queryParams.append("search", searchTerm);
+  if (selectedDate) queryParams.append("date", selectedDate);
+  if (peopleCount) queryParams.append("people", peopleCount);
+
+  navigate(`/tours?${queryParams.toString()}`);
+};
+
   const card = (
     <React.Fragment>
       <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", gap: 2 }}>
   <Typography variant="h5" fontWeight="bold" sx={{ textAlign: "center", pb: 2 }}>
-    Search Your Destinations
+  Баратын жеріңізді іздеңіз
   </Typography>
 
-  <FormLabel>Search:</FormLabel>
+  <FormLabel>Іздеу:</FormLabel>
   <Input
     placeholder="Search..."
     startDecorator={<SearchIcon />}
     sx={{ borderRadius: 6, bgcolor: "#f5f5f5", p: 1 }}
   />
 
-  <FormLabel>Select Your Date:</FormLabel>
+  <FormLabel>Күніңізді таңдаңыз:</FormLabel>
   <Input
     type="date"
     startDecorator={<DateRangeIcon />}
     sx={{ borderRadius: 6, bgcolor: "#f5f5f5", p: 1 }}
   />
 
-  <FormLabel>No. of Person:</FormLabel>
+  <FormLabel>Адам саны:</FormLabel>
   <Select defaultValue="1" onChange={handleChange} sx={{ borderRadius: 6 }}>
     {[...Array(5)].map((_, i) => (
       <Option key={i + 1} value={`${i + 1}`}>
@@ -63,7 +80,7 @@ function SlideShow() {
     ))}
   </Select>
 
-  <Button
+  <Button onClick={handleSearch}
     sx={{
       width: "100%",
       backgroundColor: "rgb(5, 127, 228)",
@@ -76,7 +93,7 @@ function SlideShow() {
       "&:hover": { backgroundColor: "rgb(4, 107, 198)" },
     }}
   >
-    Search
+    Іздеу
   </Button>
 </CardContent>
 
@@ -84,16 +101,12 @@ function SlideShow() {
   );
   const theme = createTheme({
     typography: {
-      fontFamily: '"Dancing Script", sans-serif', // Жалпы шрифт түрі
-      h3: {
-        fontFamily: '"Dancing Script", sans-serif',
-        fontWeight: 700,
-      },
-      h2: {
-        fontFamily: '"Courier New", monospace',
-      },
+      fontFamily: '"Bad Script", cursive',
     },
   });
+
+
+  
 
   return (
     <>
@@ -120,11 +133,11 @@ function SlideShow() {
                 >
                   <ThemeProvider theme={theme}>
                     <Typography className="font-css" variant="h3" gutterBottom>
-                      Find Your Ideal Stay
+                      Идеалды мекендерді табыңыз
                     </Typography>
                   </ThemeProvider>
-                  <Typography variant="h2" gutterBottom>
-                    <b>Where Do You Want To Go?</b>
+                  <Typography variant="h3" gutterBottom>
+                    <b>Қайда барғыңыз келеді?</b>
                   </Typography>
                   <Typography
                     color="grey"
@@ -132,8 +145,7 @@ function SlideShow() {
                     fontSize={18}
                     gutterBottom
                   >
-                    Planning for a trip? We will organize your trip with the
-                    best places and within the best budget!
+                    Сапарды жоспарлап жатырсыз ба? Біз сіздің саяхатыңызды ең жақсы орындармен және ең жақсы бюджетпен ұйымдастырамыз!
                   </Typography>
                   <Stack spacing={2} direction="row">
                     <Button variant="contained">View Packages</Button>

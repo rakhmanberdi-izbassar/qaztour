@@ -45,7 +45,7 @@ const VideoTravel = () => {
   return (
     <>
       <Header />
-      <Container sx={{ py: 5 }}>
+      <Container sx={{ py: 5, pt: 14 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" mb={3}>
           Қазақстанның туристік орындарына бейне саяхат
         </Typography>

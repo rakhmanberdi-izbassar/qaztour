@@ -35,7 +35,7 @@ const DestinationCard = () => {
   return (
     <Container sx={{ paddingBottom: 5, paddingTop: 5, textAlign: 'center' }}>
       <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
-        🌍 Top Destinations
+        🌍 Үздік бағыттар
       </Typography>
       <Typography variant="body1" sx={{ color: 'gray', mb: 4 }}>
         Planning for a trip? We will organize your trip with the best places and within best budget!

@@ -11,6 +11,8 @@ import TourDetail from './components/TourDetail'
 import ProfilePage from './pages/ProfilePage'
 import ProviderPage from './components/Provider'
 import VideoTravelPage from './pages/VideoTravelPage'
+import EventsPage from './pages/EventsPage'
+import EditProfilePage from './pages/EditProfilePage'
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/tour/:id" element={<TourDetail />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/edit-profile" element={<EditProfilePage />} />
       </Routes>
     </Router>
   )

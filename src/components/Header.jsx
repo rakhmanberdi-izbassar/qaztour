@@ -109,6 +109,7 @@ export default function Header() {
               <MenuItem component={NavLink} to="https://3dmapcentral.asia/kz/#h85/103.0/5.5/108.5" onClick={handleMenuClose}>3D Тур</MenuItem>
               <MenuItem component={NavLink} to="/events" onClick={handleMenuClose}>Оқиғалар</MenuItem>
               <MenuItem component={NavLink} to="/video-travel" onClick={handleMenuClose}>Бейне саяхаттар</MenuItem>
+              <MenuItem component={NavLink} to="/blogs" onClick={handleMenuClose}>Блог</MenuItem>
             </Menu>
           </Stack>
           <Button
