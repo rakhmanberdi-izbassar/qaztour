@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   AppBar,
   Container,
@@ -11,13 +11,13 @@ import {
   Menu,
   MenuItem,
   Popover,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { motion } from 'framer-motion';
-import SearchIcon from '@mui/icons-material/Search';
-import { NavLink } from 'react-router-dom';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+} from '@mui/material'
+import { styled } from '@mui/material/styles'
+import { motion } from 'framer-motion'
+import SearchIcon from '@mui/icons-material/Search'
+import { NavLink } from 'react-router-dom'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
 
 const DynamicIsland = styled(motion.div)(({ theme }) => ({
   position: 'fixed',
@@ -36,7 +36,7 @@ const DynamicIsland = styled(motion.div)(({ theme }) => ({
   width: '100%',
   maxWidth: '1200px',
   color: 'black',
-}));
+}))
 
 const cities = [
   { name: 'Алматы', icon: '🌄' },
@@ -44,27 +44,42 @@ const cities = [
   { name: 'Шымкент', icon: '🌿' },
   { name: 'Ақтау', icon: '🌊' },
   { name: 'Қостанай', icon: '🌾' },
-];
+]
+
+const languages = [
+  { code: 'kk', icon: 'KZ' },
+  { code: 'ru', icon: 'RU' },
+  { code: 'en', icon: 'EN' },
+]
 
 export default function Header() {
-  const [pageTitleColor] = useState('black');
-  const [exploreMenuEl, setExploreMenuEl] = useState(null);
-  const [cityAnchorEl, setCityAnchorEl] = useState(null);
-  const [userMenuEl, setUserMenuEl] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(cities[0]);
+  const [pageTitleColor] = useState('black')
+  const [exploreMenuEl, setExploreMenuEl] = useState(null)
+  const [cityAnchorEl, setCityAnchorEl] = useState(null)
+  const [userMenuEl, setUserMenuEl] = useState(null)
+  const [selectedCity, setSelectedCity] = useState(cities[0])
+  const [selectedLang, setSelectedLang] = useState(languages[0])
 
-  const handleMenuOpen = (event) => setExploreMenuEl(event.currentTarget);
-  const handleMenuClose = () => setExploreMenuEl(null);
+  const handleMenuOpen = (event) => setExploreMenuEl(event.currentTarget)
+  const handleMenuClose = () => setExploreMenuEl(null)
 
-  const handleCityClick = (event) => setCityAnchorEl(event.currentTarget);
-  const handleCityClose = () => setCityAnchorEl(null);
+  const handleCityClick = (event) => setCityAnchorEl(event.currentTarget)
+  const handleCityClose = () => setCityAnchorEl(null)
   const handleCitySelect = (city) => {
-    setSelectedCity(city);
-    handleCityClose();
-  };
+    setSelectedCity(city)
+    handleCityClose()
+  }
+  const [langAnchorEl, setLangAnchorEl] = useState(null)
 
-  const handleUserMenuOpen = (event) => setUserMenuEl(event.currentTarget);
-  const handleUserMenuClose = () => setUserMenuEl(null);
+  const handleUserMenuOpen = (event) => setUserMenuEl(event.currentTarget)
+  const handleUserMenuClose = () => setUserMenuEl(null)
+
+  const handleLangClick = (event) => setLangAnchorEl(event.currentTarget)
+  const handleLangClose = () => setLangAnchorEl(null)
+  const handleLangSelect = (lang) => {
+    setSelectedLang(lang)
+    handleLangClose()
+  }
 
   return (
     <AppBar
@@ -85,8 +100,12 @@ export default function Header() {
           </Button>
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" spacing={3}>
-            <Button component={NavLink} to="/" sx={{ color: 'black' }}>Басты</Button>
-            <Button component={NavLink} to="/tours" sx={{ color: 'black' }}>Турлар</Button>
+            <Button component={NavLink} to="/" sx={{ color: 'black' }}>
+              Басты
+            </Button>
+            <Button component={NavLink} to="/tours" sx={{ color: 'black' }}>
+              Турлар
+            </Button>
             <Button
               aria-controls="explore-menu"
               aria-haspopup="true"
@@ -105,11 +124,41 @@ export default function Header() {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
               transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
-              <MenuItem component={NavLink} to="/gallery" onClick={handleMenuClose}>Галерея</MenuItem>
-              <MenuItem component={NavLink} to="https://3dmapcentral.asia/kz/#h85/103.0/5.5/108.5" onClick={handleMenuClose}>3D Тур</MenuItem>
-              <MenuItem component={NavLink} to="/events" onClick={handleMenuClose}>Оқиғалар</MenuItem>
-              <MenuItem component={NavLink} to="/video-travel" onClick={handleMenuClose}>Бейне саяхаттар</MenuItem>
-              <MenuItem component={NavLink} to="/blogs" onClick={handleMenuClose}>Блог</MenuItem>
+              <MenuItem
+                component={NavLink}
+                to="/gallery"
+                onClick={handleMenuClose}
+              >
+                Галерея
+              </MenuItem>
+              <MenuItem
+                component={NavLink}
+                to="https://3dmapcentral.asia/kz/#h85/103.0/5.5/108.5"
+                onClick={handleMenuClose}
+              >
+                3D Тур
+              </MenuItem>
+              <MenuItem
+                component={NavLink}
+                to="/events"
+                onClick={handleMenuClose}
+              >
+                Оқиғалар
+              </MenuItem>
+              <MenuItem
+                component={NavLink}
+                to="/video-travel"
+                onClick={handleMenuClose}
+              >
+                Бейне саяхаттар
+              </MenuItem>
+              <MenuItem
+                component={NavLink}
+                to="/blogs"
+                onClick={handleMenuClose}
+              >
+                Блог
+              </MenuItem>
             </Menu>
           </Stack>
           <Button
@@ -150,6 +199,25 @@ export default function Header() {
               ))}
             </Stack>
           </Popover>
+          <Button onClick={handleLangClick} sx={{ color: 'black' }}>
+            {selectedLang.icon}
+          </Button>
+          <Popover
+            open={Boolean(langAnchorEl)}
+            anchorEl={langAnchorEl}
+            onClose={handleLangClose}
+          >
+            <Stack spacing={1} sx={{ p: 2 }}>
+              {languages.map((lang) => (
+                <MenuItem
+                  key={lang.code}
+                  onClick={() => handleLangSelect(lang)}
+                >
+                  {lang.icon}
+                </MenuItem>
+              ))}
+            </Stack>
+          </Popover>
           <IconButton>
             <Badge color="error">
               <SearchIcon />
@@ -173,12 +241,30 @@ export default function Header() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
-            <MenuItem component={NavLink} to="/profile" onClick={handleUserMenuClose}>Профиль</MenuItem>
-            <MenuItem component={NavLink} to="/settings" onClick={handleUserMenuClose}>Баптаулар</MenuItem>
-            <MenuItem component={NavLink} to="/auth" onClick={handleUserMenuClose}>Шығу</MenuItem>
+            <MenuItem
+              component={NavLink}
+              to="/profile"
+              onClick={handleUserMenuClose}
+            >
+              Профиль
+            </MenuItem>
+            <MenuItem
+              component={NavLink}
+              to="/settings"
+              onClick={handleUserMenuClose}
+            >
+              Баптаулар
+            </MenuItem>
+            <MenuItem
+              component={NavLink}
+              to="/auth"
+              onClick={handleUserMenuClose}
+            >
+              Шығу
+            </MenuItem>
           </Menu>
         </DynamicIsland>
       </Container>
     </AppBar>
-  );
+  )
 }

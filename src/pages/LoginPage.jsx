@@ -12,7 +12,6 @@ import {
   Divider,
 } from '@mui/material'
 import { Email, Lock, Person } from '@mui/icons-material'
-import Header from '../components/Header'
 
 const LoginPage = () => {
   const [tabIndex, setTabIndex] = useState(0)
