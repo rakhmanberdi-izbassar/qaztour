@@ -13,10 +13,13 @@ import ProviderPage from './components/Provider'
 import VideoTravelPage from './pages/VideoTravelPage'
 import EventsPage from './pages/EventsPage'
 import EditProfilePage from './pages/EditProfilePage'
+import Pay from './components/Pay'
+import { WeatherProvider } from './components/WeatherContext';
 
 function App() {
   return (
     <Router>
+      <WeatherProvider>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/tours" element={<ToursPage />} />
@@ -31,7 +34,9 @@ function App() {
         <Route path="/tour/:id" element={<TourDetail />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
+        <Route path="/pay" element={<Pay />} />
       </Routes>
+      </WeatherProvider>
     </Router>
   )
 }
