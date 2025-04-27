@@ -13,29 +13,27 @@ import ProviderPage from './components/Provider'
 import VideoTravelPage from './pages/VideoTravelPage'
 import EventsPage from './pages/EventsPage'
 import EditProfilePage from './pages/EditProfilePage'
-import Pay from './components/Pay'
-import { WeatherProvider } from './components/WeatherContext';
+import { WeatherProvider } from './components/WeatherContext'
 
 function App() {
   return (
     <Router>
       <WeatherProvider>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/tours" element={<ToursPage />} />
-        <Route path="/blogs" element={<BlogPage />} />
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/auth" element={<LoginPage />} />
-        <Route path="/hotel-booking" element={<HotelBookingPage />} />
-        <Route path="/video-travel" element={<VideoTravelPage />} />
-        <Route path="/provider/:id" element={<ProviderPage />} />
-        <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/tour/:id" element={<TourDetail />} />
-        <Route path="/events" element={<EventsPage />} />
-        <Route path="/edit-profile" element={<EditProfilePage />} />
-        <Route path="/pay" element={<Pay />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/tours" element={<ToursPage />} />
+          <Route path="/blogs" element={<BlogPage />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/auth" element={<LoginPage />} />
+          <Route path="/hotel-booking" element={<HotelBookingPage />} />
+          <Route path="/video-travel" element={<VideoTravelPage />} />
+          <Route path="/provider/:id" element={<ProviderPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/tour/:id" element={<TourDetail />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/edit-profile" element={<EditProfilePage />} />
+        </Routes>
       </WeatherProvider>
     </Router>
   )
