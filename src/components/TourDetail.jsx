@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import {
   Box,
   Typography,
@@ -12,26 +12,99 @@ import {
   ImageList,
   ImageListItem,
   Dialog,
-  List,
-  ListItem,
-  ListItemAvatar,
   Avatar,
-  ListItemText,
+  styled,
+  IconButton,
 } from '@mui/material'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import PeopleIcon from '@mui/icons-material/People'
-import { Link } from 'react-router-dom'
-import itemData from './../data_example'
 import Header from './Header'
+import axios from 'axios'
+import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
+
+// Custom styled components
+const PriceTypography = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '2rem',
+  color: theme.palette.success.main,
+}))
+
+const BookButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  padding: theme.spacing(1),
+  fontSize: '1rem',
+  fontWeight: 'bold',
+}))
+
+const DetailIconText = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  marginRight: theme.spacing(2),
+}))
 
 const TourDetail = () => {
   const { id } = useParams()
-  const item = itemData.find((tour) => tour.id === Number(id))
+  const [tour, setTour] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [open, setOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
+  const navigate = useNavigate()
+  const BASE_URL = 'http://127.0.0.1:8000/storage/'
 
-  if (!item) {
+  useEffect(() => {
+    const fetchTour = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/tours/${id}`,
+          {
+            headers: {
+              Accept: 'application/json',
+            },
+          }
+        )
+        console.log('Detailed Tour Response:', response.data)
+        setTour(response.data)
+      } catch (err) {
+        console.error('Error fetching tour:', err)
+        setError(err.message || 'Failed to fetch tour details')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTour()
+  }, [id])
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return tourImg
+    if (imagePath.startsWith('http')) return imagePath
+    return `${BASE_URL}${imagePath}`
+  }
+
+  if (loading) {
+    return (
+      <Typography variant="h6" sx={{ textAlign: 'center', mt: 5 }}>
+        Loading tour details...
+      </Typography>
+    )
+  }
+
+  if (error) {
+    return (
+      <Typography
+        variant="h6"
+        sx={{ textAlign: 'center', mt: 5, color: 'error.main' }}
+      >
+        Error: {error}
+      </Typography>
+    )
+  }
+
+  if (!tour?.tour) {
     return (
       <Typography
         variant="h5"
@@ -42,45 +115,21 @@ const TourDetail = () => {
     )
   }
 
-  const tempGallery = [
-    'https://travosy.vercel.app/static/media/1.07f134933e8c8ac359b9.jpg',
-    'https://travosy.vercel.app/static/media/2.e083e5af6b98325ac9ed.jpg',
-    'https://travosy.vercel.app/static/media/3.597c87bf0632b9e644e2.jpg',
-    'https://travosy.vercel.app/static/media/4.738a1d5ee8bdcfd7b945.jpg',
-  ]
-
-  const galleryImages =
-    item.gallery && item.gallery.length > 0 ? item.gallery : tempGallery
+  const galleryImages = tour.tour.gallery
+    ? tour.tour.gallery.map(getImageUrl)
+    : [getImageUrl(tour.tour.image)]
+  const locationName =
+    tour.locations.find((location) => location.id === tour.tour.location_id)
+      ?.name || 'Unknown'
 
   const handleOpen = (img) => {
     setSelectedImage(img)
     setOpen(true)
   }
 
-  const tourProviders = [
-    {
-      id: 1,
-      name: 'TravelGo',
-      rating: 4.5,
-      image: 'https://via.placeholder.com/50',
-      profile: '/provider/1',
-    },
-    {
-      id: 2,
-      name: 'Adventure Seekers',
-      rating: 4.7,
-      image: 'https://via.placeholder.com/50',
-      profile: '/provider/2',
-    },
-    {
-      id: 3,
-      name: 'Explore World',
-      rating: 4.6,
-      image: 'https://via.placeholder.com/50',
-      profile: '/provider/3',
-    },
-    
-  ]
+  const handleGoBack = () => {
+    navigate(-1)
+  }
 
   return (
     <>
@@ -89,7 +138,9 @@ const TourDetail = () => {
         sx={{
           width: '100%',
           height: '400px',
-          background: `url(${item.img}) center/cover no-repeat`,
+          background: `url(${getImageUrl(
+            tour.tour.image
+          )}) center/cover no-repeat`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -100,18 +151,70 @@ const TourDetail = () => {
       >
         <Box sx={{ bgcolor: 'rgba(0, 0, 0, 0.5)', p: 3, borderRadius: 2 }}>
           <Typography variant="h3" fontWeight="bold">
-            {item.title}
+            {tour.tour.name}
           </Typography>
         </Box>
       </Box>
 
-      <Container sx={{ py: 5 }}>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={8}>
-            <Card sx={{ p: 3, boxShadow: 5 }}>
+      <Container sx={{ py: 3 }}>
+        <Card sx={{ p: 3, boxShadow: 3 }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Box display="flex" alignItems="center">
+              <IconButton onClick={handleGoBack}>
+                <ArrowBackIosIcon />
+              </IconButton>
+
+              <PriceTypography>₸ {tour.tour.price}</PriceTypography>
+              {tour.tour.duration && (
+                <DetailIconText>
+                  <AccessTimeIcon sx={{ color: 'gray', mr: 0.5 }} />
+                  <Typography variant="body2">
+                    {tour.tour.duration} days
+                  </Typography>
+                </DetailIconText>
+              )}
+              {/* Турдың түрі мен тілі туралы ақпарат API-де жоқ */}
+              <DetailIconText>
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: 'bold', color: 'success.main', mr: 0.5 }}
+                >
+                  Moderate
+                </Typography>
+              </DetailIconText>
+              <Box display="flex" alignItems="center" mt={1}>
+                <LocationOnIcon sx={{ color: 'gray', mr: 1 }} />
+                <Typography variant="body2">
+                  Location: {locationName}
+                </Typography>
+              </Box>
+            </Box>
+            <BookButton variant="contained" color="success">
+              Book Tour
+            </BookButton>
+          </Box>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={8}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Overview
+              </Typography>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                {tour.tour.description}
+              </Typography>
+
               <Typography
-                variant="h5"
-                sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}
+                variant="h6"
+                fontWeight="bold"
+                gutterBottom
+                sx={{ mt: 3 }}
               >
                 Tour Gallery
               </Typography>
@@ -157,84 +260,132 @@ const TourDetail = () => {
                 )}
               </Dialog>
 
-              <Typography
-                variant="h5"
-                fontWeight="bold"
-                gutterBottom
-                sx={{ mt: 3 }}
-              >
-                About This Tour
-              </Typography>
-              <Typography variant="body1" color="text.secondary" paragraph>
-                {item.Description}
-              </Typography>
+              <Divider sx={{ my: 3 }} />
 
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" fontWeight="bold">
-                Tour Details:
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Reviews
               </Typography>
-              <Box display="flex" alignItems="center" mt={1}>
-                <AccessTimeIcon sx={{ color: 'gray', mr: 1 }} />
-                <Typography variant="body2">Duration: 5 Days</Typography>
-              </Box>
-              <Box display="flex" alignItems="center" mt={1}>
-                <PeopleIcon sx={{ color: 'gray', mr: 1 }} />
-                <Typography variant="body2">
-                  Group Size: Up to 15 people
+              {/* Пікірлерді көрсету логикасы әлі қосылмаған */}
+              <Typography variant="body2" color="text.secondary">
+                No reviews yet. Be the first to write one!
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card sx={{ p: 2, boxShadow: 3 }}>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  Tour Guide
                 </Typography>
-              </Box>
-              <Box display="flex" alignItems="center" mt={1}>
-                <LocationOnIcon sx={{ color: 'gray', mr: 1 }} />
-                <Typography variant="body2">
-                  Location: {item.location || 'Unknown'}
-                </Typography>
-              </Box>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ textAlign: 'center', p: 3, boxShadow: 5 }}>
-              <Typography variant="h4" color="primary" fontWeight="bold">
-                ${item.price}
-              </Typography>
-              <Rating
-                value={item.rating || 4}
-                precision={0.5}
-                readOnly
-                sx={{ mt: 1 }}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 3, width: '100%' }}
-              >
-                Book Now
-              </Button>
-            </Card>
-            <Card sx={{ p: 3, mt: 3, boxShadow: 5 }}>
-              <Typography variant="h6" fontWeight="bold">
-                Tour Providers
-              </Typography>
-              <List>
-                {tourProviders.map((provider) => (
-                  <ListItem
-                    key={provider.id}
-                    component={Link}
-                    to={provider.profile}
-                    button
-                  >
-                    <ListItemAvatar>
-                      <Avatar src={provider.image} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={provider.name}
-                      secondary={`Rating: ${provider.rating}`}
+                <Box display="flex" alignItems="center" flexDirection="column">
+                  <Avatar
+                    alt="Tour Guide"
+                    src="https://mui.com/static/images/avatar/2.jpg" // Нақты гидтің суретін API-ден алу керек
+                    sx={{ width: 80, height: 80, mb: 1 }}
+                  />
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Anna /Vanova
+                  </Typography>
+                  <Box display="flex" alignItems="center">
+                    <Rating
+                      name="read-only"
+                      value={4.8}
+                      precision={0.1}
+                      readOnly
+                      size="small"
                     />
-                  </ListItem>
-                ))}
-              </List>
-            </Card>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      ml={0.5}
+                    >
+                      4.8
+                    </Typography>
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    13 tour
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    mt={1}
+                    textAlign="center"
+                  >
+                    An experienced guide passionate about Alatau region, Enjoy
+                    creating unforgettable hiking adventures.
+                  </Typography>
+                </Box>
+              </Card>
+
+              <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  Similar Tours
+                </Typography>
+                {/* Ұқсас турларды көрсету логикасы әлі қосылмаған */}
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Card>
+                      <img
+                        src="https://travosy.vercel.app/static/media/almaty-city-tour.c7b7935b.jpg"
+                        alt="Almaty City Tour"
+                        style={{ width: '100%', display: 'block' }}
+                      />
+                      <Box p={1} textAlign="center">
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          Almaty City
+                        </Typography>
+                        <Typography variant="caption">$50</Typography>
+                      </Box>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Card>
+                      <img
+                        src="https://travosy.vercel.app/static/media/charyn-canyon.8c514287.jpg"
+                        alt="Charyn Canyon"
+                        style={{ width: '100%', display: 'block' }}
+                      />
+                      <Box p={1} textAlign="center">
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          Charyn Canyon
+                        </Typography>
+                        <Typography variant="caption">$120</Typography>
+                      </Box>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Card>
+                      <img
+                        src="https://travosy.vercel.app/static/media/nomadic-experience.9e9c6b6d.jpg"
+                        alt="Nomadic Experience"
+                        style={{ width: '100%', display: 'block' }}
+                      />
+                      <Box p={1} textAlign="center">
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          Nomadic Experience
+                        </Typography>
+                        <Typography variant="caption">$150</Typography>
+                      </Box>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Card>
+                      <img
+                        src="https://travosy.vercel.app/static/media/nomadic-culture.698b5a8c.jpg"
+                        alt="Nomadic Culture"
+                        style={{ width: '100%', display: 'block' }}
+                      />
+                      <Box p={1} textAlign="center">
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          Nomadic Culture
+                        </Typography>
+                        <Typography variant="caption">$130</Typography>
+                      </Box>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
+        </Card>
       </Container>
     </>
   )

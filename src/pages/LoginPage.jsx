@@ -10,10 +10,39 @@ import {
   Tab,
   InputAdornment,
   Divider,
+  styled, // styled импорттау
 } from '@mui/material'
 import { Email, Lock, Person } from '@mui/icons-material'
 
 const API_BASE_URL = 'http://localhost:8000/api'
+
+// Арнайы стильдендірілген компоненттер
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.spacing(2),
+  boxShadow: theme.shadows[5],
+  backgroundColor: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  position: 'relative',
+  overflow: 'hidden',
+}))
+
+const StyledTab = styled(Tab)(({ theme }) => ({
+  fontWeight: theme.typography.fontWeightBold,
+}))
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  backgroundColor: '#29339b',
+  color: theme.palette.common.white,
+  '&:hover': {
+    backgroundColor: '#0c7c59',
+  },
+}))
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  margin: theme.spacing(1, 0),
+}))
 
 const LoginPage = () => {
   const [tabIndex, setTabIndex] = useState(0)
@@ -23,6 +52,7 @@ const LoginPage = () => {
   const [registerEmail, setRegisterEmail] = useState('')
   const [registerPassword, setRegisterPassword] = useState('')
   const [registerConfirmPassword, setRegisterConfirmPassword] = useState('')
+  const [registerSurname, setRegisterSurname] = useState('') // Жаңа күй
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue)
@@ -33,7 +63,6 @@ const LoginPage = () => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/login`, {
-        // Толық мекенжай
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,8 +88,7 @@ const LoginPage = () => {
     }
   }
 
-  const handleRegisterSubmit = async (e, registerSurname) => {
-    // Тегін параметр ретінде қабылдау
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault()
 
     if (registerPassword !== registerConfirmPassword) {
@@ -107,7 +135,7 @@ const LoginPage = () => {
       sx={{ mt: 2 }}
       onSubmit={handleLoginSubmit}
     >
-      <TextField
+      <StyledTextField
         fullWidth
         label="Email"
         variant="outlined"
@@ -122,7 +150,7 @@ const LoginPage = () => {
           ),
         }}
       />
-      <TextField
+      <StyledTextField
         fullWidth
         label="Password"
         variant="outlined"
@@ -138,139 +166,107 @@ const LoginPage = () => {
           ),
         }}
       />
-      <Button
-        variant="contained"
-        fullWidth
-        sx={{
-          mt: 2,
-          backgroundColor: '#29339b',
-          '&:hover': { backgroundColor: '#0c7c59' },
-        }}
-        type="submit"
-      >
+      <StyledButton variant="contained" fullWidth type="submit">
         Login
-      </Button>
+      </StyledButton>
     </Box>
   )
 
-  const RegisterForm = () => {
-    const [registerSurname, setRegisterSurname] = useState('') // Жаңа күй
-
-    return (
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        sx={{ mt: 2 }}
-        onSubmit={(e) => handleRegisterSubmit(e, registerSurname)} // Тегін жіберу
-      >
-        <TextField
-          fullWidth
-          label="Full Name"
-          variant="outlined"
-          margin="normal"
-          value={registerFullName}
-          onChange={(e) => setRegisterFullName(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Person sx={{ color: '#0c7c59' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Surname" // Жаңа өріс
-          variant="outlined"
-          margin="normal"
-          value={registerSurname}
-          onChange={(e) => setRegisterSurname(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Person sx={{ color: '#0c7c59' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Email"
-          variant="outlined"
-          margin="normal"
-          value={registerEmail}
-          onChange={(e) => setRegisterEmail(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Email sx={{ color: '#0c7c59' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Password"
-          variant="outlined"
-          margin="normal"
-          type="password"
-          value={registerPassword}
-          onChange={(e) => setRegisterPassword(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Lock sx={{ color: '#0c7c59' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Confirm Password"
-          variant="outlined"
-          margin="normal"
-          type="password"
-          value={registerConfirmPassword}
-          onChange={(e) => setRegisterConfirmPassword(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Lock sx={{ color: '#0c7c59' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{
-            mt: 2,
-            backgroundColor: '#29339b',
-            '&:hover': { backgroundColor: '#0c7c59' },
-          }}
-          type="submit"
-        >
-          Register
-        </Button>
-      </Box>
-    )
-  }
+  const RegisterForm = () => (
+    <Box
+      component="form"
+      noValidate
+      autoComplete="off"
+      sx={{ mt: 2 }}
+      onSubmit={handleRegisterSubmit} // Тегін жіберу
+    >
+      <StyledTextField
+        fullWidth
+        label="Full Name"
+        variant="outlined"
+        margin="normal"
+        value={registerFullName}
+        onChange={(e) => setRegisterFullName(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Person sx={{ color: '#0c7c59' }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <StyledTextField
+        fullWidth
+        label="Surname" // Жаңа өріс
+        variant="outlined"
+        margin="normal"
+        value={registerSurname}
+        onChange={(e) => setRegisterSurname(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Person sx={{ color: '#0c7c59' }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <StyledTextField
+        fullWidth
+        label="Email"
+        variant="outlined"
+        margin="normal"
+        value={registerEmail}
+        onChange={(e) => setRegisterEmail(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Email sx={{ color: '#0c7c59' }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <StyledTextField
+        fullWidth
+        label="Password"
+        variant="outlined"
+        margin="normal"
+        type="password"
+        value={registerPassword}
+        onChange={(e) => setRegisterPassword(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Lock sx={{ color: '#0c7c59' }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <StyledTextField
+        fullWidth
+        label="Confirm Password"
+        variant="outlined"
+        margin="normal"
+        type="password"
+        value={registerConfirmPassword}
+        onChange={(e) => setRegisterConfirmPassword(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Lock sx={{ color: '#0c7c59' }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <StyledButton variant="contained" fullWidth type="submit">
+        Register
+      </StyledButton>
+    </Box>
+  )
 
   return (
     <>
       <Container maxWidth="sm" sx={{ py: 5 }}>
-        <Paper
-          elevation={5}
-          sx={{
-            p: 4,
-            borderRadius: 3,
-            background: 'linear-gradient(135deg, #ffffff 0%, #ffffff 100%)',
-            border: '2px solid #29339b',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
+        <StyledPaper>
           {/* Decorative elements */}
           <Box
             sx={{
@@ -282,6 +278,7 @@ const LoginPage = () => {
               backgroundColor: '#0c7c59',
               borderRadius: '50%',
               opacity: 0.2,
+              zIndex: 0,
             }}
           />
           <Box
@@ -294,6 +291,7 @@ const LoginPage = () => {
               backgroundColor: '#29339b',
               borderRadius: '50%',
               opacity: 0.2,
+              zIndex: 0,
             }}
           />
           <Tabs
@@ -304,45 +302,39 @@ const LoginPage = () => {
             indicatorColor="primary"
             sx={{ mb: 3, position: 'relative', zIndex: 1 }}
           >
-            <Tab label="Login" sx={{ fontWeight: 'bold' }} />
-            <Tab label="Register" sx={{ fontWeight: 'bold' }} />
+            <StyledTab label="Login" />
+            <StyledTab label="Register" />
           </Tabs>
 
-          {tabIndex === 0 && (
-            <Box sx={{ position: 'relative', zIndex: 1 }}>
-              <Typography
-                variant="h5"
-                textAlign="center"
-                sx={{ fontWeight: 600, color: '#241715', mb: 2 }}
-              >
-                Welcome Back!
-              </Typography>
-              <LoginForm />
-            </Box>
-          )}
+          <Box sx={{ position: 'relative', zIndex: 1 }}>
+            <Typography
+              variant="h5"
+              textAlign="center"
+              sx={{ fontWeight: 600, color: '#241715', mb: 2 }}
+            >
+              {tabIndex === 0 ? 'Welcome Back!' : 'Create an Account'}
+            </Typography>
+            {tabIndex === 0 && <LoginForm />}
+            {tabIndex === 1 && <RegisterForm />}
+          </Box>
 
-          {tabIndex === 1 && (
-            <Box sx={{ position: 'relative', zIndex: 1 }}>
-              <Typography
-                variant="h5"
-                textAlign="center"
-                sx={{ fontWeight: 600, color: '#241715', mb: 2 }}
-              >
-                Create an Account
-              </Typography>
-              <RegisterForm />
-            </Box>
-          )}
-
-          <Divider sx={{ my: 3, backgroundColor: '#7d7e75', opacity: 0.5 }} />
+          <Divider
+            sx={{
+              my: 3,
+              backgroundColor: '#7d7e75',
+              opacity: 0.5,
+              zIndex: 1,
+              position: 'relative',
+            }}
+          />
           <Typography
             variant="body2"
             textAlign="center"
-            sx={{ color: '#7d7e75' }}
+            sx={{ color: '#7d7e75', position: 'relative', zIndex: 1 }}
           >
             By continuing, you agree to our Terms & Conditions.
           </Typography>
-        </Paper>
+        </StyledPaper>
       </Container>
     </>
   )
