@@ -1,3 +1,4 @@
+import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import BlogPage from './pages/BlogPage'
@@ -14,27 +15,32 @@ import VideoTravelPage from './pages/VideoTravelPage'
 import EventsPage from './pages/EventsPage'
 import EditProfilePage from './pages/EditProfilePage'
 import { WeatherProvider } from './components/WeatherContext'
+import { UserProvider } from './contexts/UserContext' // UserProvider импорты
 
 function App() {
   return (
     <Router>
-      <WeatherProvider>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/tours" element={<ToursPage />} />
-          <Route path="/blogs" element={<BlogPage />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/auth" element={<LoginPage />} />
-          <Route path="/hotel-booking" element={<HotelBookingPage />} />
-          <Route path="/video-travel" element={<VideoTravelPage />} />
-          <Route path="/provider/:id" element={<ProviderPage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/tour/:id" element={<TourDetail />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/edit-profile" element={<EditProfilePage />} />
-        </Routes>
-      </WeatherProvider>
+      <UserProvider>
+        {' '}
+        {/* Бүкіл қосымшаны UserProvider-мен орау */}
+        <WeatherProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/tours" element={<ToursPage />} />
+            <Route path="/blogs" element={<BlogPage />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/auth" element={<LoginPage />} />
+            <Route path="/hotel-booking" element={<HotelBookingPage />} />
+            <Route path="/video-travel" element={<VideoTravelPage />} />
+            <Route path="/provider/:id" element={<ProviderPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/tour/:id" element={<TourDetail />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/edit-profile" element={<EditProfilePage />} />
+          </Routes>
+        </WeatherProvider>
+      </UserProvider>
     </Router>
   )
 }

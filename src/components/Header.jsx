@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from 'react'
 import {
   AppBar,
   Container,
@@ -12,14 +12,16 @@ import {
   IconButton,
   useMediaQuery,
   useTheme,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { motion } from "framer-motion";
-import { NavLink } from "react-router-dom";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useWeather } from "./WeatherContext";
+} from '@mui/material'
+import { styled } from '@mui/material/styles'
+import { motion } from 'framer-motion'
+import { NavLink } from 'react-router-dom'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import { Avatar } from '@mui/material' // Avatar компонентін импорттау
+import { UserContext } from '../contexts/UserContext'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import MenuIcon from '@mui/icons-material/Menu'
+import { useWeather } from './WeatherContext'
 
 const DynamicIsland = styled(motion.div)(({ theme }) => ({
   position: 'fixed',
@@ -44,7 +46,7 @@ const DynamicIsland = styled(motion.div)(({ theme }) => ({
     padding: '8px 12px',
     gap: '8px',
   },
-}));
+}))
 
 const MobileMenuContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -54,49 +56,50 @@ const MobileMenuContainer = styled(Box)(({ theme }) => ({
   backgroundColor: 'white',
   borderRadius: '12px',
   boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-}));
+}))
 
 const cities = [
-  { name: "Алматы", icon: "🌄", lat: 43.238949, lon: 76.889709 },
-  { name: "Астана", icon: "🏙️", lat: 51.1605, lon: 71.4704 },
-  { name: "Шымкент", icon: "🌿", lat: 42.32, lon: 69.595 },
-  { name: "Ақтау", icon: "🌊", lat: 43.652, lon: 51.197 },
-  { name: "Қостанай", icon: "🌾", lat: 53.219, lon: 63.628 },
-];
+  { name: 'Алматы', icon: '🌄', lat: 43.238949, lon: 76.889709 },
+  { name: 'Астана', icon: '🏙️', lat: 51.1605, lon: 71.4704 },
+  { name: 'Шымкент', icon: '🌿', lat: 42.32, lon: 69.595 },
+  { name: 'Ақтау', icon: '🌊', lat: 43.652, lon: 51.197 },
+  { name: 'Қостанай', icon: '🌾', lat: 53.219, lon: 63.628 },
+]
 
 export default function Header() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [pageTitleColor] = useState("black");
-  const [exploreMenuEl, setExploreMenuEl] = useState(null);
-  const [cityAnchorEl, setCityAnchorEl] = useState(null);
-  const [userMenuEl, setUserMenuEl] = useState(null);
-  const [mobileMenuEl, setMobileMenuEl] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(cities[0]);
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const [pageTitleColor] = useState('black')
+  const [exploreMenuEl, setExploreMenuEl] = useState(null)
+  const [cityAnchorEl, setCityAnchorEl] = useState(null)
+  const [userMenuEl, setUserMenuEl] = useState(null)
+  const [mobileMenuEl, setMobileMenuEl] = useState(null)
+  const [selectedCity, setSelectedCity] = useState(cities[0])
 
-  const { weather, fetchWeather } = useWeather();
+  const { weather, fetchWeather } = useWeather()
+  const { user, loading } = useContext(UserContext) // Пайдаланушы деректерін контекстен алу
 
-  const handleMenuOpen = (event) => setExploreMenuEl(event.currentTarget);
-  const handleMenuClose = () => setExploreMenuEl(null);
+  const handleMenuOpen = (event) => setExploreMenuEl(event.currentTarget)
+  const handleMenuClose = () => setExploreMenuEl(null)
 
-  const handleCityClick = (event) => setCityAnchorEl(event.currentTarget);
-  const handleCityClose = () => setCityAnchorEl(null);
+  const handleCityClick = (event) => setCityAnchorEl(event.currentTarget)
+  const handleCityClose = () => setCityAnchorEl(null)
   const handleCitySelect = (city) => {
-    setSelectedCity(city);
-    handleCityClose();
-  };
+    setSelectedCity(city)
+    handleCityClose()
+  }
 
-  const handleUserMenuOpen = (event) => setUserMenuEl(event.currentTarget);
-  const handleUserMenuClose = () => setUserMenuEl(null);
+  const handleUserMenuOpen = (event) => setUserMenuEl(event.currentTarget)
+  const handleUserMenuClose = () => setUserMenuEl(null)
 
-  const handleMobileMenuOpen = (event) => setMobileMenuEl(event.currentTarget);
-  const handleMobileMenuClose = () => setMobileMenuEl(null);
+  const handleMobileMenuOpen = (event) => setMobileMenuEl(event.currentTarget)
+  const handleMobileMenuClose = () => setMobileMenuEl(null)
 
   useEffect(() => {
     if (selectedCity) {
-      fetchWeather(selectedCity.lat, selectedCity.lon);
+      fetchWeather(selectedCity.lat, selectedCity.lon)
     }
-  }, [selectedCity]);
+  }, [selectedCity])
 
   return (
     <AppBar
@@ -104,17 +107,20 @@ export default function Header() {
       sx={{
         top: 0,
         left: 0,
-        width: "100%",
+        width: '100%',
         zIndex: 1100,
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        backdropFilter: "blur(10px)",
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(10px)',
       }}
     >
       <Container fixed>
         <DynamicIsland initial={{ height: 50 }} animate={{ height: 50 }}>
           {isMobile ? (
             <>
-              <IconButton onClick={handleMobileMenuOpen} sx={{ color: "black" }}>
+              <IconButton
+                onClick={handleMobileMenuOpen}
+                sx={{ color: 'black' }}
+              >
                 <MenuIcon />
               </IconButton>
               <Menu
@@ -135,7 +141,7 @@ export default function Header() {
                     component={NavLink}
                     to="/"
                     onClick={handleMobileMenuClose}
-                    sx={{ color: "black", justifyContent: 'flex-start' }}
+                    sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
                     Басты
                   </Button>
@@ -144,7 +150,7 @@ export default function Header() {
                     component={NavLink}
                     to="/tours"
                     onClick={handleMobileMenuClose}
-                    sx={{ color: "black", justifyContent: 'flex-start' }}
+                    sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
                     Турлар
                   </Button>
@@ -153,7 +159,7 @@ export default function Header() {
                     component={NavLink}
                     to="/gallery"
                     onClick={handleMobileMenuClose}
-                    sx={{ color: "black", justifyContent: 'flex-start' }}
+                    sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
                     Галерея
                   </Button>
@@ -162,7 +168,7 @@ export default function Header() {
                     component={NavLink}
                     to="https://3dmapcentral.asia/kz/#h85/103.0/5.5/108.5"
                     onClick={handleMobileMenuClose}
-                    sx={{ color: "black", justifyContent: 'flex-start' }}
+                    sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
                     3D Тур
                   </Button>
@@ -171,7 +177,7 @@ export default function Header() {
                     component={NavLink}
                     to="/events"
                     onClick={handleMobileMenuClose}
-                    sx={{ color: "black", justifyContent: 'flex-start' }}
+                    sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
                     Оқиғалар
                   </Button>
@@ -180,7 +186,7 @@ export default function Header() {
                     component={NavLink}
                     to="/video-travel"
                     onClick={handleMobileMenuClose}
-                    sx={{ color: "black", justifyContent: 'flex-start' }}
+                    sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
                     Бейне саяхаттар
                   </Button>
@@ -189,7 +195,7 @@ export default function Header() {
                     component={NavLink}
                     to="/blogs"
                     onClick={handleMobileMenuClose}
-                    sx={{ color: "black", justifyContent: 'flex-start' }}
+                    sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
                     Блог
                   </Button>
@@ -197,7 +203,7 @@ export default function Header() {
               </Menu>
             </>
           ) : (
-            <Button component={NavLink} to="/" sx={{ color: "black" }}>
+            <Button component={NavLink} to="/" sx={{ color: 'black' }}>
               <Typography variant="h6">Aventra</Typography>
             </Button>
           )}
@@ -216,14 +222,14 @@ export default function Header() {
               <Button
                 component={NavLink}
                 to="/"
-                sx={{ color: "black", fontSize: "14px" }}
+                sx={{ color: 'black', fontSize: '14px' }}
               >
                 Басты
               </Button>
               <Button
                 component={NavLink}
                 to="/tours"
-                sx={{ color: "black", fontSize: "14px" }}
+                sx={{ color: 'black', fontSize: '14px' }}
               >
                 Турлар
               </Button>
@@ -233,7 +239,7 @@ export default function Header() {
                 onMouseEnter={handleMenuOpen}
                 sx={{
                   color: pageTitleColor,
-                  fontSize: "14px",
+                  fontSize: '14px',
                 }}
               >
                 Зерттеу
@@ -245,11 +251,11 @@ export default function Header() {
                 onClose={handleMenuClose}
                 onMouseLeave={handleMenuClose}
                 disableScrollLock={true}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                transformOrigin={{ vertical: "top", horizontal: "center" }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'center' }}
                 sx={{
                   color: pageTitleColor,
-                  fontSize: "14px",
+                  fontSize: '14px',
                 }}
               >
                 <MenuItem
@@ -297,20 +303,20 @@ export default function Header() {
               onClick={handleCityClick}
               startIcon={<LocationOnIcon />}
               sx={{
-                background: "transparent",
-                color: "black",
-                borderRadius: "15px",
-                padding: "6px 16px",
-                boxShadow: "none",
-                "&:hover": {
-                  background: "rgba(0, 0, 0, 0.05)",
+                background: 'transparent',
+                color: 'black',
+                borderRadius: '15px',
+                padding: '6px 16px',
+                boxShadow: 'none',
+                '&:hover': {
+                  background: 'rgba(0, 0, 0, 0.05)',
                 },
               }}
             >
               {selectedCity.icon} {selectedCity.name}
             </Button>
           ) : (
-            <IconButton onClick={handleCityClick} sx={{ color: "black" }}>
+            <IconButton onClick={handleCityClick} sx={{ color: 'black' }}>
               <LocationOnIcon />
             </IconButton>
           )}
@@ -320,8 +326,8 @@ export default function Header() {
             anchorEl={cityAnchorEl}
             onClose={handleCityClose}
             disableScrollLock={true}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            transformOrigin={{ vertical: "top", horizontal: "center" }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             PaperProps={{
               style: {
                 width: isMobile ? '80%' : 'auto',
@@ -334,7 +340,7 @@ export default function Header() {
                 <MenuItem
                   key={city.name}
                   onClick={() => handleCitySelect(city)}
-                  sx={{ display: "flex", alignItems: "center", gap: "8px" }}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
                   {city.icon} {city.name}
                 </MenuItem>
@@ -344,7 +350,13 @@ export default function Header() {
 
           {weather && (
             <Box display="flex" alignItems="center" gap={1}>
-              <Typography variant="body2" sx={{ color: "black", fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'black',
+                  fontSize: isMobile ? '0.75rem' : '0.875rem',
+                }}
+              >
                 🌤️ {weather.temperature}°C
               </Typography>
             </Box>
@@ -354,9 +366,17 @@ export default function Header() {
             aria-controls="user-menu"
             aria-haspopup="true"
             onClick={handleUserMenuOpen}
-            sx={{ color: "black" }}
+            sx={{ color: 'black' }}
           >
-            <AccountCircleIcon />
+            <Avatar
+              src={
+                user?.avatar && process.env.REACT_APP_BACKEND_URL
+                  ? `${process.env.REACT_APP_BACKEND_URL}${user.avatar}`
+                  : null
+              }
+              alt={user?.name}
+              sx={{ width: 30, height: 30 }}
+            />
           </IconButton>
 
           <Menu
@@ -365,8 +385,8 @@ export default function Header() {
             open={Boolean(userMenuEl)}
             onClose={handleUserMenuClose}
             disableScrollLock={true}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             PaperProps={{
               style: {
                 width: isMobile ? '80%' : 'auto',
@@ -399,5 +419,5 @@ export default function Header() {
         </DynamicIsland>
       </Container>
     </AppBar>
-  );
+  )
 }

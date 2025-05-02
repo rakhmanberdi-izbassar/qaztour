@@ -18,6 +18,7 @@ const EditProfile = () => {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('') // Құпия сөзді растау күйі
   const [avatar, setAvatar] = useState('https://via.placeholder.com/150')
   const [comments, setComments] = useState([])
   const [loading, setLoading] = useState(true)
@@ -26,7 +27,7 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('authToken') // 'token' емес, 'authToken' қолданыңыз
         if (!token) {
           setError('Authentication token not found.')
           setLoading(false)
@@ -63,7 +64,7 @@ const EditProfile = () => {
 
   const handleSave = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('authToken')
       if (!token) {
         setError('Authentication token not found.')
         return
@@ -71,9 +72,13 @@ const EditProfile = () => {
       const formData = new FormData()
       formData.append('name', name)
       formData.append('email', email)
-      formData.append('phone', phone)
+      if (phone) {
+        // Телефон нөмірі бар болса ғана қосу
+        formData.append('phone', phone)
+      }
       if (password) {
         formData.append('password', password)
+        formData.append('password_confirmation', passwordConfirmation) // Құпия сөзді растауды қосу
       }
       const avatarFile = document.getElementById('avatar-upload').files[0]
       if (avatarFile) {
@@ -182,6 +187,15 @@ const EditProfile = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Confirm New Password"
+                type="password"
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
               />
             </Grid>
           </Grid>

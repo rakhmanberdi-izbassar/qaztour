@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-
 import {
   Avatar,
   Box,
@@ -9,80 +8,132 @@ import {
   Typography,
   IconButton,
 } from '@mui/material'
-
 import EditIcon from '@mui/icons-material/Edit'
-
 import FacebookIcon from '@mui/icons-material/Facebook'
-
 import InstagramIcon from '@mui/icons-material/Instagram'
-
 import TwitterIcon from '@mui/icons-material/Twitter'
-
 import LockIcon from '@mui/icons-material/Lock'
-
 import { NavLink, Link } from 'react-router-dom'
-
 import api from './../utils/axios' // Сіздің axios инстансыңыз
 
 const UserProfile = () => {
   const [user, setUser] = useState(null)
-
   const [bookings, setBookings] = useState([])
-
   const [loading, setLoading] = useState(true)
-
   const [error, setError] = useState(null)
+  const [userReviews, setUserReviews] = useState([])
+  const [deleteLoading, setDeleteLoading] = useState(null)
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        setError('Authentication token not found. Please log in.')
+        setLoading(false)
+        return
+      }
+      const userResponse = await api.get('/user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setUser(userResponse.data)
+      const bookingsResponse = await api.get('/bookings/user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setBookings(bookingsResponse.data)
+      setLoading(false)
+    } catch (err) {
+      console.error('Error fetching user profile data:', err)
+      setError('Failed to load user profile information.')
+      setLoading(false)
+    }
+  }
+
+  const fetchUserReviews = async () => {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        console.error('Authentication token not found.')
+        return
+      }
+      const response = await api.get('/user/reviews', {
+        // Бекендтегі эндпоинтке сұрау
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setUserReviews(response.data)
+    } catch (error) {
+      console.error('Error fetching user reviews:', error)
+      setError('Failed to load user reviews.')
+    }
+  }
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchUserProfileAndReviews = async () => {
       try {
-        const token = localStorage.getItem('token')
-
+        const token = localStorage.getItem('authToken')
         if (!token) {
           setError('Authentication token not found. Please log in.')
-
           setLoading(false)
-
           return
-        } // Пайдаланушы туралы ақпаратты алу
-
+        }
         const userResponse = await api.get('/user', {
-          // Немесе /api/profile/{id}
-
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
-
-        console.log(userResponse.data)
-
-        setUser(userResponse.data) // Пайдаланушының броньдарын алу (егер API-де болса)
-
+        console.log('User Data:', userResponse.data) // Қосылған консольге шығару
+        setUser(userResponse.data)
         const bookingsResponse = await api.get('/bookings/user', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
-
         setBookings(bookingsResponse.data)
-
         setLoading(false)
       } catch (err) {
         console.error('Error fetching user profile data:', err)
-
         setError('Failed to load user profile information.')
-
         setLoading(false)
       }
+      await fetchUserReviews()
     }
 
-    fetchUserProfile()
+    fetchUserProfileAndReviews()
   }, [])
+
+  const handleDeleteReview = async (reviewId) => {
+    setDeleteLoading(reviewId)
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        console.error('Authentication token not found.')
+        return
+      }
+      await api.delete(`/reviews/${reviewId}`, {
+        // Бекендтегі жою эндпоинтіне сұрау
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setUserReviews(userReviews.filter((review) => review.id !== reviewId))
+      // Қажет болса, хабарлама көрсету
+    } catch (error) {
+      console.error('Error deleting review:', error)
+      // Қате туралы хабарлама көрсету
+    } finally {
+      setDeleteLoading(null)
+    }
+  }
 
   if (loading) {
     return (
       <Typography textAlign="center" mt={5}>
-                Loading profile information...      {' '}
+        Loading profile information...
       </Typography>
     )
   }
@@ -90,7 +141,7 @@ const UserProfile = () => {
   if (error) {
     return (
       <Typography color="error" textAlign="center" mt={5}>
-                {error}     {' '}
+        {error}
       </Typography>
     )
   }
@@ -98,45 +149,36 @@ const UserProfile = () => {
   if (!user) {
     return (
       <Typography textAlign="center" mt={5}>
-                No user data available.      {' '}
+        No user data available.
       </Typography>
     )
   }
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 3, mt: 14 }}>
-            {/* Профиль картасы */}     {' '}
+      {/* Профиль картасы */}
       <Card
         sx={{
           borderRadius: 3,
-
           boxShadow: 3,
-
           padding: 3,
-
           textAlign: 'center',
-
           mb: 3,
         }}
       >
-               {' '}
         <Avatar
-          src="https://via.placeholder.com/150"
+          src={`http://localhost:8000${user.avatar}`}
           sx={{ width: 100, height: 100, margin: 'auto', mb: 2 }}
         />
-               {' '}
         <Typography variant="h5" fontWeight={600}>
-                    {user.name}       {' '}
+          {user.name}
         </Typography>
-               {' '}
         <Typography variant="body2" color="text.secondary">
-                    {user.email}       {' '}
+          {user.email}
         </Typography>
-               {' '}
         <Typography variant="body2" color="text.secondary">
-                    Role: {user.role}       {' '}
+          Role: {user.role}
         </Typography>
-               {' '}
         <Button
           component={NavLink}
           to="/edit-profile"
@@ -144,54 +186,46 @@ const UserProfile = () => {
           variant="outlined"
           sx={{ mt: 2, borderRadius: 2 }}
         >
-                    Edit Profile        {' '}
+          Edit Profile
         </Button>
-                {/* Әлеуметтік желі иконкалары */}       {' '}
+        {/* Әлеуметтік желі иконкалары */}
         <Box sx={{ mt: 2 }}>
-                   {' '}
           {user.facebook_url && (
             <IconButton
               href={user.facebook_url}
               target="_blank"
               rel="noopener noreferrer"
             >
-                            <FacebookIcon color="primary" />           {' '}
+              <FacebookIcon color="primary" />
             </IconButton>
           )}
-                   {' '}
           {user.instagram_url && (
             <IconButton
               href={user.instagram_url}
               target="_blank"
               rel="noopener noreferrer"
             >
-                            <InstagramIcon color="secondary" />           {' '}
+              <InstagramIcon color="secondary" />
             </IconButton>
           )}
-                   {' '}
           {user.twitter_url && (
             <IconButton
               href={user.twitter_url}
               target="_blank"
               rel="noopener noreferrer"
             >
-                            <TwitterIcon color="primary" />           {' '}
+              <TwitterIcon color="primary" />
             </IconButton>
           )}
-                 {' '}
         </Box>
-             {' '}
       </Card>
-            {/* Жазбалар */}     {' '}
+      {/* Жазбалар */}
       {user.posts && user.posts.length > 0 && (
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-                   {' '}
           <CardContent>
-                       {' '}
             <Typography variant="h6" fontWeight={600} mb={2}>
-                            Your Posts            {' '}
+              Your Posts
             </Typography>
-                       {' '}
             {user.posts.map((post) => (
               <Typography
                 key={post.id}
@@ -199,40 +233,55 @@ const UserProfile = () => {
                 color="text.secondary"
                 sx={{ mt: 1 }}
               >
-                                {post.title || 'No Title'}             {' '}
+                {post.title || 'No Title'}
               </Typography>
             ))}
-                     {' '}
           </CardContent>
-                 {' '}
         </Card>
       )}
-            {/* Пікірлер */}     {' '}
-      {user.comments && user.comments.length > 0 && (
+      {/* Пікірлер */}
+      {userReviews.length > 0 && (
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-                   {' '}
           <CardContent>
-                       {' '}
             <Typography variant="h6" fontWeight={600} mb={2}>
-                            Your Comments            {' '}
+              Your Reviews
             </Typography>
-                       {' '}
-            {user.comments.map((comment) => (
-              <Typography
-                key={comment.id}
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 1 }}
+            {userReviews.map((review) => (
+              <Box
+                key={review.id}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mb: 1,
+                  borderBottom: '1px solid #eee',
+                  pb: 1,
+                }}
               >
-                                {comment.text || 'No Comment'}             {' '}
-              </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ flexGrow: 1 }}
+                >
+                  {review.content} (Rating: {review.rating})
+                </Typography>
+                <IconButton
+                  onClick={() => handleDeleteReview(review.id)}
+                  disabled={deleteLoading === review.id}
+                  aria-label="delete"
+                  color="error"
+                >
+                  {deleteLoading === review.id ? (
+                    <Typography variant="caption">Deleting...</Typography>
+                  ) : (
+                    'Delete'
+                  )}
+                </IconButton>
+              </Box>
             ))}
-                     {' '}
           </CardContent>
-                 {' '}
         </Card>
       )}
-            {/* Турлар */}     {' '}
+      {/* Турлар */}
       {user.tours &&
         user.tours.map((tour) => (
           <Box
@@ -263,16 +312,13 @@ const UserProfile = () => {
             {/* Қосымша элементтер */}
           </Box>
         ))}
-            {/* Броньдар */}     {' '}
+      {/* Броньдар */}
       {bookings.length > 0 && (
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-                   {' '}
           <CardContent>
-                       {' '}
             <Typography variant="h6" fontWeight={600} mb={2}>
-                            Your Bookings            {' '}
+              Your Bookings
             </Typography>
-                       {' '}
             {bookings.map((booking) => (
               <Typography
                 key={booking.id}
@@ -280,27 +326,20 @@ const UserProfile = () => {
                 color="text.secondary"
                 sx={{ mt: 1 }}
               >
-                               {' '}
-                {booking.tour?.name || 'Tour Name Not Available'} -            
-                    {new Date(booking.booking_date).toLocaleDateString()}       
-                     {' '}
+                {booking.tour?.name || 'Tour Name Not Available'} -
+                {new Date(booking.booking_date).toLocaleDateString()}
               </Typography>
             ))}
-                     {' '}
           </CardContent>
-                 {' '}
         </Card>
       )}
-            {/* Сақталған турлар */}     {' '}
+      {/* Сақталған турлар */}
       {user.favorite_tours && user.favorite_tours.length > 0 && (
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-                   {' '}
           <CardContent>
-                       {' '}
             <Typography variant="h6" fontWeight={600} mb={2}>
-                            Favorite Tours            {' '}
+              Favorite Tours
             </Typography>
-                       {' '}
             {user.favorite_tours.map((favorite) => (
               <Typography
                 key={favorite.id}
@@ -308,23 +347,18 @@ const UserProfile = () => {
                 color="text.secondary"
                 sx={{ mt: 1 }}
               >
-                                {favorite.name || 'No Name'}             {' '}
+                {favorite.name || 'No Name'}
               </Typography>
             ))}
-                     {' '}
           </CardContent>
-                 {' '}
         </Card>
       )}
-            {/* Қауіпсіздік параметрлері */}     {' '}
+      {/* Қауіпсіздік параметрлері */}
       <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-               {' '}
         <CardContent>
-                   {' '}
           <Typography variant="h6" fontWeight={600}>
-                        Security Settings          {' '}
+            Security Settings
           </Typography>
-                   {' '}
           <Button
             component={NavLink}
             to="/change-password"
@@ -332,9 +366,8 @@ const UserProfile = () => {
             variant="outlined"
             sx={{ mt: 2, borderRadius: 2 }}
           >
-                        Change Password          {' '}
+            Change Password
           </Button>
-                   {' '}
           <Button
             component={NavLink}
             to="/enable-2fa"
@@ -342,13 +375,10 @@ const UserProfile = () => {
             variant="outlined"
             sx={{ mt: 2, borderRadius: 2, ml: 2 }}
           >
-                        Enable 2FA          {' '}
+            Enable 2FA
           </Button>
-                 {' '}
         </CardContent>
-             {' '}
       </Card>
-         {' '}
     </Box>
   )
 }
