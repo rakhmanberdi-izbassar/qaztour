@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+
 import {
   Avatar,
   Box,
@@ -6,82 +7,348 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid,
   IconButton,
 } from '@mui/material'
+
 import EditIcon from '@mui/icons-material/Edit'
+
 import FacebookIcon from '@mui/icons-material/Facebook'
+
 import InstagramIcon from '@mui/icons-material/Instagram'
+
 import TwitterIcon from '@mui/icons-material/Twitter'
+
 import LockIcon from '@mui/icons-material/Lock'
-import { NavLink } from 'react-router-dom';
+
+import { NavLink, Link } from 'react-router-dom'
+
+import api from './../utils/axios' // Сіздің axios инстансыңыз
 
 const UserProfile = () => {
+  const [user, setUser] = useState(null)
+
+  const [bookings, setBookings] = useState([])
+
+  const [loading, setLoading] = useState(true)
+
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem('token')
+
+        if (!token) {
+          setError('Authentication token not found. Please log in.')
+
+          setLoading(false)
+
+          return
+        } // Пайдаланушы туралы ақпаратты алу
+
+        const userResponse = await api.get('/user', {
+          // Немесе /api/profile/{id}
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        console.log(userResponse.data)
+
+        setUser(userResponse.data) // Пайдаланушының броньдарын алу (егер API-де болса)
+
+        const bookingsResponse = await api.get('/bookings/user', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        setBookings(bookingsResponse.data)
+
+        setLoading(false)
+      } catch (err) {
+        console.error('Error fetching user profile data:', err)
+
+        setError('Failed to load user profile information.')
+
+        setLoading(false)
+      }
+    }
+
+    fetchUserProfile()
+  }, [])
+
+  if (loading) {
+    return (
+      <Typography textAlign="center" mt={5}>
+                Loading profile information...      {' '}
+      </Typography>
+    )
+  }
+
+  if (error) {
+    return (
+      <Typography color="error" textAlign="center" mt={5}>
+                {error}     {' '}
+      </Typography>
+    )
+  }
+
+  if (!user) {
+    return (
+      <Typography textAlign="center" mt={5}>
+                No user data available.      {' '}
+      </Typography>
+    )
+  }
+
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 3, mt: 14 }}>
-      {/* Профиль картасы */}
-      <Card sx={{ borderRadius: 3, boxShadow: 3, padding: 3, textAlign: 'center' }}>
-        <Avatar src="https://via.placeholder.com/150" sx={{ width: 100, height: 100, margin: 'auto', mb: 2 }} />
-        <Typography variant="h5" fontWeight={600}>John Doe</Typography>
-        <Typography variant="body2" color="text.secondary">Travel Enthusiast | Blogger</Typography>
-        <Button component={NavLink} to="/edit-profile" startIcon={<EditIcon />} variant="outlined" sx={{ mt: 2, borderRadius: 2 }}>Edit Profile</Button>
-        {/* Әлеуметтік желі иконкалары */}
+            {/* Профиль картасы */}     {' '}
+      <Card
+        sx={{
+          borderRadius: 3,
+
+          boxShadow: 3,
+
+          padding: 3,
+
+          textAlign: 'center',
+
+          mb: 3,
+        }}
+      >
+               {' '}
+        <Avatar
+          src="https://via.placeholder.com/150"
+          sx={{ width: 100, height: 100, margin: 'auto', mb: 2 }}
+        />
+               {' '}
+        <Typography variant="h5" fontWeight={600}>
+                    {user.name}       {' '}
+        </Typography>
+               {' '}
+        <Typography variant="body2" color="text.secondary">
+                    {user.email}       {' '}
+        </Typography>
+               {' '}
+        <Typography variant="body2" color="text.secondary">
+                    Role: {user.role}       {' '}
+        </Typography>
+               {' '}
+        <Button
+          component={NavLink}
+          to="/edit-profile"
+          startIcon={<EditIcon />}
+          variant="outlined"
+          sx={{ mt: 2, borderRadius: 2 }}
+        >
+                    Edit Profile        {' '}
+        </Button>
+                {/* Әлеуметтік желі иконкалары */}       {' '}
         <Box sx={{ mt: 2 }}>
-          <IconButton><FacebookIcon color="primary" /></IconButton>
-          <IconButton><InstagramIcon color="secondary" /></IconButton>
-          <IconButton><TwitterIcon color="primary" /></IconButton>
+                   {' '}
+          {user.facebook_url && (
+            <IconButton
+              href={user.facebook_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+                            <FacebookIcon color="primary" />           {' '}
+            </IconButton>
+          )}
+                   {' '}
+          {user.instagram_url && (
+            <IconButton
+              href={user.instagram_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+                            <InstagramIcon color="secondary" />           {' '}
+            </IconButton>
+          )}
+                   {' '}
+          {user.twitter_url && (
+            <IconButton
+              href={user.twitter_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+                            <TwitterIcon color="primary" />           {' '}
+            </IconButton>
+          )}
+                 {' '}
         </Box>
+             {' '}
       </Card>
-
-      {/* Статистика */}
-      <Grid container spacing={2} sx={{ mt: 3 }}>
-        <Grid item xs={4}>
-          <Card sx={{ textAlign: 'center', padding: 2, boxShadow: 1 }}>
-            <Typography variant="h6">25</Typography>
-            <Typography variant="body2" color="text.secondary">Trips Taken</Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
-          <Card sx={{ textAlign: 'center', padding: 2, boxShadow: 1 }}>
-            <Typography variant="h6">12</Typography>
-            <Typography variant="body2" color="text.secondary">Reviews Written</Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
-          <Card sx={{ textAlign: 'center', padding: 2, boxShadow: 1 }}>
-            <Typography variant="h6">5</Typography>
-            <Typography variant="body2" color="text.secondary">Bookings Pending</Typography>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Броньдалған сапарлар */}
+            {/* Жазбалар */}     {' '}
+      {user.posts && user.posts.length > 0 && (
+        <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+                   {' '}
+          <CardContent>
+                       {' '}
+            <Typography variant="h6" fontWeight={600} mb={2}>
+                            Your Posts            {' '}
+            </Typography>
+                       {' '}
+            {user.posts.map((post) => (
+              <Typography
+                key={post.id}
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                                {post.title || 'No Title'}             {' '}
+              </Typography>
+            ))}
+                     {' '}
+          </CardContent>
+                 {' '}
+        </Card>
+      )}
+            {/* Пікірлер */}     {' '}
+      {user.comments && user.comments.length > 0 && (
+        <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+                   {' '}
+          <CardContent>
+                       {' '}
+            <Typography variant="h6" fontWeight={600} mb={2}>
+                            Your Comments            {' '}
+            </Typography>
+                       {' '}
+            {user.comments.map((comment) => (
+              <Typography
+                key={comment.id}
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                                {comment.text || 'No Comment'}             {' '}
+              </Typography>
+            ))}
+                     {' '}
+          </CardContent>
+                 {' '}
+        </Card>
+      )}
+            {/* Турлар */}     {' '}
+      {user.tours &&
+        user.tours.map((tour) => (
+          <Box
+            key={tour.id}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mb: 1,
+              borderBottom: '1px solid #eee',
+              pb: 1,
+            }}
+          >
+            <Link
+              to={`/tour/${tour.id}`}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <Typography
+                variant="subtitle1"
+                fontWeight={500}
+                sx={{ cursor: 'pointer' }}
+              >
+                {tour.name}
+              </Typography>
+            </Link>
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              (Price: {tour.price})
+            </Typography>
+            {/* Қосымша элементтер */}
+          </Box>
+        ))}
+            {/* Броньдар */}     {' '}
+      {bookings.length > 0 && (
+        <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+                   {' '}
+          <CardContent>
+                       {' '}
+            <Typography variant="h6" fontWeight={600} mb={2}>
+                            Your Bookings            {' '}
+            </Typography>
+                       {' '}
+            {bookings.map((booking) => (
+              <Typography
+                key={booking.id}
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                               {' '}
+                {booking.tour?.name || 'Tour Name Not Available'} -            
+                    {new Date(booking.booking_date).toLocaleDateString()}       
+                     {' '}
+              </Typography>
+            ))}
+                     {' '}
+          </CardContent>
+                 {' '}
+        </Card>
+      )}
+            {/* Сақталған турлар */}     {' '}
+      {user.favorite_tours && user.favorite_tours.length > 0 && (
+        <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+                   {' '}
+          <CardContent>
+                       {' '}
+            <Typography variant="h6" fontWeight={600} mb={2}>
+                            Favorite Tours            {' '}
+            </Typography>
+                       {' '}
+            {user.favorite_tours.map((favorite) => (
+              <Typography
+                key={favorite.id}
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                                {favorite.name || 'No Name'}             {' '}
+              </Typography>
+            ))}
+                     {' '}
+          </CardContent>
+                 {' '}
+        </Card>
+      )}
+            {/* Қауіпсіздік параметрлері */}     {' '}
       <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+               {' '}
         <CardContent>
-          <Typography variant="h6" fontWeight={600}>Your Bookings</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>1. Paris Getaway - 12th April 2025</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>2. Bali Adventure - 5th May 2025</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>3. Tokyo Culture Tour - 20th June 2025</Typography>
+                   {' '}
+          <Typography variant="h6" fontWeight={600}>
+                        Security Settings          {' '}
+          </Typography>
+                   {' '}
+          <Button
+            component={NavLink}
+            to="/change-password"
+            startIcon={<LockIcon />}
+            variant="outlined"
+            sx={{ mt: 2, borderRadius: 2 }}
+          >
+                        Change Password          {' '}
+          </Button>
+                   {' '}
+          <Button
+            component={NavLink}
+            to="/enable-2fa"
+            startIcon={<LockIcon />}
+            variant="outlined"
+            sx={{ mt: 2, borderRadius: 2, ml: 2 }}
+          >
+                        Enable 2FA          {' '}
+          </Button>
+                 {' '}
         </CardContent>
+             {' '}
       </Card>
-
-      {/* Қолданушының шолулары */}
-      <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-        <CardContent>
-          <Typography variant="h6" fontWeight={600}>Your Reviews</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>"Amazing trip to Paris! Highly recommend." ⭐⭐⭐⭐⭐</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>"Bali was breathtaking. Will visit again!" ⭐⭐⭐⭐</Typography>
-        </CardContent>
-      </Card>
-
-      {/* Қауіпсіздік параметрлері */}
-      <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-        <CardContent>
-          <Typography variant="h6" fontWeight={600}>Security Settings</Typography>
-          <Button startIcon={<LockIcon />} variant="outlined" sx={{ mt: 2, borderRadius: 2 }}>Change Password</Button>
-          <Button startIcon={<LockIcon />} variant="outlined" sx={{ mt: 2, borderRadius: 2, ml: 2 }}>Enable 2FA</Button>
-        </CardContent>
-      </Card>
+         {' '}
     </Box>
   )
 }

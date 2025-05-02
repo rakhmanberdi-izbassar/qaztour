@@ -22,6 +22,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import Header from './Header'
 import axios from 'axios'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
+import ReviewForm from './ReviewForm' // Жаңа пікір формасы
 
 // Custom styled components
 const PriceTypography = styled(Typography)(({ theme }) => ({
@@ -50,6 +51,8 @@ const TourDetail = () => {
   const [error, setError] = useState(null)
   const [open, setOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
+  const [reviews, setReviews] = useState([]) // Турдың пікірлері
+  const [averageRating, setAverageRating] = useState(0) // Орташа рейтинг
   const navigate = useNavigate()
   const BASE_URL = 'http://127.0.0.1:8000/storage/'
 
@@ -68,6 +71,17 @@ const TourDetail = () => {
         )
         console.log('Detailed Tour Response:', response.data)
         setTour(response.data)
+        setReviews(response.data.tour.reviews || [])
+        console.log('Reviews:', response.data.tour.reviews)
+        if (response.data.reviews && response.data.reviews.length > 0) {
+          const totalRating = response.data.reviews.reduce(
+            (sum, review) => sum + review.rating,
+            0
+          )
+          setAverageRating(totalRating / response.data.reviews.length)
+        } else {
+          setAverageRating(0)
+        }
       } catch (err) {
         console.error('Error fetching tour:', err)
         setError(err.message || 'Failed to fetch tour details')
@@ -75,7 +89,6 @@ const TourDetail = () => {
         setLoading(false)
       }
     }
-
     fetchTour()
   }, [id])
 
@@ -83,6 +96,23 @@ const TourDetail = () => {
     if (!imagePath) return tourImg
     if (imagePath.startsWith('http')) return imagePath
     return `${BASE_URL}${imagePath}`
+  }
+
+  const handleOpen = (img) => {
+    setSelectedImage(img)
+    setOpen(true)
+  }
+
+  const handleGoBack = () => {
+    navigate(-1)
+  }
+
+  const handleNewReview = (newReview) => {
+    setReviews((prevReviews) => [newReview, ...prevReviews]) // Орташа рейтингті жаңарту
+    setAverageRating((prevRating) => {
+      const total = prevRating * reviews.length + newReview.rating
+      return total / (reviews.length + 1) || newReview.rating
+    })
   }
 
   if (loading) {
@@ -118,18 +148,10 @@ const TourDetail = () => {
   const galleryImages = tour.tour.gallery
     ? tour.tour.gallery.map(getImageUrl)
     : [getImageUrl(tour.tour.image)]
+
   const locationName =
     tour.locations.find((location) => location.id === tour.tour.location_id)
       ?.name || 'Unknown'
-
-  const handleOpen = (img) => {
-    setSelectedImage(img)
-    setOpen(true)
-  }
-
-  const handleGoBack = () => {
-    navigate(-1)
-  }
 
   return (
     <>
@@ -155,7 +177,6 @@ const TourDetail = () => {
           </Typography>
         </Box>
       </Box>
-
       <Container sx={{ py: 3 }}>
         <Card sx={{ p: 3, boxShadow: 3 }}>
           <Box
@@ -168,8 +189,7 @@ const TourDetail = () => {
               <IconButton onClick={handleGoBack}>
                 <ArrowBackIosIcon />
               </IconButton>
-
-              <PriceTypography>₸ {tour.tour.price}</PriceTypography>
+              <PriceTypography>${tour.tour.price}</PriceTypography>
               {tour.tour.duration && (
                 <DetailIconText>
                   <AccessTimeIcon sx={{ color: 'gray', mr: 0.5 }} />
@@ -187,20 +207,18 @@ const TourDetail = () => {
                   Moderate
                 </Typography>
               </DetailIconText>
-              <Box display="flex" alignItems="center" mt={1}>
+              <DetailIconText>
                 <LocationOnIcon sx={{ color: 'gray', mr: 1 }} />
                 <Typography variant="body2">
                   Location: {locationName}
                 </Typography>
-              </Box>
+              </DetailIconText>
             </Box>
             <BookButton variant="contained" color="success">
               Book Tour
             </BookButton>
           </Box>
-
           <Divider sx={{ my: 2 }} />
-
           <Grid container spacing={4}>
             <Grid item xs={12} md={8}>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -209,7 +227,6 @@ const TourDetail = () => {
               <Typography variant="body1" color="text.secondary" paragraph>
                 {tour.tour.description}
               </Typography>
-
               <Typography
                 variant="h6"
                 fontWeight="bold"
@@ -249,7 +266,6 @@ const TourDetail = () => {
                   </ImageListItem>
                 ))}
               </ImageList>
-
               <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md">
                 {selectedImage && (
                   <img
@@ -259,19 +275,68 @@ const TourDetail = () => {
                   />
                 )}
               </Dialog>
-
               <Divider sx={{ my: 3 }} />
-
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Reviews
+                Customer Reviews
               </Typography>
-              {/* Пікірлерді көрсету логикасы әлі қосылмаған */}
-              <Typography variant="body2" color="text.secondary">
-                No reviews yet. Be the first to write one!
-              </Typography>
+              <Box display="flex" alignItems="center" mb={2}>
+                <Rating
+                  name="read-only"
+                  value={averageRating}
+                  precision={0.1}
+                  readOnly
+                />
+                <Typography variant="body2" color="text.secondary" ml={1}>
+                  ({reviews.length} reviews)
+                </Typography>
+              </Box>
+              {reviews.length > 0 ? (
+                reviews.map((review) => (
+                  <Card
+                    key={review.id}
+                    sx={{ mb: 2, p: 2, borderRadius: 2, boxShadow: 1 }}
+                  >
+                    <Box display="flex" alignItems="center" mb={1}>
+                      <Avatar
+                        alt={review.user?.name || 'Anonymous'}
+                        src={review.user?.avatar}
+                        sx={{ mr: 1 }}
+                      />
+                      <Typography variant="subtitle2" fontWeight="bold">
+                        {review.user?.name || 'Anonymous'}
+                      </Typography>
+                      {review.rating && (
+                        <Rating
+                          name="read-only"
+                          value={review.rating}
+                          readOnly
+                          size="small"
+                          sx={{ ml: 1 }}
+                        />
+                      )}
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ ml: 'auto' }}
+                      >
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" color="text.secondary">
+                      {review.content}
+                    </Typography>
+                  </Card>
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No reviews yet. Be the first to write one!
+                </Typography>
+              )}
+              <Divider sx={{ my: 3 }} />
+              <ReviewForm tourId={id} onReviewAdded={handleNewReview} />
             </Grid>
             <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
+              <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
                   Tour Guide
                 </Typography>
@@ -291,6 +356,7 @@ const TourDetail = () => {
                       precision={0.1}
                       readOnly
                       size="small"
+                      sx={{ ml: 0.5 }}
                     />
                     <Typography
                       variant="caption"
@@ -314,7 +380,6 @@ const TourDetail = () => {
                   </Typography>
                 </Box>
               </Card>
-
               <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
                   Similar Tours
