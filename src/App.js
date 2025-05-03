@@ -15,7 +15,8 @@ import VideoTravelPage from './pages/VideoTravelPage'
 import EventsPage from './pages/EventsPage'
 import EditProfilePage from './pages/EditProfilePage'
 import { WeatherProvider } from './components/WeatherContext'
-import { UserProvider } from './contexts/UserContext' // UserProvider импорты
+import { UserProvider } from './contexts/UserContext'
+import PostPage from './components/PostPage'
 
 function App() {
   return (
@@ -38,6 +39,8 @@ function App() {
             <Route path="/tour/:id" element={<TourDetail />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/edit-profile" element={<EditProfilePage />} />
+            <Route path="/blog/:id" element={<PostPage />} />
+            <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
         </WeatherProvider>
       </UserProvider>

@@ -23,11 +23,11 @@ const Blogs = () => {
       try {
         const response = await fetch('http://localhost:8000/api/posts')
         if (!response.ok) {
-          throw new Error(`HTTP қателігі: ${response.status}`)
+          throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-        console.log('API Response in Blogs:', data) // API жауабын көру
-        setBlogs(data) // Деректерді тікелей жауаптан аламыз
+        console.log('API Response in Blogs:', data)
+        setBlogs(data)
         setLoading(false)
       } catch (error) {
         setError(error.message)
@@ -59,7 +59,7 @@ const Blogs = () => {
     return (
       <Container sx={{ paddingY: 14 }}>
         <Typography variant="h6" color="error">
-          Қателік: {error}
+          Error: {error}
         </Typography>
       </Container>
     )
@@ -107,21 +107,30 @@ const Blogs = () => {
           <Grid item xs={12} sm={6} md={4} key={blog.id}>
             <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
               <Link
-                to={`/posts/${blog.id}`}
+                to={`/blog/${blog.id}`}
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={blog.image}
-                  alt={blog.title}
-                />
+                {blog.images && blog.images.length > 0 ? (
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={`http://localhost:8000/storage/${blog.images[0].image_path}`}
+                    alt={blog.title}
+                  />
+                ) : (
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image="https://placehold.co/400"
+                    alt={blog.title}
+                  />
+                )}
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold">
                     {blog.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {blog.description}
+                    {blog.content}
                   </Typography>
                 </CardContent>
               </Link>

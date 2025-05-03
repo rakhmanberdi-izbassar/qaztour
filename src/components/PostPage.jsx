@@ -19,12 +19,13 @@ function PostPage() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/posts/${id}`) // Нақты постты алу үшін API сұрауы
+        const response = await fetch(`/api/posts/${id}`)
         if (!response.ok) {
           throw new Error(`HTTP қателігі: ${response.status}`)
         }
         const data = await response.json()
-        setPost(data.data) // API жауабының құрылымын тексеріңіз
+        console.log('API Response in PostPage:', data)
+        setPost(data)
         setLoading(false)
       } catch (error) {
         setError(error.message)
@@ -70,14 +71,16 @@ function PostPage() {
     )
   }
 
+  console.log('Post state in PostPage:', post)
+
   return (
     <Container sx={{ paddingY: 4 }}>
       <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
         <CardMedia
           component="img"
           height="400"
-          image={post.image}
-          alt={post.title}
+          image={post?.image} // Қауіпсіздік үшін optional chaining
+          alt={post?.title} // Қауіпсіздік үшін optional chaining
         />
         <CardContent>
           <Typography
@@ -86,13 +89,15 @@ function PostPage() {
             gutterBottom
             fontWeight="bold"
           >
-            {post.title}
+            {post?.title}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            Published on {new Date(post.created_at).toLocaleDateString()}{' '}
-            {/* Бекендтен келген жариялану күні */}
+            Published on{' '}
+            {post?.created_at
+              ? new Date(post.created_at).toLocaleDateString()
+              : 'N/A'}
           </Typography>
-          <Typography variant="body1">{post.content}</Typography>
+          <Typography variant="body1">{post?.content}</Typography>
           {/* Басқа да пост контентін қосуға болады */}
         </CardContent>
       </Card>

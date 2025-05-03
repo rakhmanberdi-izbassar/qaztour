@@ -16,7 +16,7 @@ import {
   Box,
   Slider,
 } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
 
 const ToursList = () => {
@@ -29,6 +29,13 @@ const ToursList = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const BASE_URL = 'http://127.0.0.1:8000/storage/'
+
+  const [searchParams] = useSearchParams()
+  const search = searchParams.get('search') || ''
+  const date = searchParams.get('date') || ''
+  const people = searchParams.get('people') || ''
+
+  const [filteredTours, setFilteredTours] = useState([])
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -54,18 +61,38 @@ const ToursList = () => {
     fetchTours()
   }, [])
 
+  useEffect(() => {
+    const filtered = filterTours(tours, { search, date, people })
+    setFilteredTours(filtered)
+  }, [tours, search, date, people])
+
   const handlePriceChange = (event, newValue) => {
     setPriceRange(newValue)
   }
 
-  const filteredTours = Array.isArray(tours)
-    ? tours.filter((tour) => {
-        const matchesSearch = tour.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-        return matchesSearch
+  const filterTours = (tours, { search, date, people }) => {
+    return tours.filter((tour) => {
+      const matchesSearch = search
+        ? tour.name.toLowerCase().includes(search.toLowerCase())
+        : true
+
+      const matchesDate = date ? true : true // Қосымша логика кейін жазылады
+
+      const matchesPeople = people
+        ? tour.max_people
+          ? tour.max_people >= Number(people)
+          : true // Егер max_people мүлдем жоқ болса — фильтрден өткізе салу
+        : true
+
+      console.log({
+        name: tour.name,
+        max_people: tour.max_people,
+        matchesPeople,
       })
-    : []
+
+      return matchesSearch && matchesDate && matchesPeople
+    })
+  }
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return tourImg // Егер сурет мүлдем жоқ болса
