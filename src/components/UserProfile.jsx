@@ -13,6 +13,7 @@ import FacebookIcon from '@mui/icons-material/Facebook'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LockIcon from '@mui/icons-material/Lock'
+import AddIcon from '@mui/icons-material/Add' // "Пост қосу" иконкасы
 import { NavLink, Link } from 'react-router-dom'
 import api from './../utils/axios' // Сіздің axios инстансыңыз
 
@@ -179,15 +180,27 @@ const UserProfile = () => {
         <Typography variant="body2" color="text.secondary">
           Role: {user.role}
         </Typography>
-        <Button
-          component={NavLink}
-          to="/edit-profile"
-          startIcon={<EditIcon />}
-          variant="outlined"
-          sx={{ mt: 2, borderRadius: 2 }}
-        >
-          Edit Profile
-        </Button>
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 1 }}>
+          <Button
+            component={NavLink}
+            to="/edit-profile"
+            startIcon={<EditIcon />}
+            variant="outlined"
+            sx={{ borderRadius: 2 }}
+          >
+            Edit Profile
+          </Button>
+          <Button
+            component={NavLink}
+            to="/blog-create" // Жаңа пост құру бетінің маршруты
+            startIcon={<AddIcon />}
+            variant="contained"
+            color="primary"
+            sx={{ borderRadius: 2 }}
+          >
+            Create Post
+          </Button>
+        </Box>
         {/* Әлеуметтік желі иконкалары */}
         <Box sx={{ mt: 2 }}>
           {user.facebook_url && (
