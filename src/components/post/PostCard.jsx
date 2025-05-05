@@ -17,19 +17,19 @@ const PostCard = ({ post }) => {
   return (
     <Card>
       <CardHeader
-        avatar={<Avatar aria-label="recipe">{post.author.charAt(0)}</Avatar>}
-        title={post.author}
-        subheader={post.date}
+        avatar={<Avatar aria-label="author">{post.user.name.charAt(0)}</Avatar>}
+        title={post.user.name}
+        subheader={new Date(post.created_at).toLocaleDateString()}
       />
-      {post.image && (
+      {post.images && post.images.length > 0 && (
         <img
-          src={post.image}
+          src={`http://localhost:8000/storage/${post.images[0].path}`}
           alt={post.title}
           style={{ width: '100%', display: 'block' }}
         />
       )}
       <CardContent>
-        <Typography variant="h6" color="textSecondary">
+        <Typography variant="h6" color="textSecondary" gutterBottom>
           {post.title}
         </Typography>
         <Typography variant="body2" color="textSecondary" component="p">

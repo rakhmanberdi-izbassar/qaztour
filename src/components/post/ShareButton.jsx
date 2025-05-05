@@ -2,23 +2,23 @@ import React from 'react'
 import { IconButton } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
 
-const ShareButton = ({ shareUrl, title, text }) => {
+const ShareButton = ({ shareUrl, shareTitle }) => {
   const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          url: shareUrl,
-          title: title,
-          text: text,
+          title: shareTitle,
+          url: window.location.origin + shareUrl,
         })
-        console.log('Shared successfully')
+        console.log('Бөлісу сәтті болды!')
       } catch (error) {
-        console.error('Error sharing:', error)
+        console.error('Бөлісу кезінде қате кетті:', error)
+        // Пайдаланушыға қате туралы хабарлауға болады
       }
     } else {
-      alert(
-        `Бөлісу мүмкіндігі сіздің браузеріңізде қол жетімді емес. Сілтемені көшіріп алыңыз: ${shareUrl}`
-      )
+      // navigator.share қолжетімді болмаса, басқа әдісті қолдануға болады
+      // Мысалы, бөлісу сілтемесін көшіруді ұсыну
+      alert(`Бөлісу мүмкін емес. Сілтеме: ${window.location.origin + shareUrl}`)
     }
   }
 

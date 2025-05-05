@@ -1,9 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Typography, Box, IconButton } from '@mui/material'
-import FavoriteIcon from '@mui/icons-material/Favorite'
+import { Container, Typography, Box, IconButton, styled } from '@mui/material'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
-import ShareIcon from '@mui/icons-material/Share'
 import { useParams } from 'react-router-dom'
+import api from './../../utils/axios'
+import LikeButton from './LikeButton'
+import ShareButton from './ShareButton'
+
+const StyledImage = styled('img')({
+  width: '100%',
+  display: 'block',
+  borderRadius: 8,
+  marginBottom: 24, // Суреттен кейінгі арақашықтық
+  maxHeight: 600, // Максималды биіктік
+  objectFit: 'cover', // Суретті пропорционалды түрде көрсету
+})
+
+const ActionBox = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  marginBottom: theme.spacing(2),
+  display: 'flex',
+  alignItems: 'center',
+}))
+
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+}))
 
 const SinglePostPage = () => {
   const { postId } = useParams()
@@ -11,42 +32,20 @@ const SinglePostPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Mock деректер (API-ден алынғандай етіп)
   useEffect(() => {
-    setTimeout(() => {
-      const mockPosts = [
-        {
-          id: '1',
-          author: 'Айбек',
-          date: '2025-05-04',
-          title: 'Алматының керемет табиғаты',
-          content:
-            'Бүгін мен Іле Алатауының баурайында серуендедім. Ауасы таза, көрінісі ғажап! Күннің ыстығына қарамастан, таудың салқын самалы бетімді сипап өтті. Жолда кездескен гүлдер мен шөптердің хош иісі айналаны кернеп тұр. Фотоаппаратыма талай керемет сурет түсірдім. Кешке қарай қалаға қайтып, таудың әсем көрінісін есімнен шығара алмай жүрмін.',
-          image: 'https://source.unsplash.com/random/1200x600?nature',
-        },
-        {
-          id: '2',
-          author: 'Салтанат',
-          date: '2025-05-03',
-          title: 'Бурабайға саяхат',
-          content:
-            'Бурабай - Қазақстанның інжу-маржаны. Көлдерінің мөлдірлігі, қарағайлы ормандарының жасылдығы көз тартады. "Жұмбақтас" пен "Оқжетпес" жартастарының аңыздары қандай қызық! Атпен серуендеу, қайықпен жүзу - бәрі де ұмытылмас әсер қалдырды.',
-          image: 'https://source.unsplash.com/random/1200x600?lake',
-        },
-        {
-          id: '3',
-          author: 'Ерлан',
-          date: '2025-05-02',
-          title: 'Маңғыстаудың ғажайыптары',
-          content:
-            'Маңғыстаудың ландшафты ерекше әсер қалдырды. Ұлан-байтақ дала, әртүрлі түсті жартастар, Каспий теңізінің шексіздігі... Бұл жердегі әрбір тас пен құмның өзіндік тарихы бар сияқты. Бекет-Ата мешітіне бару - рухани байыған сәт болды.',
-          image: 'https://source.unsplash.com/random/1200x600?desert',
-        },
-      ]
-      const foundPost = mockPosts.find((p) => p.id === postId)
-      setPost(foundPost)
-      setLoading(false)
-    }, 1000)
+    const fetchPost = async () => {
+      try {
+        const response = await api.get(`/posts/${postId}`)
+        setPost(response.data[0]) // Посттың мәліметтерін '0' кілтінен алыңыз
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching post:', error)
+        setError('Жазбаны жүктеу кезінде қате кетті.')
+        setLoading(false)
+      }
+    }
+
+    fetchPost()
   }, [postId])
 
   if (loading) {
@@ -54,7 +53,7 @@ const SinglePostPage = () => {
   }
 
   if (error) {
-    return <Typography color="error">Қате: {error}</Typography>
+    return <Typography color="error">{error}</Typography>
   }
 
   if (!post) {
@@ -67,32 +66,27 @@ const SinglePostPage = () => {
         {post.title}
       </Typography>
       <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-        Автор: {post.author} | Жарияланған күні: {post.date}
+        Автор: {post.user?.name || 'Белгісіз'} | Жарияланған күні:{' '}
+        {new Date(post.created_at).toLocaleDateString()}
       </Typography>
-      {post.image && (
+      {post.images && post.images.length > 0 && (
         <Box sx={{ mb: 3 }}>
-          <img
-            src={post.image}
+          <StyledImage
+            src={`http://localhost:8000/storage/${post.images[0].path}`}
             alt={post.title}
-            style={{ width: '100%', display: 'block', borderRadius: 8 }}
           />
         </Box>
       )}
-      <Typography variant="body1" paragraph>
+      <Typography variant="body1" paragraph sx={{ lineHeight: 2 }}>
         {post.content}
       </Typography>
-      <Box sx={{ mt: 3, display: 'flex', alignItems: 'center' }}>
-        <IconButton aria-label="like">
-          <FavoriteIcon />
-        </IconButton>
-        <Typography sx={{ ml: 1 }}>0</Typography> {/* Лайктар санын көрсету */}
-        <IconButton aria-label="save" sx={{ ml: 2 }}>
+      <ActionBox>
+        <LikeButton postId={post.id} initialLiked={post.liked_by_user} />
+        <StyledIconButton aria-label="bookmark">
           <BookmarkBorderIcon />
-        </IconButton>
-        <IconButton aria-label="share" sx={{ ml: 2 }}>
-          <ShareIcon />
-        </IconButton>
-      </Box>
+        </StyledIconButton>
+        <ShareButton shareUrl={`/blog/${post.id}`} shareTitle={post.title} />
+      </ActionBox>
     </Container>
   )
 }

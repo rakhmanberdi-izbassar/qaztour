@@ -1,25 +1,82 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IconButton, Typography } from '@mui/material'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import api from '../../utils/axios' // Axios инстансын импорттаңыз
 
-const LikeButton = ({ postId }) => {
-  const [isLiked, setIsLiked] = useState(false) // Нақты күйді API-ден алу керек
-  const [likeCount, setLikeCount] = useState(0) // Нақты санды API-ден алу керек
+const LikeButton = ({ postId, initialLiked }) => {
+  const [liked, setLiked] = useState(initialLiked)
+  const [likeCount, setLikeCount] = useState(null) // Бастапқыда null
 
-  const handleLike = () => {
-    // API-ге лайк басу/жою туралы сұрау жіберу логикасы
-    setIsLiked(!isLiked)
-    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1)
-    console.log(`Post ${postId} liked: ${!isLiked}`)
+  useEffect(() => {
+    // Бастапқы лайктар санын алу (компонент орнатылғанда)
+    const fetchInitialLikeCount = async () => {
+      try {
+        const response = await api.get(`/posts/${postId}`)
+        setLikeCount(response.data[0].likes.length) // API жауабындағы лайктар массивінің ұзындығын аламыз
+      } catch (error) {
+        console.error('Бастапқы лайктар санын алу кезінде қате кетті:', error)
+        setLikeCount(0) // Қателік болса, 0 деп қабылдаймыз
+      }
+    }
+
+    fetchInitialLikeCount()
+  }, [postId])
+
+  const handleLike = async () => {
+    try {
+      const token = localStorage.getItem('authToken') // Токенді алу әдісіңізге байланысты
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      }
+
+      let response
+      if (liked) {
+        response = await api.delete(`/posts/${postId}/like`, { headers })
+        setLiked(false)
+        if (likeCount !== null) {
+          setLikeCount(likeCount - 1)
+        }
+      } else {
+        response = await api.post(`/posts/${postId}/like`, {}, { headers })
+        setLiked(true)
+        if (likeCount !== null) {
+          setLikeCount(likeCount + 1)
+        }
+      } // Бекендтен жаңартылған лайктар санын алу (егер API қайтарса)
+
+      if (
+        response &&
+        response.data &&
+        response.data.likes_count !== undefined
+      ) {
+        setLikeCount(response.data.likes_count)
+      }
+    } catch (error) {
+      console.error('Лайк басу кезінде қате кетті:', error)
+    }
+  }
+
+  if (likeCount === null) {
+    return (
+      <>
+               {' '}
+        <IconButton aria-label="like" disabled>
+                    <FavoriteBorderIcon />       {' '}
+        </IconButton>
+                <Typography sx={{ ml: 1 }}>...</Typography>     {' '}
+      </>
+    )
   }
 
   return (
     <>
+           {' '}
       <IconButton aria-label="like" onClick={handleLike}>
-        {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+               {' '}
+        {liked ? <FavoriteIcon color="primary" /> : <FavoriteBorderIcon />}     {' '}
       </IconButton>
-      <Typography sx={{ ml: 1 }}>{likeCount}</Typography>
+            <Typography sx={{ ml: 1 }}>{likeCount}</Typography>   {' '}
     </>
   )
 }

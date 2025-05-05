@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   TextField,
   Button,
@@ -6,29 +6,60 @@ import {
   Typography,
   Box,
   IconButton,
+  styled,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material'
 import PhotoCamera from '@mui/icons-material/PhotoCamera'
-import VideoCamera from '@mui/icons-material/Videocam'
+import api from '../../utils/axios'
+
+const StyledPreviewImage = styled('img')({
+  height: 100,
+  width: 'auto',
+  borderRadius: 4,
+  marginTop: 8,
+})
 
 const CreatePost = () => {
+  const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [images, setImages] = useState([])
-  const [videos, setVideos] = useState([])
+  const [savedImage, setSavedImage] = useState(null)
+  const [locationId, setLocationId] = useState('')
+  const [locations, setLocations] = useState([]) // Локациялар тізімі үшін жаңа күй
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [locationsLoading, setLocationsLoading] = useState(true) // Локациялар жүктелу күйі
+  const [locationsError, setLocationsError] = useState(null) // Локациялар қатесі
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await api.get('/locations')
+        setLocations(response.data)
+        setLocationsLoading(false)
+      } catch (error) {
+        console.error('Локацияларды жүктеу кезінде қате кетті:', error)
+        setLocationsError('Локацияларды жүктеу кезінде қате кетті.')
+        setLocationsLoading(false)
+      }
+    }
+
+    fetchLocations()
+  }, [])
 
   const handleContentChange = (event) => {
     setContent(event.target.value)
   }
 
   const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files)
-    setImages([...images, ...files])
+    const file = event.target.files[0]
+    setSavedImage(file)
   }
 
-  const handleVideoUpload = (event) => {
-    const files = Array.from(event.target.files)
-    setVideos([...videos, ...files])
+  const handleLocationIdChange = (event) => {
+    setLocationId(event.target.value)
   }
 
   const handleSubmit = async () => {
@@ -36,28 +67,43 @@ const CreatePost = () => {
     setError(null)
     try {
       const formData = new FormData()
+      formData.append('title', title)
       formData.append('content', content)
-      images.forEach((image) => formData.append('images', image))
-      videos.forEach((video) => formData.append('videos', video))
-
-      // API-ге постты жіберу логикасы осында болады
-      console.log('Post data:', formData.get('content'), images, videos)
+      if (savedImage) {
+        // `savedImage` күйі суретті сақтайды деп болжаймыз
+        formData.append('image', savedImage) // Кілтті `saved`-тен `image`-ге ауыстырыңыз
+      }
+      formData.append('location_id', locationId)
+      const response = await api.post('/posts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      console.log('Пост жарияланды:', response.data)
+      setTitle('')
       setContent('')
-      setImages([])
-      setVideos([])
+      setSavedImage(null)
+      setLocationId('')
       setLoading(false)
-      alert('Пост жарияланды!') // Уақытша хабарлама
+      alert('Пост сәтті жарияланды!')
     } catch (err) {
-      setError(err.message || 'Постты жариялау кезінде қате кетті')
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          'Постты жариялау кезінде қате кетті'
+      )
       setLoading(false)
+      console.error('Постты жариялау қатесі:', err.response?.data || err)
     }
   }
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
+           {' '}
       <Typography variant="h4" gutterBottom>
-        Жаңа пост жазу
+                Жаңа пост жазу      {' '}
       </Typography>
+           {' '}
       <TextField
         label="Немен бөліскіңіз келеді?"
         multiline
@@ -67,73 +113,83 @@ const CreatePost = () => {
         onChange={handleContentChange}
         margin="normal"
       />
+           {' '}
+      <FormControl fullWidth margin="normal" disabled={locationsLoading}>
+               {' '}
+        <InputLabel id="location-id-label">Локацияны таңдаңыз</InputLabel>     
+         {' '}
+        <Select
+          labelId="location-id-label"
+          id="location-id"
+          value={locationId}
+          label="Локацияны таңдаңыз"
+          onChange={handleLocationIdChange}
+        >
+                   {' '}
+          <MenuItem value="">
+                        <em>Жоқ</em>         {' '}
+          </MenuItem>
+                   {' '}
+          {locations.map((location) => (
+            <MenuItem key={location.id} value={location.id}>
+                            {location.name}           {' '}
+            </MenuItem>
+          ))}
+                 {' '}
+        </Select>
+               {' '}
+        {locationsError && (
+          <Typography color="error" sx={{ mt: 1 }}>
+                        Қате: {locationsError}         {' '}
+          </Typography>
+        )}
+               {' '}
+        {locationsLoading && (
+          <Typography color="textSecondary" sx={{ mt: 1 }}>
+                        Локациялар жүктелуде...          {' '}
+          </Typography>
+        )}
+             {' '}
+      </FormControl>
+           {' '}
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+               {' '}
         <IconButton color="primary" component="label">
-          <PhotoCamera />
+                    <PhotoCamera />         {' '}
           <input
             hidden
             accept="image/*"
-            multiple
             type="file"
             onChange={handleImageUpload}
           />
+                 {' '}
         </IconButton>
-        <Typography sx={{ ml: 1 }}>Суреттер қосу</Typography>
-        <IconButton color="primary" component="label" sx={{ ml: 2 }}>
-          <VideoCamera />
-          <input
-            hidden
-            accept="video/*"
-            multiple
-            type="file"
-            onChange={handleVideoUpload}
+                <Typography sx={{ ml: 1 }}>Сурет қосу</Typography>       {' '}
+        {savedImage && (
+          <StyledPreviewImage
+            src={URL.createObjectURL(savedImage)}
+            alt="Жүктелген сурет"
           />
-        </IconButton>
-        <Typography sx={{ ml: 1 }}>Бейнелер қосу</Typography>
+        )}
+             {' '}
       </Box>
-      {images.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1">Жүктелген суреттер:</Typography>
-          <Box sx={{ display: 'flex', overflowX: 'auto', mt: 1 }}>
-            {images.map((image, index) => (
-              <Box key={index} sx={{ mr: 1 }}>
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt={image.name}
-                  style={{ height: 100, width: 'auto' }}
-                />
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      )}
-      {videos.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1">Жүктелген бейнелер:</Typography>
-          <Box sx={{ display: 'flex', overflowX: 'auto', mt: 1 }}>
-            {videos.map((video, index) => (
-              <Box key={index} sx={{ mr: 1 }}>
-                <video
-                  src={URL.createObjectURL(video)}
-                  controls
-                  style={{ height: 100, width: 'auto' }}
-                />
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      )}
+           {' '}
       <Button
         variant="contained"
         color="primary"
         onClick={handleSubmit}
-        disabled={loading}
+        disabled={
+          loading ||
+          locationsLoading ||
+          locationsError ||
+          (locations.length === 0 && !locationId)
+        }
       >
-        {loading ? 'Жариялануда...' : 'Жариялау'}
+                {loading ? 'Жариялануда...' : 'Жариялау'}     {' '}
       </Button>
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>
-          Қате: {error}
+                    Қате: {error}   
         </Typography>
       )}
     </Container>
