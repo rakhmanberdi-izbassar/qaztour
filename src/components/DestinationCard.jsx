@@ -1,23 +1,53 @@
-import React from 'react';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { Container, Typography, Box, useMediaQuery, useTheme } from '@mui/material';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react'
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+import {
+  Container,
+  Typography,
+  Box,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
+import { motion } from 'framer-motion'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { calculateAverageRating, getImageUrl } from '../utils/helpers'
 
-const destinations = [
-  { title: 'Rome, Italy', image: '/photos/Без названия.jpg' },
-  { title: 'Singapore', image: '/photos/Без названия (1).jpg' },
-  { title: 'Paris, France', image: '/photos/Без названия (2).jpg' },
-  { title: 'Goa, India', image: '/photos/Без названия (3).jpg' },
-  { title: 'Whistler, Canada', image: '/photos/Без названия (4).jpg' },
-  { title: 'Lumpur, Malaysia', image: '/photos/how_to_take_great_travel_photos.jpg' },
-];
+const TopRatedToursCarousel = () => {
+  const navigate = useNavigate()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'))
+  const [topRatedTours, setTopRatedTours] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-const DestinationCard = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  useEffect(() => {
+    const fetchTours = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/tours/')
+        const toursData = response.data?.data?.data || []
+        // Барлық турларды рейтингі бойынша сұрыптау (ең жоғарыдан төменге)
+        const sortedTours = [...toursData].sort(
+          (a, b) =>
+            calculateAverageRating(b.reviews) -
+            calculateAverageRating(a.reviews)
+        )
+        // Ең жоғары рейтингі бар бірнеше турды алу (мысалы, алғашқы 5)
+        setTopRatedTours(sortedTours.slice(0, 5))
+      } catch (err) {
+        console.error('Error fetching tours:', err)
+        setError(err.message || 'Failed to fetch tours')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTours()
+  }, [])
 
   const settings = {
     dots: true,
@@ -52,53 +82,136 @@ const DestinationCard = () => {
         },
       },
     ],
-  };
+  }
+
+  if (loading) {
+    return (
+      <Container sx={{ paddingBottom: 5, paddingTop: 5, textAlign: 'center' }}>
+        <Typography
+          variant={isMobile ? 'h5' : 'h4'}
+          sx={{ fontWeight: 'bold', mb: 2 }}
+        >
+          🔥 Үздік рейтингті турлар
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ color: 'gray', mb: 4, fontSize: isMobile ? '0.9rem' : '1rem' }}
+        >
+          Ең жоғары бағаланған турлармен танысыңыз!
+        </Typography>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="200px"
+        >
+          <Typography variant="h6" color="textSecondary">
+            Жүктелуде...
+          </Typography>
+        </Box>
+      </Container>
+    )
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ paddingBottom: 5, paddingTop: 5, textAlign: 'center' }}>
+        <Typography
+          variant={isMobile ? 'h5' : 'h4'}
+          sx={{ fontWeight: 'bold', mb: 2 }}
+        >
+          🔥 Үздік рейтингті турлар
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ color: 'gray', mb: 4, fontSize: isMobile ? '0.9rem' : '1rem' }}
+        >
+          Ең жоғары бағаланған турлармен танысыңыз!
+        </Typography>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="200px"
+        >
+          <Typography variant="h6" color="error">
+            Қате: {error}
+          </Typography>
+        </Box>
+      </Container>
+    )
+  }
 
   return (
     <Container sx={{ paddingBottom: 5, paddingTop: 5, textAlign: 'center' }}>
-      <Typography variant={isMobile ? 'h5' : 'h4'} sx={{ fontWeight: 'bold', mb: 2 }}>
-        🌍 Үздік бағыттар
+      <Typography
+        variant={isMobile ? 'h5' : 'h4'}
+        sx={{ fontWeight: 'bold', mb: 2 }}
+      >
+        🔥 Үздік рейтингті турлар
       </Typography>
-      <Typography variant="body1" sx={{ color: 'gray', mb: 4, fontSize: isMobile ? '0.9rem' : '1rem' }}>
-        Planning for a trip? We will organize your trip with the best places and within best budget!
+      <Typography
+        variant="body1"
+        sx={{ color: 'gray', mb: 4, fontSize: isMobile ? '0.9rem' : '1rem' }}
+      >
+        Ең жоғары бағаланған турлармен танысыңыз!
       </Typography>
       <Slider {...settings}>
-        {destinations.map((item, index) => (
+        {topRatedTours.map((tour, index) => (
           <motion.div
-            key={index}
+            key={tour.id}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
-            style={{ padding: '15px', textAlign: 'center' }} // Слайдтар арасына кеңістік
+            style={{ padding: '15px', textAlign: 'center' }}
+            onClick={() => navigate(`/tour/${tour.id}`)}
           >
             <Box
               sx={{
                 overflow: 'hidden',
-                borderRadius: '15px',
+                borderRadius: '100px',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
                 transition: '0.3s',
                 '&:hover': { boxShadow: '0 8px 16px rgba(0,0,0,0.3)' },
-                margin: '0 10px', // Қосымша шеткі бос орын
+                margin: '0 10px',
               }}
             >
               <motion.img
-                src={item.image}
-                alt={item.title}
-                style={{ width: '100%', height: isMobile ? '180px' : '220px', objectFit: 'cover' }}
+                src={getImageUrl(tour.image)}
+                alt={tour.name}
+                style={{
+                  width: '100%',
+                  height: isMobile ? '180px' : '220px',
+                  objectFit: 'cover',
+                }}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               />
             </Box>
-            <Typography variant={isMobile ? 'h6' : 'h6'} sx={{ mt: 2, fontWeight: 'bold', fontSize: isMobile ? '1rem' : '1.1rem' }}>
-              {item.title}
+            <Typography
+              variant={isMobile ? 'h6' : 'h6'}
+              sx={{
+                mt: 2,
+                fontWeight: 'bold',
+                fontSize: isMobile ? '1rem' : '1.1rem',
+              }}
+            >
+              {tour.name}
             </Typography>
-            <Typography variant="body2" sx={{ color: 'gray', marginTop: '5px', fontSize: isMobile ? '0.8rem' : '0.9rem' }}>
-              3 Hotels
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'gray',
+                marginTop: '5px',
+                fontSize: isMobile ? '0.8rem' : '0.9rem',
+              }}
+            >
+              Рейтинг: {calculateAverageRating(tour.reviews).toFixed(1)}
             </Typography>
           </motion.div>
         ))}
       </Slider>
     </Container>
-  );
-};
+  )
+}
 
-export default DestinationCard;
+export default TopRatedToursCarousel

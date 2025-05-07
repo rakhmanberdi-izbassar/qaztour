@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
 import {
   Box,
   Typography,
@@ -15,14 +14,15 @@ import {
   Avatar,
   styled,
   IconButton,
+  CircularProgress,
 } from '@mui/material'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import Header from './Header'
 import axios from 'axios'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
-import ReviewForm from './ReviewForm' // Жаңа пікір формасы
+import ReviewForm from './ReviewForm'
+import { useNavigate, useParams } from 'react-router-dom'
 
 // Custom styled components
 const PriceTypography = styled(Typography)(({ theme }) => ({
@@ -54,6 +54,7 @@ const TourDetail = () => {
   const [reviews, setReviews] = useState([]) // Турдың пікірлері
   const [averageRating, setAverageRating] = useState(0) // Орташа рейтинг
   const navigate = useNavigate()
+  const [galleryImages, setGalleryImages] = useState([])
   const BASE_URL = 'http://127.0.0.1:8000/storage/'
 
   useEffect(() => {
@@ -73,15 +74,35 @@ const TourDetail = () => {
         setTour(response.data)
         setReviews(response.data.tour.reviews || [])
         console.log('Reviews:', response.data.tour.reviews)
-        if (response.data.reviews && response.data.reviews.length > 0) {
-          const totalRating = response.data.reviews.reduce(
+        if (
+          response.data.tour.reviews &&
+          response.data.tour.reviews.length > 0
+        ) {
+          const totalRating = response.data.tour.reviews.reduce(
             (sum, review) => sum + review.rating,
             0
           )
-          setAverageRating(totalRating / response.data.reviews.length)
+          setAverageRating(totalRating / response.data.tour.reviews.length)
         } else {
           setAverageRating(0)
         }
+
+        // Жаңа galleryImages массивін құру
+        const imagesFromImages =
+          response.data?.tour?.images?.map(
+            (img) => BASE_URL + img.image_path
+          ) || []
+        const imagesFromGallery =
+          response.data?.tour?.gallery?.map(getImageUrl) || []
+        const mainImage = response.data?.tour?.image
+          ? [BASE_URL + response.data.tour.image]
+          : []
+
+        setGalleryImages([
+          ...mainImage,
+          ...imagesFromImages,
+          ...imagesFromGallery,
+        ])
       } catch (err) {
         console.error('Error fetching tour:', err)
         setError(err.message || 'Failed to fetch tour details')
@@ -108,7 +129,7 @@ const TourDetail = () => {
   }
 
   const handleNewReview = (newReview) => {
-    setReviews((prevReviews) => [newReview, ...prevReviews]) // Орташа рейтингті жаңарту
+    setReviews((prevReviews) => [newReview, ...prevReviews])
     setAverageRating((prevRating) => {
       const total = prevRating * reviews.length + newReview.rating
       return total / (reviews.length + 1) || newReview.rating
@@ -117,9 +138,18 @@ const TourDetail = () => {
 
   if (loading) {
     return (
-      <Typography variant="h6" sx={{ textAlign: 'center', mt: 5 }}>
-        Loading tour details...
-      </Typography>
+      <Container sx={{ paddingY: 14 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '50vh',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
     )
   }
 
@@ -145,17 +175,12 @@ const TourDetail = () => {
     )
   }
 
-  const galleryImages = tour.tour.gallery
-    ? tour.tour.gallery.map(getImageUrl)
-    : [getImageUrl(tour.tour.image)]
-
   const locationName =
     tour.locations.find((location) => location.id === tour.tour.location_id)
       ?.name || 'Unknown'
 
   return (
     <>
-      <Header />
       <Box
         sx={{
           width: '100%',
@@ -189,13 +214,12 @@ const TourDetail = () => {
               <IconButton onClick={handleGoBack}>
                 <ArrowBackIosIcon />
               </IconButton>
-              <PriceTypography>${tour.tour.price}</PriceTypography>
-              {tour.tour.duration && (
+              <PriceTypography>₸ {tour.tour.price}</PriceTypography>
+
+              {tour.tour.date && (
                 <DetailIconText>
                   <AccessTimeIcon sx={{ color: 'gray', mr: 0.5 }} />
-                  <Typography variant="body2">
-                    {tour.tour.duration} days
-                  </Typography>
+                  <Typography variant="body2">{tour.tour.date} days</Typography>
                 </DetailIconText>
               )}
               {/* Турдың түрі мен тілі туралы ақпарат API-де жоқ */}
@@ -203,10 +227,12 @@ const TourDetail = () => {
                 <Typography
                   variant="body2"
                   sx={{ fontWeight: 'bold', color: 'success.main', mr: 0.5 }}
-                >
-                  Moderate
-                </Typography>
+                ></Typography>
               </DetailIconText>
+              {/* <DetailIconText>
+                <DateRangeIcon sx={{ color: 'gray', mr: 1 }} />
+                <Typography variant="body2">Location: {date}</Typography>
+              </DetailIconText> */}
               <DetailIconText>
                 <LocationOnIcon sx={{ color: 'gray', mr: 1 }} />
                 <Typography variant="body2">
@@ -297,11 +323,13 @@ const TourDetail = () => {
                     sx={{ mb: 2, p: 2, borderRadius: 2, boxShadow: 1 }}
                   >
                     <Box display="flex" alignItems="center" mb={1}>
-                      <Avatar
-                        alt={review.user?.name || 'Anonymous'}
-                        src={review.user?.avatar}
-                        sx={{ mr: 1 }}
-                      />
+                      {tour?.tour?.user?.avatar && (
+                        <Avatar
+                          alt="Tour Guide"
+                          src={`${BASE_URL}${tour.tour.user.avatar}`}
+                          sx={{ width: 30, height: 30, mr: 1 }}
+                        />
+                      )}
                       <Typography variant="subtitle2" fontWeight="bold">
                         {review.user?.name || 'Anonymous'}
                       </Typography>
@@ -341,13 +369,15 @@ const TourDetail = () => {
                   Tour Guide
                 </Typography>
                 <Box display="flex" alignItems="center" flexDirection="column">
-                  <Avatar
-                    alt="Tour Guide"
-                    src="https://mui.com/static/images/avatar/2.jpg" // Нақты гидтің суретін API-ден алу керек
-                    sx={{ width: 80, height: 80, mb: 1 }}
-                  />
+                  {tour?.tour?.user?.avatar && (
+                    <Avatar
+                      alt="Tour Guide"
+                      src={`http://localhost:8000${tour.tour.user.avatar}`}
+                      sx={{ width: 80, height: 80, mb: 1 }}
+                    />
+                  )}
                   <Typography variant="subtitle1" fontWeight="bold">
-                    Anna /Vanova
+                    {tour.tour.user.name || 'Анықталмаған'}
                   </Typography>
                   <Box display="flex" alignItems="center">
                     <Rating
@@ -368,15 +398,6 @@ const TourDetail = () => {
                   </Box>
                   <Typography variant="caption" color="text.secondary">
                     13 tour
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    mt={1}
-                    textAlign="center"
-                  >
-                    An experienced guide passionate about Alatau region, Enjoy
-                    creating unforgettable hiking adventures.
                   </Typography>
                 </Box>
               </Card>

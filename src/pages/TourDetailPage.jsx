@@ -1,15 +1,16 @@
 import React from 'react'
 import Header from '../components/Header'
-import BlogPage from '../components/post/BlogPage'
 import Footer from '../components/Footer'
+import TourDetail from '../components/TourDetail'
 
-const BlogPages = () => {
+function ToursPage() {
   return (
-    <div>
+    <>
       <Header />
-      <BlogPage />
+      <TourDetail />
       <Footer />
-    </div>
+    </>
   )
 }
-export default BlogPages
+
+export default ToursPage

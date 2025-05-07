@@ -7,6 +7,8 @@ import {
   CardContent,
   Typography,
   IconButton,
+  CircularProgress,
+  Container,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import FacebookIcon from '@mui/icons-material/Facebook'
@@ -133,9 +135,18 @@ const UserProfile = () => {
 
   if (loading) {
     return (
-      <Typography textAlign="center" mt={5}>
-        Loading profile information...
-      </Typography>
+      <Container sx={{ paddingY: 14 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '50vh',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
     )
   }
 

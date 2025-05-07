@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Typography, Grid } from '@mui/material'
-import PostCard from './PostCard' // PostCard компонентінің жолын дұрыстаңыз
-import api from './../../utils/axios' // Axios инстансын импорттаңыз
+import {
+  Container,
+  Typography,
+  Grid,
+  Box,
+  CircularProgress,
+  IconButton,
+} from '@mui/material'
+import PostCard from './PostCard'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import api from './../../utils/axios'
+import { useNavigate } from 'react-router-dom'
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -24,8 +34,25 @@ const BlogPage = () => {
     fetchPosts()
   }, [])
 
+  const handleGoBack = () => {
+    navigate(-1)
+  }
+
   if (loading) {
-    return <Typography variant="h6">Блог жазбалары жүктелуде...</Typography>
+    return (
+      <Container sx={{ paddingY: 14 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '50vh',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
+    )
   }
 
   if (error) {
@@ -33,18 +60,23 @@ const BlogPage = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Соңғы блог жазбалары
-      </Typography>
-      <Grid container spacing={3}>
-        {posts.map((post) => (
-          <Grid item xs={12} sm={6} md={4} key={post.id}>
-            <PostCard post={post} />
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <>
+      <IconButton onClick={handleGoBack}>
+        <ArrowBackIosIcon />
+      </IconButton>
+      <Container maxWidth="md" sx={{ mt: 14 }}>
+        <Typography variant="h4" gutterBottom>
+          Соңғы блог жазбалары
+        </Typography>
+        <Grid container spacing={3}>
+          {posts.map((post) => (
+            <Grid item xs={12} sm={6} md={4} key={post.id}>
+              <PostCard post={post} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </>
   )
 }
 

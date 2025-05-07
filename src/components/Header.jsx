@@ -16,7 +16,7 @@ import {
 import { styled } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 import { NavLink } from 'react-router-dom'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { Avatar } from '@mui/material' // Avatar компонентін импорттау
 import { UserContext } from '../contexts/UserContext'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
@@ -288,7 +288,7 @@ export default function Header() {
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
-                  to="/blog"
+                  to="/blogs"
                   onClick={handleMenuClose}
                 >
                   Блог
@@ -369,11 +369,7 @@ export default function Header() {
             sx={{ color: 'black' }}
           >
             <Avatar
-              src={
-                user?.avatar && process.env.REACT_APP_BACKEND_URL
-                  ? `${process.env.REACT_APP_BACKEND_URL}${user.avatar}`
-                  : null
-              }
+              src={`http://localhost:8000${user?.avatar}`}
               alt={user?.name}
               sx={{ width: 30, height: 30 }}
             />

@@ -7,7 +7,7 @@ import './App.css'
 import ToursPage from './pages/ToursPage'
 import HotelBookingPage from './pages/HotelBookingPage'
 import LoginPage from './pages/LoginPage'
-import TourDetail from './components/TourDetail'
+import TourDetailPage from './pages/TourDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import ProviderPage from './components/Provider'
 import VideoTravelPage from './pages/VideoTravelPage'
@@ -17,7 +17,7 @@ import { WeatherProvider } from './components/WeatherContext'
 import { UserProvider } from './contexts/UserContext'
 import SinglePostPage from './components/post/SinglePostPage'
 import CreatePost from './components/post/CreatePost'
-import BlogPage from './components/post/BlogPage'
+import BlogPages from './pages/BlogPage'
 
 function App() {
   return (
@@ -34,12 +34,11 @@ function App() {
             <Route path="/provider/:id" element={<ProviderPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/tour/:id" element={<TourDetail />} />
+            <Route path="/tour/:id" element={<TourDetailPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/edit-profile" element={<EditProfilePage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog-create" element={<CreatePost />} />{' '}
-            {/* CreatePost үшін жеке маршрут */}
+            <Route path="/blogs" element={<BlogPages />} />
+            <Route path="/blog-create" element={<CreatePost />} />
             <Route path="/blog/:postId" element={<SinglePostPage />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
