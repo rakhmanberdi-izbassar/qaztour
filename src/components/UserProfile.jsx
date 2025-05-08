@@ -27,32 +27,67 @@ const UserProfile = () => {
   const [userReviews, setUserReviews] = useState([])
   const [deleteLoading, setDeleteLoading] = useState(null)
 
-  const fetchUserProfile = async () => {
-    try {
-      const token = localStorage.getItem('authToken')
-      if (!token) {
-        setError('Authentication token not found. Please log in.')
-        setLoading(false)
-        return
-      }
-      const userResponse = await api.get('/user', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      setUser(userResponse.data)
-      const bookingsResponse = await api.get('/bookings/user', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      setBookings(bookingsResponse.data)
-      setLoading(false)
-    } catch (err) {
-      console.error('Error fetching user profile data:', err)
-      setError('Failed to load user profile information.')
-      setLoading(false)
-    }
+  {
+    user && user.tours && user.tours.length > 0 && (
+      <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+        <CardContent>
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            Your Tours
+          </Typography>
+          {user.tours.map((tour) => (
+            <Box
+              key={tour.id}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 1,
+                borderBottom: '1px solid #eee',
+                pb: 1,
+              }}
+            >
+              <Link
+                to={`/tour/${tour.id}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={500}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  {tour.name}
+                </Typography>
+              </Link>
+              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+                (Price: {tour.price})
+              </Typography>
+            </Box>
+          ))}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  {
+    bookings && bookings.length > 0 && (
+      <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+        <CardContent>
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            Your Bookings
+          </Typography>
+          {bookings.map((booking) => (
+            <Typography
+              key={booking.id}
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 1 }}
+            >
+              {booking.tour?.name || 'Tour Name Not Available'} -{' '}
+              {new Date(booking.booking_date).toLocaleDateString()}
+            </Typography>
+          ))}
+        </CardContent>
+      </Card>
+    )
   }
 
   const fetchUserReviews = async () => {
@@ -337,26 +372,63 @@ const UserProfile = () => {
           </Box>
         ))}
       {/* Броньдар */}
-      {bookings.length > 0 && (
-        <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight={600} mb={2}>
-              Your Bookings
+      <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
+        <CardContent>
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            Your Bookings
+          </Typography>
+          {bookings.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              No bookings available.
             </Typography>
-            {bookings.map((booking) => (
-              <Typography
+          ) : (
+            bookings.map((booking) => (
+              <Box
                 key={booking.id}
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 1 }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mb: 1,
+                  borderBottom: '1px solid #eee',
+                  pb: 1,
+                }}
               >
-                {booking.tour?.name || 'Tour Name Not Available'} -
-                {new Date(booking.booking_date).toLocaleDateString()}
-              </Typography>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+                {/* Тур аты */}
+                <Link
+                  to={`/tour/${booking.tour.id}`} // Тур бетіне өту
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={500}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    {booking.tour.name || 'No Name'}
+                  </Typography>
+                </Link>
+                {/* Тур бағасы */}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ ml: 2 }}
+                >
+                  Price: {booking.tour.price || 'N/A'}
+                </Typography>
+                {/* Бронь күні */}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ ml: 2 }}
+                >
+                  Booking Date:{' '}
+                  {new Date(booking.booking_date).toLocaleDateString()}
+                </Typography>
+              </Box>
+            ))
+          )}
+        </CardContent>
+      </Card>
+
       {/* Сақталған турлар */}
       {user.favorite_tours && user.favorite_tours.length > 0 && (
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>

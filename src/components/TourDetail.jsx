@@ -23,6 +23,7 @@ import axios from 'axios'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
 import ReviewForm from './ReviewForm'
 import { useNavigate, useParams } from 'react-router-dom'
+import BookingForm from './BookingForm'
 
 // Custom styled components
 const PriceTypography = styled(Typography)(({ theme }) => ({
@@ -292,6 +293,8 @@ const TourDetail = () => {
                   </ImageListItem>
                 ))}
               </ImageList>
+              <Divider sx={{ my: 3 }} />
+              <BookingForm />
               <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md">
                 {selectedImage && (
                   <img

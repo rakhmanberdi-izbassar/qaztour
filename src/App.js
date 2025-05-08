@@ -18,6 +18,7 @@ import { UserProvider } from './contexts/UserContext'
 import SinglePostPage from './components/post/SinglePostPage'
 import CreatePost from './components/post/CreatePost'
 import BlogPages from './pages/BlogPage'
+import BookingForm from './components/BookingForm'
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="/blogs" element={<BlogPages />} />
             <Route path="/blog-create" element={<CreatePost />} />
             <Route path="/blog/:postId" element={<SinglePostPage />} />
+            <Route path="/booking" element={<BookingForm />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
         </WeatherProvider>
