@@ -15,8 +15,6 @@ import Input from '@mui/joy/Input'
 import SearchIcon from '@mui/icons-material/Search'
 import { DateRangeIcon } from '@mui/x-date-pickers'
 import FormLabel from '@mui/joy/FormLabel'
-import Select from '@mui/joy/Select'
-import Option from '@mui/joy/Option'
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles'
 import VideocamIcon from '@mui/icons-material/Videocam'
 import { useState } from 'react'
@@ -27,7 +25,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
-  padding: theme.spacing(2), // Кіші padding мәні
+  padding: theme.spacing(2),
   textAlign: 'center',
   color: theme.palette.text.secondary,
   ...theme.applyStyles?.('dark', {
@@ -35,18 +33,20 @@ const Item = styled(Paper)(({ theme }) => ({
   }),
 }))
 
-const handleChange = (event, newValue) => {
-  alert(`You chose "${newValue}"`)
-}
-
 function SlideShow() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDate, setSelectedDate] = useState('')
-  const [peopleCount, setPeopleCount] = useState('1')
-
   const navigate = useNavigate()
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm')) // Кіші экрандар үшін breakpoint
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value)
+  }
+
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value)
+  }
 
   const handleSearch = () => {
     const queryParams = new URLSearchParams()
@@ -57,10 +57,6 @@ function SlideShow() {
 
     if (selectedDate) {
       queryParams.append('date', selectedDate)
-    }
-
-    if (peopleCount && !isNaN(peopleCount) && Number(peopleCount) > 0) {
-      queryParams.append('people', peopleCount)
     }
 
     navigate(`/tours?${queryParams.toString()}`)
@@ -76,16 +72,16 @@ function SlideShow() {
           fontWeight="bold"
           sx={{ textAlign: 'center', pb: 2 }}
         >
-          {' '}
-          {/* Мәтін өлшемі кішірейді */}
           Баратын жеріңізді іздеңіз
         </Typography>
 
         <FormLabel>Іздеу:</FormLabel>
         <Input
-          placeholder="Search..."
+          placeholder="Іздеу..."
           startDecorator={<SearchIcon />}
           sx={{ borderRadius: 6, bgcolor: '#f5f5f5', p: 1 }}
+          value={searchTerm}
+          onChange={handleSearchTermChange}
         />
 
         <FormLabel>Күніңізді таңдаңыз:</FormLabel>
@@ -93,20 +89,9 @@ function SlideShow() {
           type="date"
           startDecorator={<DateRangeIcon />}
           sx={{ borderRadius: 6, bgcolor: '#f5f5f5', p: 1 }}
+          value={selectedDate}
+          onChange={handleDateChange}
         />
-
-        <FormLabel>Адам саны:</FormLabel>
-        <Select
-          defaultValue="1"
-          onChange={handleChange}
-          sx={{ borderRadius: 6 }}
-        >
-          {[...Array(5)].map((_, i) => (
-            <Option key={i + 1} value={`${i + 1}`}>
-              {i + 1}
-            </Option>
-          ))}
-        </Select>
 
         <Button
           onClick={handleSearch}
@@ -116,7 +101,7 @@ function SlideShow() {
             color: 'white',
             borderRadius: 3,
             p: 1.5,
-            fontSize: isMobile ? '0.9rem' : '1rem', // Кішірек шрифт өлшемі
+            fontSize: isMobile ? '0.9rem' : '1rem',
             fontWeight: 'bold',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
             '&:hover': { backgroundColor: 'rgb(4, 107, 198)' },
@@ -132,10 +117,10 @@ function SlideShow() {
     typography: {
       fontFamily: '"Bad Script", cursive',
       h3: {
-        fontSize: isMobile ? '2rem' : '3rem', // Кішірек шрифт өлшемі
+        fontSize: isMobile ? '2rem' : '3rem',
       },
       subtitle1: {
-        fontSize: isMobile ? '1rem' : '1.125rem', // Кішірек шрифт өлшемі
+        fontSize: isMobile ? '1rem' : '1.125rem',
       },
     },
   })
@@ -147,17 +132,13 @@ function SlideShow() {
           <Box
             sx={{
               flexGrow: 1,
-              paddingTop: isMobile ? 10 : 30, // Кішірек padding top
+              paddingTop: isMobile ? 10 : 30,
               position: 'relative',
               zIndex: 1,
             }}
           >
             <Grid container spacing={isMobile ? 2 : 4}>
-              {' '}
-              {/* Кішірек spacing */}
               <Grid item xs={12} md={6}>
-                {' '}
-                {/* md breakpoint қосылды */}
                 <Item
                   sx={{
                     color: 'white',
@@ -165,7 +146,7 @@ function SlideShow() {
                     backgroundColor: 'rgba(255, 255, 255, 0)',
                     justifyContent: 'start',
                     textAlign: 'left',
-                    padding: isMobile ? 1 : 2, // Кішірек padding
+                    padding: isMobile ? 1 : 2,
                   }}
                 >
                   <ThemeProvider theme={themeTypography}>
@@ -178,8 +159,6 @@ function SlideShow() {
                     gutterBottom
                     sx={{ fontSize: isMobile ? '1.5rem' : '2rem' }}
                   >
-                    {' '}
-                    {/* Кішірек шрифт өлшемі */}
                     <b>Қайда барғыңыз келеді?</b>
                   </Typography>
                   <Typography
@@ -187,30 +166,25 @@ function SlideShow() {
                     variant="subtitle1"
                     fontSize={18}
                     gutterBottom
-                    sx={{ fontSize: isMobile ? '1rem' : '1.125rem' }} // Кішірек шрифт өлшемі
+                    sx={{ fontSize: isMobile ? '1rem' : '1.125rem' }}
                   >
                     Сапарды жоспарлап жатырсыз ба? Біз сіздің саяхатыңызды ең
                     жақсы орындармен және ең жақсы бюджетпен ұйымдастырамыз!
                   </Typography>
                   <Stack spacing={2} direction={isMobile ? 'column' : 'row'}>
-                    {' '}
-                    {/* Бағыт өзгереді */}
                     <Button
                       variant="contained"
                       size={isMobile ? 'small' : 'medium'}
                     >
-                      View Packages
-                    </Button>{' '}
-                    {/* Кнопка өлшемі кішірейді */}
+                      Пакеттерді қарау
+                    </Button>
                     <IconButton
                       sx={{
                         backgroundColor: 'rgb(5, 127, 228)',
                         color: 'white',
                       }}
                       aria-label="video"
-                      size={
-                        isMobile ? 'small' : 'large'
-                      } /* Иконка өлшемі кішірейді */
+                      size={isMobile ? 'small' : 'large'}
                     >
                       <VideocamIcon fontSize="small" />
                     </IconButton>
@@ -218,8 +192,6 @@ function SlideShow() {
                 </Item>
               </Grid>
               <Grid item xs={12} md={6}>
-                {' '}
-                {/* md breakpoint қосылды */}
                 <Item
                   sx={{
                     borderRadius: '25px',
@@ -227,12 +199,10 @@ function SlideShow() {
                     zIndex: 2,
                     boxShadow: isMobile
                       ? '0px 2px 5px rgba(0, 0, 0, 0.1)'
-                      : '0px 4px 10px rgba(0, 0, 0, 0.1)', // Кішірек көлеңке
+                      : '0px 4px 10px rgba(0, 0, 0, 0.1)',
                   }}
                 >
                   <Card sx={{ borderRadius: 3 }} variant="outlined">
-                    {' '}
-                    {/* Card бұрыштары кішірейді */}
                     {card}
                   </Card>
                 </Item>
@@ -245,8 +215,8 @@ function SlideShow() {
         sx={{
           position: 'relative',
           width: '100%',
-          height: isMobile ? '100px' : '200px', // Биіктік кішірейді
-          mt: isMobile ? '-90px' : '-190px', // Жоғарғы margin кішірейді
+          height: isMobile ? '100px' : '200px',
+          mt: isMobile ? '-90px' : '-190px',
         }}
       >
         <svg

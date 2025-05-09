@@ -35,6 +35,7 @@ const ToursList = () => {
   const [searchParams] = useSearchParams()
   const initialSearch = searchParams.get('search') || ''
   const initialDate = searchParams.get('date') || ''
+  console.log('Initial Search:', initialSearch, initialDate)
   const initialPeople = searchParams.get('people') || ''
 
   const [filteredTours, setFilteredTours] = useState([])
@@ -46,8 +47,15 @@ const ToursList = () => {
       setLoading(true)
       setError(null)
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/tours/')
-        console.log('API Response:', response.data.data.data)
+        const response = await axios.get('http://127.0.0.1:8000/api/tours/', {
+          params: {
+            search: initialSearch,
+            date: initialDate,
+            // API-де 'people' параметрі бар болса ғана қосыңыз
+            ...(initialPeople && { people: initialPeople }),
+          },
+        })
+        console.log('API Response with Filters:', response.data.data.data)
         setTours(response.data.data.data || [])
       } catch (err) {
         console.error('Error fetching tours:', err)
@@ -58,9 +66,10 @@ const ToursList = () => {
     }
 
     fetchTours()
-  }, [])
+  }, [initialSearch, initialDate, initialPeople])
 
   useEffect(() => {
+    // Датаны тексеру
     const filtered = filterTours(tours, {
       search: initialSearch,
       date: initialDate,
@@ -70,7 +79,11 @@ const ToursList = () => {
       duration: selectedDuration,
       query: searchQuery,
     })
+
+    // Дұрыс сұрыптау
     const sorted = sortTours(filtered, sortBy, sortDirection)
+
+    // Нәтижелерді көрсету
     setFilteredTours(sorted)
   }, [
     tours,
