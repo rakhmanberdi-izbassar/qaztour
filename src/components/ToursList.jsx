@@ -37,6 +37,8 @@ const ToursList = () => {
   const initialDate = searchParams.get('date') || ''
   console.log('Initial Search:', initialSearch, initialDate)
   const initialPeople = searchParams.get('people') || ''
+  const initialStartDate = searchParams.get('startDate') || ''
+  const initialEndDate = searchParams.get('endDate') || ''
 
   const [filteredTours, setFilteredTours] = useState([])
   const [sortBy, setSortBy] = useState('')
@@ -50,9 +52,10 @@ const ToursList = () => {
         const response = await axios.get('http://127.0.0.1:8000/api/tours/', {
           params: {
             search: initialSearch,
-            date: initialDate,
-            // API-де 'people' параметрі бар болса ғана қосыңыз
+            date: initialDate, // Бұл қазірдің өзінде бар
             ...(initialPeople && { people: initialPeople }),
+            startDate: initialStartDate, // Жаңа параметр
+            endDate: initialEndDate, // Жаңа параметр
           },
         })
         console.log('API Response with Filters:', response.data.data.data)
@@ -66,13 +69,19 @@ const ToursList = () => {
     }
 
     fetchTours()
-  }, [initialSearch, initialDate, initialPeople])
+  }, [
+    initialSearch,
+    initialDate,
+    initialPeople,
+    initialStartDate,
+    initialEndDate,
+  ])
 
   useEffect(() => {
-    // Датаны тексеру
     const filtered = filterTours(tours, {
       search: initialSearch,
-      date: initialDate,
+      startDate: initialStartDate, // initialStartDate қолданыңыз
+      endDate: initialEndDate, // initialEndDate қолданыңыз
       people: initialPeople,
       priceRange,
       category: selectedCategory,
@@ -80,15 +89,13 @@ const ToursList = () => {
       query: searchQuery,
     })
 
-    // Дұрыс сұрыптау
     const sorted = sortTours(filtered, sortBy, sortDirection)
-
-    // Нәтижелерді көрсету
     setFilteredTours(sorted)
   }, [
     tours,
     initialSearch,
-    initialDate,
+    initialStartDate, // тәуелділікке қосыңыз
+    initialEndDate, // тәуелділікке қосыңыз
     initialPeople,
     priceRange,
     selectedCategory,
@@ -134,26 +141,23 @@ const ToursList = () => {
 
   const filterTours = (
     tours,
-    { search, date, people, priceRange, category, duration, query }
+    { search, startDate, endDate, people, priceRange, duration, query }
   ) => {
     return tours.filter((tour) => {
       const matchesSearch = query
         ? tour.name.toLowerCase().includes(query.toLowerCase())
         : true
 
-      // API-де категория жоқ болғандықтан, бұл фильтрді алып тастадым
       const matchesCategory = true
 
       const matchesDuration = duration
-        ? (() => {
-            const tourDuration = Number(tour.date?.split('.')[0]) // Күнтізбе күні бойынша болжамды ұзақтық
-            if (duration === '1-3')
-              return tourDuration >= 1 && tourDuration <= 3
-            if (duration === '4-7')
-              return tourDuration >= 4 && tourDuration <= 7
-            if (duration === '7+') return tourDuration >= 7
-            return true
-          })()
+        ? duration === '1-3'
+          ? tour.duration >= 1 && tour.duration <= 3
+          : duration === '4-7'
+          ? tour.duration >= 4 && tour.duration <= 7
+          : duration === '7+'
+          ? tour.duration > 7
+          : true
         : true
 
       const matchesPrice =
@@ -166,7 +170,11 @@ const ToursList = () => {
           : true
         : true
 
-      const matchesDate = date ? tour.date === date : true
+      const matchesDateRange =
+        startDate && endDate
+          ? new Date(tour.date) >= new Date(startDate) &&
+            new Date(tour.date) <= new Date(endDate)
+          : true
 
       return (
         matchesSearch &&
@@ -174,7 +182,7 @@ const ToursList = () => {
         matchesDuration &&
         matchesPrice &&
         matchesPeople &&
-        matchesDate
+        matchesDateRange
       )
     })
   }

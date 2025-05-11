@@ -241,9 +241,9 @@ const TourDetail = () => {
                 </Typography>
               </DetailIconText>
             </Box>
-            <BookButton variant="contained" color="success">
+            {/* <BookButton variant="contained" color="success">
               Book Tour
-            </BookButton>
+            </BookButton> */}
           </Box>
           <Divider sx={{ my: 2 }} />
           <Grid container spacing={4}>

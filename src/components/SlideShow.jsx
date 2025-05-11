@@ -39,6 +39,8 @@ function SlideShow() {
   const navigate = useNavigate()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value)
@@ -57,6 +59,14 @@ function SlideShow() {
 
     if (selectedDate) {
       queryParams.append('date', selectedDate)
+    }
+
+    if (startDate) {
+      queryParams.append('startDate', startDate)
+    }
+
+    if (endDate) {
+      queryParams.append('endDate', endDate)
     }
 
     navigate(`/tours?${queryParams.toString()}`)
@@ -84,13 +94,31 @@ function SlideShow() {
           onChange={handleSearchTermChange}
         />
 
-        <FormLabel>Күніңізді таңдаңыз:</FormLabel>
+        {/* <FormLabel>Күніңізді таңдаңыз:</FormLabel>
         <Input
           type="date"
           startDecorator={<DateRangeIcon />}
           sx={{ borderRadius: 6, bgcolor: '#f5f5f5', p: 1 }}
           value={selectedDate}
           onChange={handleDateChange}
+        /> */}
+
+        <FormLabel>Басталу күні:</FormLabel>
+        <Input
+          type="date"
+          startDecorator={<DateRangeIcon />}
+          sx={{ borderRadius: 6, bgcolor: '#f5f5f5', p: 1 }}
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+
+        <FormLabel>Аяқталу күні:</FormLabel>
+        <Input
+          type="date"
+          startDecorator={<DateRangeIcon />}
+          sx={{ borderRadius: 6, bgcolor: '#f5f5f5', p: 1 }}
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
         />
 
         <Button
@@ -175,6 +203,7 @@ function SlideShow() {
                     <Button
                       variant="contained"
                       size={isMobile ? 'small' : 'medium'}
+                      onClick={() => navigate(`/tours`)}
                     >
                       Пакеттерді қарау
                     </Button>
