@@ -62,7 +62,7 @@ const LoginForm = ({
   >
     <StyledTextField
       fullWidth
-      label="Email"
+      label="Емайл"
       variant="outlined"
       margin="normal"
       value={email}
@@ -77,7 +77,7 @@ const LoginForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Password"
+      label="Құпия сөз"
       variant="outlined"
       margin="normal"
       type="password"
@@ -92,7 +92,7 @@ const LoginForm = ({
       }}
     />
     <StyledButton variant="contained" fullWidth type="submit">
-      Login
+      Кіру
     </StyledButton>
   </Box>
 )
@@ -119,7 +119,7 @@ const RegisterForm = ({
   >
     <StyledTextField
       fullWidth
-      label="Full Name"
+      label="Толық аты-жөні"
       variant="outlined"
       margin="normal"
       value={fullName}
@@ -134,7 +134,7 @@ const RegisterForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Email"
+      label="Емайл"
       variant="outlined"
       margin="normal"
       value={email}
@@ -149,7 +149,7 @@ const RegisterForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Password"
+      label="Құпия сөз"
       variant="outlined"
       margin="normal"
       type="password"
@@ -165,7 +165,7 @@ const RegisterForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Confirm Password"
+      label="Құпия сөзді растау"
       variant="outlined"
       margin="normal"
       type="password"
@@ -180,7 +180,7 @@ const RegisterForm = ({
       }}
     />
     <StyledButton variant="contained" fullWidth type="submit">
-      Register
+      Тіркелу
     </StyledButton>
   </Box>
 )
@@ -288,8 +288,8 @@ const LoginPage = () => {
             indicatorColor="primary"
             sx={{ mb: 3, position: 'relative', zIndex: 1 }}
           >
-            <StyledTab label="Login" />
-            <StyledTab label="Register" />
+            <StyledTab label="Кіру" />
+            <StyledTab label="Тіркелу" />
           </Tabs>
           <Box sx={{ position: 'relative', zIndex: 1 }}>
             <Typography
@@ -297,7 +297,7 @@ const LoginPage = () => {
               textAlign="center"
               sx={{ fontWeight: 600, color: theme.palette.text.primary, mb: 2 }}
             >
-              {tabIndex === 0 ? 'Welcome Back!' : 'Create an Account'}
+              {tabIndex === 0 ? 'Қош келдіңіз!' : 'Аккаунт жасаңыз!'}
             </Typography>
             {tabIndex === 0 && (
               <LoginForm
@@ -344,7 +344,7 @@ const LoginPage = () => {
               zIndex: 1,
             }}
           >
-            By continuing, you agree to our Terms & Conditions.
+            Жалғастыру арқылы сіз біздің Шарттарымызбен келісесіз.
           </Typography>
         </StyledPaper>
       </Container>

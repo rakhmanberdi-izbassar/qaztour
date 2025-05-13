@@ -137,36 +137,37 @@ const HotelBooking = () => {
   const totalPrice = nights * room_type.price_per_night
 
   return (
-    <Paper sx={{ p: 3, maxWidth: 600, margin: '0 auto', mt: 12 }}>
+    <Paper sx={{ p: 3, maxWidth: 1200, margin: '0 auto', mt: 12 }}>
       <Typography variant="h6" gutterBottom>
-        Новое бронирование
+        Жаңа брондау
       </Typography>
 
       <Box mb={2}>
         <Typography>
-          <strong>Отель:</strong> {hotel.name}
+          <strong>Қонақ үй:</strong> {hotel.name}
         </Typography>
         <Typography>
-          <strong>Тип номера:</strong> {room_type.name}
+          <strong>Бөлме түрі:</strong> {room_type.name}
         </Typography>
         <Typography>
-          <strong>Цена за ночь:</strong> {room_type.price_per_night} ₸
+          <strong>Бір түннің бағасы:</strong> {room_type.price_per_night} ₸
         </Typography>
         <Typography>
-          <strong>Максимум гостей:</strong> {room_type.max_guests}
+          <strong>Максималды қонақтар:</strong> {room_type.max_guests}
         </Typography>
         <Typography>
-          <strong>Доступно номеров:</strong> {room_type.available_rooms}
+          <strong>Қол жетімді бөлмелер саны:</strong>{' '}
+          {room_type.available_rooms}
         </Typography>
         <Typography>
-          <strong>Описание:</strong> {room_type.description}
+          <strong>Сипаттама:</strong> {room_type.description}
         </Typography>
       </Box>
 
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Дата заезда"
+            label="Келу күні"
             type="date"
             fullWidth
             value={checkIn}
@@ -176,7 +177,7 @@ const HotelBooking = () => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Дата выезда"
+            label="Шығу күні"
             type="date"
             fullWidth
             value={checkOut}
@@ -186,7 +187,7 @@ const HotelBooking = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="Количество гостей"
+            label="Қонақтар саны"
             type="number"
             fullWidth
             value={guests}
@@ -195,7 +196,7 @@ const HotelBooking = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="Дополнительные пожелания"
+            label="Қосымша тілектер"
             multiline
             rows={3}
             fullWidth
@@ -208,12 +209,12 @@ const HotelBooking = () => {
       <Divider sx={{ my: 3 }} />
 
       <Typography variant="subtitle1" gutterBottom>
-        <strong>Стоимость бронирования</strong>
+        <strong>Брондау құны</strong>
       </Typography>
-      <Typography>Цена за ночь: {room_type.price_per_night} ₸</Typography>
-      <Typography>Количество ночей: {nights || 0}</Typography>
+      <Typography>Бір түннің бағасы: {room_type.price_per_night} ₸</Typography>
+      <Typography>Түндер саны: {nights || 0}</Typography>
       <Typography>
-        <strong>Общая стоимость: {totalPrice || 0} ₸</strong>
+        <strong>Жалпы құны: {totalPrice || 0} ₸</strong>
       </Typography>
 
       <Box mt={3} display="flex" gap={2}>
@@ -226,11 +227,11 @@ const HotelBooking = () => {
             handleSubmit()
           }}
         >
-          Забронировать
+          Қазір тапсырыс беру
         </Button>
 
         <Button variant="outlined" fullWidth color="inherit">
-          Отмена
+          Болдырмау
         </Button>
       </Box>
 

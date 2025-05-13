@@ -281,7 +281,7 @@ const ToursList = () => {
               <CardContent>
                 <TextField
                   fullWidth
-                  label="Search Tours"
+                  label="Турды іздеу"
                   variant="outlined"
                   value={searchQuery}
                   onChange={handleSearchChange}
@@ -307,7 +307,7 @@ const ToursList = () => {
 
                 <FormControl fullWidth margin="normal">
                   <InputLabel id="duration-select-label">
-                    Duration (Days)
+                    Ұзақтығы (күндер)
                   </InputLabel>
                   <Select
                     labelId="duration-select-label"
@@ -315,7 +315,7 @@ const ToursList = () => {
                     onChange={handleDurationChange}
                     label="Duration (Days)"
                   >
-                    <MenuItem value="">All Durations</MenuItem>
+                    <MenuItem value="">Барлығы</MenuItem>
                     <MenuItem value="1-3">1-3</MenuItem>
                     <MenuItem value="4-7">4-7</MenuItem>
                     <MenuItem value="7+">7+</MenuItem>
@@ -323,7 +323,7 @@ const ToursList = () => {
                 </FormControl>
 
                 <FormControl fullWidth margin="normal">
-                  <InputLabel id="price-range-label">Price Range</InputLabel>
+                  <InputLabel id="price-range-label">Баға диапазоны</InputLabel>
                   <Slider
                     labelId="price-range-label"
                     value={priceRange}
@@ -340,19 +340,21 @@ const ToursList = () => {
                 </FormControl>
 
                 <FormControl fullWidth margin="normal">
-                  <InputLabel id="sort-by-label">Sort By</InputLabel>
+                  <InputLabel id="sort-by-label">
+                    ... бойынша сұрыптау
+                  </InputLabel>
                   <Select
                     labelId="sort-by-label"
                     value={sortBy}
                     onChange={handleSortChange}
                     label="Sort By"
                   >
-                    <MenuItem value="">Default</MenuItem>
-                    <MenuItem value="name">Name</MenuItem>
-                    <MenuItem value="price">Price</MenuItem>
-                    <MenuItem value="date">Date</MenuItem>
-                    <MenuItem value="location">Location</MenuItem>
-                    <MenuItem value="rating">Rating</MenuItem>
+                    <MenuItem value="">Әдепкі</MenuItem>
+                    <MenuItem value="name">Аты</MenuItem>
+                    <MenuItem value="price">Бағасы</MenuItem>
+                    <MenuItem value="date">Күні</MenuItem>
+                    <MenuItem value="location">Локациясы</MenuItem>
+                    <MenuItem value="rating">Рейтингі</MenuItem>
                   </Select>
                 </FormControl>
               </CardContent>

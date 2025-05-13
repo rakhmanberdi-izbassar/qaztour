@@ -237,7 +237,7 @@ const TourDetail = () => {
               <DetailIconText>
                 <LocationOnIcon sx={{ color: 'gray', mr: 1 }} />
                 <Typography variant="body2">
-                  Location: {locationName}
+                  Локациясы: {locationName}
                 </Typography>
               </DetailIconText>
             </Box>
@@ -246,14 +246,14 @@ const TourDetail = () => {
               color="success"
               onClick={() => navigate(`/hotels`)}
             >
-              Hotels & Booking
+              Қонақ үйлер және брондау
             </BookButton>
           </Box>
           <Divider sx={{ my: 2 }} />
           <Grid container spacing={4}>
             <Grid item xs={12} md={8}>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Overview
+                Шолу
               </Typography>
               <Typography variant="body1" color="text.secondary" paragraph>
                 {tour.tour.description}
@@ -264,7 +264,7 @@ const TourDetail = () => {
                 gutterBottom
                 sx={{ mt: 3 }}
               >
-                Tour Gallery
+                Тур галереясы
               </Typography>
               <ImageList
                 variant="masonry"
@@ -310,7 +310,7 @@ const TourDetail = () => {
               </Dialog>
               <Divider sx={{ my: 3 }} />
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Customer Reviews
+                Тұтынушы пікірлері
               </Typography>
               <Box display="flex" alignItems="center" mb={2}>
                 <Rating
@@ -364,7 +364,7 @@ const TourDetail = () => {
                 ))
               ) : (
                 <Typography variant="body2" color="text.secondary">
-                  No reviews yet. Be the first to write one!
+                  Әзірге шолулар жоқ. Бірінші болып жазыңыз!
                 </Typography>
               )}
               <Divider sx={{ my: 3 }} />
@@ -373,7 +373,7 @@ const TourDetail = () => {
             <Grid item xs={12} md={4}>
               <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Tour Guide
+                  Экскурсиялық гид
                 </Typography>
                 <Box display="flex" alignItems="center" flexDirection="column">
                   {tour?.tour?.user?.avatar && (
@@ -404,13 +404,13 @@ const TourDetail = () => {
                     </Typography>
                   </Box>
                   <Typography variant="caption" color="text.secondary">
-                    13 tour
+                    5 тур
                   </Typography>
                 </Box>
               </Card>
               <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Similar Tours
+                  Ұқсас турлар
                 </Typography>
                 {/* Ұқсас турларды көрсету логикасы әлі қосылмаған */}
                 <Grid container spacing={2}>
@@ -423,7 +423,7 @@ const TourDetail = () => {
                       />
                       <Box p={1} textAlign="center">
                         <Typography variant="subtitle2" fontWeight="bold">
-                          Almaty City
+                          Алматы қаласы
                         </Typography>
                         <Typography variant="caption">$50</Typography>
                       </Box>
@@ -438,7 +438,7 @@ const TourDetail = () => {
                       />
                       <Box p={1} textAlign="center">
                         <Typography variant="subtitle2" fontWeight="bold">
-                          Charyn Canyon
+                          Шарын каньоны
                         </Typography>
                         <Typography variant="caption">$120</Typography>
                       </Box>
@@ -453,7 +453,7 @@ const TourDetail = () => {
                       />
                       <Box p={1} textAlign="center">
                         <Typography variant="subtitle2" fontWeight="bold">
-                          Nomadic Experience
+                          Көшпелі тәжірибе
                         </Typography>
                         <Typography variant="caption">$150</Typography>
                       </Box>
@@ -468,7 +468,7 @@ const TourDetail = () => {
                       />
                       <Box p={1} textAlign="center">
                         <Typography variant="subtitle2" fontWeight="bold">
-                          Nomadic Culture
+                          Көшпелілер мәдениеті
                         </Typography>
                         <Typography variant="caption">$130</Typography>
                       </Box>

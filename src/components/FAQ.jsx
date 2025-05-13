@@ -18,37 +18,37 @@ const Item = styled(Paper)(({ theme }) => ({
 const FAQ = () => {
   const questions = [
     {
-      q: 'What is this service about?',
-      a: 'We provide the best travel recommendations and booking services.',
+      q: 'Бұл қызмет не туралы?',
+      a: 'Біз ең жақсы саяхат ұсыныстарын және броньдау қызметтерін ұсынамыз.',
     },
     {
-      q: 'How can I get started?',
-      a: 'Just sign up, choose your destination, and book your trip easily.',
+      q: 'Қалай бастауға болады?',
+      a: 'Тіркеліп, бағытты таңдап, сапарыңызды оңай брондай аласыз.',
     },
     {
-      q: 'Is there a refund policy?',
-      a: 'Yes, we offer refunds within 7 days of booking under certain conditions.',
+      q: 'Қайтару саясаты бар ма?',
+      a: 'Иә, кейбір жағдайларда броньдалған күннен бастап 7 күн ішінде қайтару ұсынылады.',
     },
     {
-      q: 'Can I use this internationally?',
-      a: 'Absolutely! Our services are available worldwide.',
+      q: 'Қызметті шетелде қолдануға бола ма?',
+      a: 'Әрине! Біздің қызметтер бүкіл әлем бойынша қолжетімді.',
     },
     {
-      q: 'What are the payment methods?',
-      a: 'We accept credit/debit cards, PayPal, and Apple Pay.',
+      q: 'Төлем әдістері қандай?',
+      a: 'Біз банктік карталарды, PayPal және Apple Pay қабылдаймыз.',
     },
   ]
 
   return (
     <>
-      {/* Толқынды SVG - ТӨМЕНГІ БӨЛІМГЕ ОРНАЛАСТЫРУ */}
+      {/* SVG толқын - төменгі бөлім */}
       <Box
         sx={{
           position: 'relative',
           width: '100%',
           height: '100px',
           overflow: 'hidden',
-          top: '-80px', // Толқынды көрінетін ету үшін
+          top: '-80px',
         }}
       >
         <svg
@@ -67,15 +67,15 @@ const FAQ = () => {
 
       <Container sx={{ paddingY: 8 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
-          Frequently Asked Questions
+          Жиі қойылатын сұрақтар
         </Typography>
 
         <Grid container spacing={4} alignItems="center">
-          {/* Image Section */}
+          {/* Сурет бөлімі */}
           <Grid item xs={12} md={6}>
             <img
               src={myImage}
-              alt="FAQ"
+              alt="Жиі қойылатын сұрақтар"
               style={{
                 width: '100%',
                 borderRadius: '12px',
@@ -85,7 +85,7 @@ const FAQ = () => {
             />
           </Grid>
 
-          {/* Accordion Section */}
+          {/* Аккордеон бөлімі */}
           <Grid item xs={12} md={6}>
             <Item>
               <AccordionGroup variant="outlined" sx={{ borderRadius: '10px' }}>
