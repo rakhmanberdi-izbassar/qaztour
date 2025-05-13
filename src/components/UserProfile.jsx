@@ -242,6 +242,16 @@ const UserProfile = () => {
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 1 }}>
           <Button
             component={NavLink}
+            to="/bookmarked-hotels"
+            startIcon={<AddIcon />}
+            variant="contained"
+            color="primary"
+            sx={{ borderRadius: 2 }}
+          >
+            Брондалған қонақүйлер
+          </Button>
+          <Button
+            component={NavLink}
             to="/edit-profile"
             startIcon={<EditIcon />}
             variant="outlined"
@@ -474,7 +484,7 @@ const UserProfile = () => {
           </CardContent>
         </Card>
       )}
-      {/* Қауіпсіздік параметрлері */}
+      {/* Қауіпсіздік параметрлері
       <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
         <CardContent>
           <Typography variant="h6" fontWeight={600}>
@@ -499,7 +509,7 @@ const UserProfile = () => {
             Enable 2FA
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
     </Box>
   )
 }

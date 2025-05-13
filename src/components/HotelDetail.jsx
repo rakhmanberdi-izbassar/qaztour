@@ -103,7 +103,7 @@ const HotelDetail = () => {
   }
 
   return (
-    <Container sx={{ py: 8 }}>
+    <Container sx={{ py: 14 }}>
       <IconButton onClick={handleGoBack} sx={{ mb: 2 }}>
         <ArrowBackIosIcon />
       </IconButton>

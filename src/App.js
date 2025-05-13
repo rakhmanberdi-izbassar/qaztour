@@ -21,6 +21,7 @@ import BlogPages from './pages/BlogPage'
 import BookingForm from './components/BookingForm'
 import HotelListPage from './pages/HotelListPage'
 import HotelDetailPage from './pages/HotelDetailPage'
+import BookingRoom from './components/BookingRoom'
 
 function App() {
   return (
@@ -50,7 +51,7 @@ function App() {
               path="/hotel-booking/:hotelId/room/:roomId"
               element={<HotelBookingPage />}
             />
-
+            <Route path="/booking-room/:bookingId" element={<BookingRoom />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
         </WeatherProvider>
