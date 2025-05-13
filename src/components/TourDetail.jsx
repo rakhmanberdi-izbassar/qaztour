@@ -241,9 +241,13 @@ const TourDetail = () => {
                 </Typography>
               </DetailIconText>
             </Box>
-            {/* <BookButton variant="contained" color="success">
-              Book Tour
-            </BookButton> */}
+            <BookButton
+              variant="contained"
+              color="success"
+              onClick={() => navigate(`/hotels`)}
+            >
+              Hotels & Booking
+            </BookButton>
           </Box>
           <Divider sx={{ my: 2 }} />
           <Grid container spacing={4}>

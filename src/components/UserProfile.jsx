@@ -9,8 +9,11 @@ import {
   IconButton,
   CircularProgress,
   Container,
+  Divider,
+  TextField, // TextField импорттау
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete' // DeleteIcon импорттау
 import FacebookIcon from '@mui/icons-material/Facebook'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import TwitterIcon from '@mui/icons-material/Twitter'
@@ -26,6 +29,8 @@ const UserProfile = () => {
   const [error, setError] = useState(null)
   const [userReviews, setUserReviews] = useState([])
   const [deleteLoading, setDeleteLoading] = useState(null)
+  const [editingPostId, setEditingPostId] = useState(null) // Редакциялаудағы посттың ID-сі
+  const [editedContent, setEditedContent] = useState('') // Редакцияланған контент
 
   const fetchUserReviews = async () => {
     try {
@@ -35,7 +40,6 @@ const UserProfile = () => {
         return
       }
       const response = await api.get('/user/reviews', {
-        // Бекендтегі эндпоинтке сұрау
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,14 +65,15 @@ const UserProfile = () => {
             Authorization: `Bearer ${token}`,
           },
         })
-        console.log('User Data:', userResponse.data) // Қосылған консольге шығару
+        console.log('User Data:', userResponse.data)
         setUser(userResponse.data)
         const bookingsResponse = await api.get('/bookings/user', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
-        setBookings(bookingsResponse.data)
+        console.log('Bookings Data:', bookingsResponse.data) // Бұны да тексеріңіз
+        setBookings(bookingsResponse.data.bookings) // Дұрыс жол!
         setLoading(false)
       } catch (err) {
         console.error('Error fetching user profile data:', err)
@@ -90,7 +95,6 @@ const UserProfile = () => {
         return
       }
       await api.delete(`/reviews/${reviewId}`, {
-        // Бекендтегі жою эндпоинтіне сұрау
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -102,6 +106,77 @@ const UserProfile = () => {
       // Қате туралы хабарлама көрсету
     } finally {
       setDeleteLoading(null)
+    }
+  }
+
+  const handleDeletePost = async (postId) => {
+    setDeleteLoading(postId)
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        console.error('Authentication token not found.')
+        return
+      }
+      await api.delete(`/post/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      // Пост сәтті жойылса, UI-ден де алып тастау
+      setUser((prevUser) => ({
+        ...prevUser,
+        posts: prevUser.posts.filter((post) => post.id !== postId),
+      }))
+      // Хабарлама көрсету (қажет болса)
+    } catch (error) {
+      console.error('Error deleting post:', error)
+      // Қате туралы хабарлама көрсету (қажет болса)
+    } finally {
+      setDeleteLoading(null)
+    }
+  }
+
+  const handleEditPost = (post) => {
+    setEditingPostId(post.id)
+    setEditedContent(post.content)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingPostId(null)
+    setEditedContent('')
+  }
+
+  const handleSaveEdit = async (postId) => {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        console.error('Authentication token not found.')
+        return
+      }
+      const response = await api.put(
+        `/post/${postId}`,
+        { content: editedContent },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      // UI-дегі постты жаңарту
+      setUser((prevUser) => ({
+        ...prevUser,
+        posts: prevUser.posts.map((post) =>
+          post.id === postId
+            ? { ...post, content: response.data.post.content }
+            : post
+        ),
+      }))
+      setEditingPostId(null)
+      setEditedContent('')
+      // Хабарлама көрсету (қажет болса)
+    } catch (error) {
+      console.error('Error updating post:', error)
+      // Қате туралы хабарлама көрсету (қажет болса)
     }
   }
 
@@ -138,6 +213,7 @@ const UserProfile = () => {
     )
   }
 
+  console.log('Bookings state before render:', bookings)
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 3, mt: 14 }}>
       {/* Профиль картасы */}
@@ -223,14 +299,73 @@ const UserProfile = () => {
               Your Posts
             </Typography>
             {user.posts.map((post) => (
-              <Typography
+              <Box
                 key={post.id}
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 1 }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mb: 1,
+                  borderBottom: '1px solid #eee',
+                  pb: 1,
+                }}
               >
-                {post.title || 'No Title'}
-              </Typography>
+                {editingPostId === post.id ? (
+                  <TextField
+                    fullWidth
+                    multiline
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    variant="outlined"
+                    size="small"
+                    sx={{ flexGrow: 1, mr: 1 }}
+                  />
+                ) : (
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ flexGrow: 1 }}
+                  >
+                    {post.content || 'No Content'}
+                  </Typography>
+                )}
+                {editingPostId === post.id ? (
+                  <Box>
+                    <Button
+                      onClick={() => handleSaveEdit(post.id)}
+                      color="primary"
+                      size="small"
+                    >
+                      Save
+                    </Button>
+                    <Button onClick={handleCancelEdit} size="small">
+                      Cancel
+                    </Button>
+                  </Box>
+                ) : (
+                  <Box>
+                    <IconButton
+                      onClick={() => handleEditPost(post)}
+                      aria-label="edit"
+                      size="small"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeletePost(post.id)}
+                      disabled={deleteLoading === post.id}
+                      aria-label="delete"
+                      color="error"
+                      size="small"
+                    >
+                      {deleteLoading === post.id ? (
+                        <Typography variant="caption">Deleting...</Typography>
+                      ) : (
+                        <DeleteIcon />
+                      )}
+                    </IconButton>
+                  </Box>
+                )}
+              </Box>
             ))}
           </CardContent>
         </Card>

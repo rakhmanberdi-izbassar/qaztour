@@ -19,6 +19,8 @@ import SinglePostPage from './components/post/SinglePostPage'
 import CreatePost from './components/post/CreatePost'
 import BlogPages from './pages/BlogPage'
 import BookingForm from './components/BookingForm'
+import HotelListPage from './pages/HotelListPage'
+import HotelDetailPage from './pages/HotelDetailPage'
 
 function App() {
   return (
@@ -30,7 +32,7 @@ function App() {
             <Route path="/tours" element={<ToursPage />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/auth" element={<LoginPage />} />
-            <Route path="/hotel-booking" element={<HotelBookingPage />} />
+            <Route path="/hotel-booking/:id" element={<HotelBookingPage />} />
             <Route path="/video-travel" element={<VideoTravelPage />} />
             <Route path="/provider/:id" element={<ProviderPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
@@ -42,6 +44,9 @@ function App() {
             <Route path="/blog-create" element={<CreatePost />} />
             <Route path="/blog/:postId" element={<SinglePostPage />} />
             <Route path="/booking" element={<BookingForm />} />
+            <Route path="/hotels/" element={<HotelListPage />} />
+            <Route path="/hotels/:id" element={<HotelDetailPage />} />
+            {/* <Route path="/hotel-booking/:id" element={<HotelBookingPage />} /> */}
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
         </WeatherProvider>
