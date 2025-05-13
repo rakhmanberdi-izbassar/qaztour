@@ -32,7 +32,7 @@ function App() {
             <Route path="/tours" element={<ToursPage />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/auth" element={<LoginPage />} />
-            <Route path="/hotel-booking/:id" element={<HotelBookingPage />} />
+            {/* <Route path="/hotel-booking/:id" element={<HotelBookingPage />} /> */}
             <Route path="/video-travel" element={<VideoTravelPage />} />
             <Route path="/provider/:id" element={<ProviderPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
@@ -46,7 +46,11 @@ function App() {
             <Route path="/booking" element={<BookingForm />} />
             <Route path="/hotels/" element={<HotelListPage />} />
             <Route path="/hotels/:id" element={<HotelDetailPage />} />
-            {/* <Route path="/hotel-booking/:id" element={<HotelBookingPage />} /> */}
+            <Route
+              path="/hotel-booking/:hotelId/room/:roomId"
+              element={<HotelBookingPage />}
+            />
+
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
         </WeatherProvider>

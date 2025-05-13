@@ -19,7 +19,6 @@ import EmailIcon from '@mui/icons-material/Email'
 import PublicIcon from '@mui/icons-material/Public'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import BookingForm from './BookingForm' // Броньдау формасын импорттау
 
 const HotelDetail = () => {
   const { id } = useParams()
@@ -64,8 +63,8 @@ const HotelDetail = () => {
     navigate(-1)
   }
 
-  const handleBookNow = () => {
-    navigate(`/hotel-booking/${hotel.id}`) // Броньдау бетіне бағыттау
+  const handleBookNow = (roomId) => {
+    navigate(`/hotel-booking/${hotel.id}/room/${roomId}`) // Броньдау бетіне бағыттау
   }
 
   if (loading) {
@@ -126,7 +125,7 @@ const HotelDetail = () => {
           <Box display="flex" alignItems="center" mb={1}>
             <Rating
               name={`hotel-rating-${hotel.id}`}
-              value={hotel.rating}
+              value={parseFloat(hotel.rating)}
               precision={0.1}
               readOnly
             />
@@ -138,49 +137,47 @@ const HotelDetail = () => {
             {hotel.description}
           </Typography>
           <Typography variant="subtitle1">
-            ${hotel.price_per_night} / night
+            {hotel.price_per_night} ₸ / night
           </Typography>
           <Divider sx={{ my: 2 }} />
+
+          {/* Бөлмелерді көрсету */}
           <Typography variant="h6" gutterBottom>
-            Room Types
+            Номер түрлері
           </Typography>
           {hotel.room_types && hotel.room_types.length > 0 ? (
-            hotel.room_types.map((roomType) => (
-              <Card sx={{ boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
+            hotel.room_types.map((room) => (
+              <Card key={room.id} sx={{ boxShadow: 3, borderRadius: 2, mb: 2 }}>
                 <CardMedia
                   component="img"
-                  alt={hotel.name}
+                  alt={room.name}
                   height="200"
-                  image={getImageUrl(hotel.image)} // Қонақүйдің басты суреті
+                  image={getImageUrl(room.image)}
                   sx={{ objectFit: 'cover' }}
                 />
                 <CardContent sx={{ p: 2 }}>
                   <Typography gutterBottom variant="h6" component="h2">
-                    {hotel.name}
+                    {room.name}
                   </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    ${hotel.price_per_night} / night
+                  <Typography variant="subtitle1" color="text.secondary">
+                    {room.price_per_night} ₸ / night
                   </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
                     gutterBottom
                   >
-                    Max Guests: {hotel.max_guests}
+                    Max Guests: {room.max_guests}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Available Rooms: {hotel.available_rooms}
+                    Available Rooms: {room.available_rooms}
                   </Typography>
                 </CardContent>
                 <Box sx={{ p: 2, display: 'flex', justifyContent: 'flex-end' }}>
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleBookNow}
+                    onClick={() => handleBookNow(room.id)}
                   >
                     Броньдау
                   </Button>
@@ -189,15 +186,16 @@ const HotelDetail = () => {
             ))
           ) : (
             <Typography variant="body2" color="text.secondary">
-              No room types available for this hotel.
+              Бұл қонақүйде бөлме түрлері жоқ.
             </Typography>
           )}
+
           <Box sx={{ mt: 2 }}>
             <Button color="primary" startIcon={<PhoneIcon />} sx={{ mr: 1 }}>
-              {hotel.phone}
+              {hotel.phone || 'Телефон жоқ'}
             </Button>
             <Button color="secondary" startIcon={<EmailIcon />} sx={{ mr: 1 }}>
-              {hotel.email}
+              {hotel.email || 'Электрондық пошта жоқ'}
             </Button>
             {hotel.website && (
               <Button
@@ -206,7 +204,7 @@ const HotelDetail = () => {
                 href={hotel.website}
                 target="_blank"
               >
-                Website
+                Веб-сайт
               </Button>
             )}
           </Box>
@@ -214,8 +212,6 @@ const HotelDetail = () => {
       </Card>
 
       <Divider sx={{ my: 4 }} />
-
-      {/* <BookingForm /> Броньдау формасын қосу */}
     </Container>
   )
 }

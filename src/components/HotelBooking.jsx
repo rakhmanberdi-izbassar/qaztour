@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Typography,
   TextField,
@@ -8,12 +8,56 @@ import {
   Paper,
   Divider,
 } from '@mui/material'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
 
 const HotelBookingTemplate = () => {
+  const { hotelId, roomId } = useParams()
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
   const [guests, setGuests] = useState(1)
   const [notes, setNotes] = useState('')
+
+  const [hotelData, setHotelData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const token = localStorage.getItem('authToken')
+
+  useEffect(() => {
+    axios
+      .get(`http://127.0.0.1:8000/api/hotels/${hotelId}/book/${roomId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log('API жауап:', response.data)
+        setHotelData(response.data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error(
+          'Қате шықты:',
+          error.response ? error.response.data : error.message
+        )
+        setLoading(false)
+      })
+  }, [hotelId, roomId, token])
+
+  if (loading) {
+    return (
+      <Typography sx={{ mt: 12, textAlign: 'center' }}>Жүктелуде...</Typography>
+    )
+  }
+
+  if (!hotelData) {
+    return (
+      <Typography sx={{ mt: 12, textAlign: 'center' }}>
+        Мәлімет табылмады
+      </Typography>
+    )
+  }
+
+  const { hotel, room_type } = hotelData
 
   return (
     <Paper sx={{ p: 3, maxWidth: 600, margin: '0 auto', mt: 12 }}>
@@ -26,22 +70,22 @@ const HotelBookingTemplate = () => {
           <strong>Информация о бронировании:</strong>
         </Typography>
         <Typography>
-          <strong>Отель:</strong> Kazakhstan Express
+          <strong>Отель:</strong> {hotel.name}
         </Typography>
         <Typography>
-          <strong>Тип номера:</strong> Комфорт
+          <strong>Тип номера:</strong> {room_type.name}
         </Typography>
         <Typography>
-          <strong>Цена за ночь:</strong> 500.00 ₸
+          <strong>Цена за ночь:</strong> {room_type.price_per_night} ₸
         </Typography>
         <Typography>
-          <strong>Максимум гостей:</strong> 5
+          <strong>Максимум гостей:</strong> {room_type.max_guests}
         </Typography>
         <Typography>
-          <strong>Доступно номеров:</strong> 5
+          <strong>Доступно номеров:</strong> {room_type.available_rooms}
         </Typography>
         <Typography>
-          <strong>Описание:</strong> saasas
+          <strong>Описание:</strong> {room_type.description}
         </Typography>
       </Box>
 
@@ -92,7 +136,7 @@ const HotelBookingTemplate = () => {
       <Typography variant="subtitle1" gutterBottom>
         <strong>Стоимость бронирования</strong>
       </Typography>
-      <Typography>Цена за ночь: 500.00 ₸</Typography>
+      <Typography>Цена за ночь: {room_type.price_per_night} ₸</Typography>
       <Typography>Количество ночей: 0</Typography>
       <Typography>
         <strong>Общая стоимость: 0.00 ₸</strong>
