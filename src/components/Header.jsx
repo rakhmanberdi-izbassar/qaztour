@@ -294,6 +294,13 @@ export default function Header() {
                   Блог
                 </MenuItem>
               </Menu>
+              <Button
+                component={NavLink}
+                to="/places"
+                sx={{ color: 'black', fontSize: '14px' }}
+              >
+                Көрікті орындар
+              </Button>
             </Stack>
           )}
 

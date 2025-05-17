@@ -10,7 +10,8 @@ import {
   CircularProgress,
 } from '@mui/material'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom' // navigate хукын қосыңыз
+import { useNavigate } from 'react-router-dom'
+import { PayPalButtons } from '@paypal/react-paypal-js'
 import Header from './Header'
 import Footer from './Footer'
 
@@ -256,20 +257,39 @@ const BookingRoom = () => {
                 size="large"
                 fullWidth
                 sx={{ borderRadius: 2, py: 1.5, fontWeight: 'bold' }}
-                onClick={() => handleCancelBooking()}
+                onClick={handleCancelBooking}
               >
                 Бронды өшіру
               </Button>
-              <Button
-                variant="contained"
-                color="success"
-                size="large"
-                fullWidth
-                sx={{ borderRadius: 2, py: 1.5, fontWeight: 'bold' }}
-                onClick={() => alert('Төлеу процесі басталды')}
-              >
-                Төлеу
-              </Button>
+
+              <Box sx={{ flexGrow: 1 }}>
+                <PayPalButtons
+                  style={{ layout: 'horizontal' }}
+                  createOrder={(data, actions) => {
+                    return actions.order.create({
+                      purchase_units: [
+                        {
+                          amount: {
+                            value: total_price.toString(), // Соманы динамикалық енгізу
+                          },
+                        },
+                      ],
+                    })
+                  }}
+                  onApprove={(data, actions) => {
+                    return actions.order.capture().then((details) => {
+                      alert(
+                        `Төлем сәтті өтті, рахмет ${details.payer.name.given_name}!`
+                      )
+                      // Қажет болса, бронь статусын жаңарту немесе басқа логика
+                    })
+                  }}
+                  onError={(err) => {
+                    console.error('PayPal төлем қатесі:', err)
+                    alert('Төлем кезінде қате шықты, қайтадан көріңізші.')
+                  }}
+                />
+              </Box>
             </Box>
           )}
         </Paper>

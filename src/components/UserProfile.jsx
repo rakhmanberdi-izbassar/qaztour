@@ -257,7 +257,7 @@ const UserProfile = () => {
             variant="outlined"
             sx={{ borderRadius: 2 }}
           >
-            Edit Profile
+            Профильді өңдеу
           </Button>
           <Button
             component={NavLink}
@@ -267,7 +267,7 @@ const UserProfile = () => {
             color="primary"
             sx={{ borderRadius: 2 }}
           >
-            Create Post
+            Жаңа пост
           </Button>
         </Box>
         {/* Әлеуметтік желі иконкалары */}
@@ -306,7 +306,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              Your Posts
+              Сіздің жазбаларыңыз
             </Typography>
             {user.posts.map((post) => (
               <Box
@@ -345,10 +345,10 @@ const UserProfile = () => {
                       color="primary"
                       size="small"
                     >
-                      Save
+                      Сақтау
                     </Button>
                     <Button onClick={handleCancelEdit} size="small">
-                      Cancel
+                      Болдырмау
                     </Button>
                   </Box>
                 ) : (
@@ -368,7 +368,7 @@ const UserProfile = () => {
                       size="small"
                     >
                       {deleteLoading === post.id ? (
-                        <Typography variant="caption">Deleting...</Typography>
+                        <Typography variant="caption">Өшіп жатыр...</Typography>
                       ) : (
                         <DeleteIcon />
                       )}
@@ -385,7 +385,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              Your Reviews
+              Сіздің пікірлеріңіз
             </Typography>
             {userReviews.map((review) => (
               <Box
@@ -403,7 +403,7 @@ const UserProfile = () => {
                   color="text.secondary"
                   sx={{ flexGrow: 1 }}
                 >
-                  {review.content} (Rating: {review.rating})
+                  {review.content} (Рейтинг: {review.rating})
                 </Typography>
                 <IconButton
                   onClick={() => handleDeleteReview(review.id)}
@@ -412,7 +412,7 @@ const UserProfile = () => {
                   color="error"
                 >
                   {deleteLoading === review.id ? (
-                    <Typography variant="caption">Deleting...</Typography>
+                    <Typography variant="caption">Өшіп жатыр...</Typography>
                   ) : (
                     'Delete'
                   )}
@@ -427,7 +427,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              Your Tours
+              Сіздің турларыңыз
             </Typography>
             {user.tours.map((tour) => (
               <Box
@@ -452,7 +452,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              Your Bookings
+              Сіздің броньдарыңыз
             </Typography>
             {bookings.map((booking) => (
               <Typography key={booking.id} sx={{ mt: 1 }}>
@@ -469,7 +469,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              Favorite Tours
+              Сіздің сақталған турларыңыз
             </Typography>
             {user.favorite_tours.map((favorite) => (
               <Typography

@@ -1,0 +1,224 @@
+import React, { useState, useEffect } from 'react' // useEffect-ті қостық, себебі API шақыру болады
+import {
+  Box,
+  Container,
+  Grid,
+  Typography,
+  Card, // Бұл енді қолданылмайды, бірақ импортта қалдырайық
+  CardMedia, // Бұл енді қолданылады
+  CardContent,
+  Chip,
+  Divider,
+  Rating,
+  Paper,
+  CircularProgress, // Жүктеу үшін
+} from '@mui/material'
+import { useParams } from 'react-router-dom'
+import { styled, useTheme } from '@mui/material/styles' // useTheme қостық
+import axios from 'axios' // API шақыру үшін axios қостық
+
+// --- Styled Components ---
+const GalleryImage = styled(CardMedia)(({ theme }) => ({
+  height: 200,
+  borderRadius: theme.spacing(1),
+  objectFit: 'cover', // Суреттің толық көрінуін қамтамасыз етеді
+}))
+
+// --- Helper function for image URL (if not in a separate utils file) ---
+const BASE_URL = 'http://127.0.0.1:8000/storage/' // Сіздің API storage URL-і
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return 'https://via.placeholder.com/300x200?text=No+Image' // Әдепкі сурет
+  if (imagePath.startsWith('http')) return imagePath
+  return `${BASE_URL}${encodeURIComponent(imagePath)}` // encodeURIComponent-ті де қолданыңыз
+}
+
+// --- Mock Data (Replace with API call later) ---
+const mockPlace = {
+  id: 1,
+  name: 'Қайыңды көлі',
+  city: 'Алматы облысы',
+  country: 'Қазақстан',
+  description: `Қайыңды көлі — ерекше табиғи көрінісімен таңғалдыратын көл. 1911 жылғы жер сілкінісінен кейін пайда болған.
+  Судың мөлдірлігінен су астындағы ағаш діңдері көрініп тұрады. Бұл орын фотографтар мен саяхатшылар арасында өте танымал.`,
+  rating: 4.8,
+  images: [
+    'places/R (2).jpg', // Салыстырмалы жол
+    'https://www.advantour.com/img/kazakhstan/images/kolsay/kaindy-lake.jpg', // Толық URL
+    'https://media-cdn.tripadvisor.com/media/photo-s/1a/1f/d3/91/kaindy-lake.jpg',
+  ],
+  coordinates: {
+    lat: 42.9868,
+    lng: 78.3166,
+  },
+  thingsToDo: ['Фото түсіру', 'Жаяу серуендеу', 'Кемемен серуендеу', 'Кемпинг'],
+}
+
+const PlaceDetail = () => {
+  const { id } = useParams()
+  const [place, setPlace] = useState(null) // API-ден мәліметтерді алу үшін null етіп бастаймыз
+  const [loading, setLoading] = useState(true) // Жүктеу күйі
+  const [error, setError] = useState(null) // Қателік күйі
+  const theme = useTheme() // Теманы пайдалану үшін
+
+  useEffect(() => {
+    const fetchPlaceData = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        // API-ден деректерді алу (мұнда сіздің нақты API маршрутыңыз болуы керек)
+        // Мысалы: /api/places/{id}
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/places/${id}`
+        )
+        console.log('API Response for PlaceDetail:', response.data)
+        setPlace(response.data) // API жауабының құрылымына қарай түзету қажет болуы мүмкін
+        // Мысалы, response.data.place немесе response.data.data
+      } catch (err) {
+        console.error('Көрікті орынды жүктеу кезінде қате кетті:', err)
+        setError(
+          err.message || 'Көрікті орын туралы мәліметтерді алу мүмкін болмады.'
+        )
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPlaceData()
+  }, [id]) // id өзгергенде қайта жүктеу
+
+  // Жүктеу немесе қателік күйлері
+  if (loading) {
+    return (
+      <Container sx={{ py: 10, textAlign: 'center' }}>
+        <CircularProgress />
+        <Typography mt={2}>Көрікті орын жүктелуде...</Typography>
+      </Container>
+    )
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ py: 10, textAlign: 'center' }}>
+        <Typography variant="h5" color="error">
+          Қате: {error}
+        </Typography>
+      </Container>
+    )
+  }
+
+  // Орын табылмады
+  if (!place) {
+    return (
+      <Container sx={{ py: 10, textAlign: 'center' }}>
+        <Typography variant="h5" color="error">
+          Бұл орын табылмады.
+        </Typography>
+      </Container>
+    )
+  }
+
+  return (
+    <Container sx={{ py: 14 }}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        {place.name}
+      </Typography>
+      <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+        {place.city}, {place.country}
+      </Typography>
+
+      {/* Галерея */}
+      <Grid container spacing={2} mb={4}>
+        {place.images && place.images.length > 0 ? (
+          place.images.map((imgUrl, index) => (
+            <Grid item xs={12} sm={4} key={index}>
+              <GalleryImage
+                image={getImageUrl(imgUrl)} // Суреттің URL-ін getImageUrl арқылы аламыз
+                title={`Сурет ${index + 1}`}
+              />
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <Typography variant="body2" color="text.secondary">
+              Суреттер жоқ.
+            </Typography>
+          </Grid>
+        )}
+      </Grid>
+
+      {/* Негізгі сипаттама */}
+      <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Орын сипаттамасы
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          {place.description}
+        </Typography>
+      </Paper>
+
+      {/* Рейтинг */}
+      <Box display="flex" alignItems="center" mb={2}>
+        <Rating
+          value={parseFloat(place.rating) || 0}
+          precision={0.1}
+          readOnly
+        />
+        <Typography variant="body2" ml={1}>
+          {parseFloat(place.rating) || 0} / 5
+        </Typography>
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
+
+      {/* Қызметтер немесе қосымша мәліметтер */}
+      <Box mb={4}>
+        <Typography variant="h6" gutterBottom>
+          Қосымша ақпараттар
+        </Typography>
+        {place.things_to_do && place.things_to_do.length > 0 ? (
+          <Grid container spacing={1}>
+            {place.things_to_do.split(',').map(
+              (
+                item,
+                index // things_to_do жолын бөлу
+              ) => (
+                <Grid item key={index}>
+                  <Chip label={item.trim()} sx={{ mr: 1, mb: 1 }} />
+                </Grid>
+              )
+            )}
+          </Grid>
+        ) : (
+          <Typography variant="body2" color="text.secondary">
+            Қосымша мәліметтер жоқ.
+          </Typography>
+        )}
+      </Box>
+
+      {/* Карта - болашақта нақты карта интеграциялауға болады */}
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          Орын орналасуы (карта)
+        </Typography>
+        <Box
+          sx={{
+            width: '100%',
+            height: 300,
+            backgroundColor: '#eee',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 2,
+          }}
+        >
+          <Typography color="text.secondary">
+            Карта осында көрсетіледі
+          </Typography>
+        </Box>
+      </Box>
+    </Container>
+  )
+}
+
+export default PlaceDetail

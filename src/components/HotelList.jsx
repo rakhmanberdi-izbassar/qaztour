@@ -10,18 +10,22 @@ import {
   Button,
   Box,
   CircularProgress,
-  Rating, // Рейтинг компонентін импорттау
+  Rating,
+  IconButton,
 } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
 import PublicIcon from '@mui/icons-material/Public'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 
 const HotelList = () => {
   const [hotels, setHotels] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const BASE_URL = 'http://127.0.0.1:8000/storage/' // Сіздің API storage URL-іңіз
+  const navigate = useNavigate()
+  const BASE_URL = 'http://127.0.0.1:8000/storage/'
 
   useEffect(() => {
     const fetchHotels = async () => {
@@ -40,6 +44,10 @@ const HotelList = () => {
 
     fetchHotels()
   }, [])
+
+  const handleGoBack = () => {
+    navigate(-1)
+  }
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return 'https://via.placeholder.com/300x200' // Әдепкі сурет
@@ -77,13 +85,21 @@ const HotelList = () => {
   return (
     <Container sx={{ py: 14 }}>
       <Typography variant="h4" gutterBottom>
+        <IconButton onClick={handleGoBack} sx={{ mb: 2 }}>
+          <ArrowBackIosIcon />
+        </IconButton>
         Қонақүйлер тізімі
       </Typography>
       <Grid container spacing={3}>
         {hotels.map((hotel) => (
           <Grid item xs={12} sm={6} md={4} key={hotel.id}>
             <Card
-              sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+              sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                borderRadius: 6,
+              }}
               onClick={() => (window.location.href = `/hotels/${hotel.id}`)}
             >
               <CardMedia
