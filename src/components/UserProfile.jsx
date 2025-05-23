@@ -9,7 +9,6 @@ import {
   IconButton,
   CircularProgress,
   Container,
-  Divider,
   TextField, // TextField импорттау
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
@@ -17,7 +16,6 @@ import DeleteIcon from '@mui/icons-material/Delete' // DeleteIcon импортт
 import FacebookIcon from '@mui/icons-material/Facebook'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import TwitterIcon from '@mui/icons-material/Twitter'
-import LockIcon from '@mui/icons-material/Lock'
 import AddIcon from '@mui/icons-material/Add' // "Пост қосу" иконкасы
 import { NavLink, Link } from 'react-router-dom'
 import api from './../utils/axios' // Сіздің axios инстансыңыз
@@ -29,8 +27,8 @@ const UserProfile = () => {
   const [error, setError] = useState(null)
   const [userReviews, setUserReviews] = useState([])
   const [deleteLoading, setDeleteLoading] = useState(null)
-  const [editingPostId, setEditingPostId] = useState(null) // Редакциялаудағы посттың ID-сі
-  const [editedContent, setEditedContent] = useState('') // Редакцияланған контент
+  const [editingPostId, setEditingPostId] = useState(null) 
+  const [editedContent, setEditedContent] = useState('') 
 
   const fetchUserReviews = async () => {
     try {
@@ -72,8 +70,8 @@ const UserProfile = () => {
             Authorization: `Bearer ${token}`,
           },
         })
-        console.log('Bookings Data:', bookingsResponse.data) // Бұны да тексеріңіз
-        setBookings(bookingsResponse.data.bookings) // Дұрыс жол!
+        console.log('Bookings Data:', bookingsResponse.data)
+        setBookings(bookingsResponse.data.bookings)
         setLoading(false)
       } catch (err) {
         console.error('Error fetching user profile data:', err)

@@ -54,7 +54,7 @@ const HotelDetail = () => {
   }, [id])
 
   const getImageUrl = (imagePath) => {
-    if (!imagePath) return 'https://via.placeholder.com/600x400' // Әдепкі сурет
+    if (!imagePath) return 'https://via.placeholder.com/600x400'
     if (imagePath.startsWith('http')) return imagePath
     return `${BASE_URL}${imagePath}`
   }

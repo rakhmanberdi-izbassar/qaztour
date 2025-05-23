@@ -43,7 +43,7 @@ const BookingRoom = () => {
         },
       })
       .then((response) => {
-        setBooking(response.data.booking) // `.booking` ішінен алу керек
+        setBooking(response.data.booking)
         setLoading(false)
       })
       .catch((error) => {
@@ -51,7 +51,6 @@ const BookingRoom = () => {
         setLoading(false)
       })
   }, [bookingId])
-  // `bookingId` өзгерген сайын қайта жүктеледі
 
   if (loading) {
     return (
@@ -270,7 +269,7 @@ const BookingRoom = () => {
                       purchase_units: [
                         {
                           amount: {
-                            value: total_price.toString(), // Соманы динамикалық енгізу
+                            value: total_price.toString(),
                           },
                         },
                       ],
@@ -281,7 +280,6 @@ const BookingRoom = () => {
                       alert(
                         `Төлем сәтті өтті, рахмет ${details.payer.name.given_name}!`
                       )
-                      // Қажет болса, бронь статусын жаңарту немесе басқа логика
                     })
                   }}
                   onError={(err) => {

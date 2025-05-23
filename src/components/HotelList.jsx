@@ -50,7 +50,7 @@ const HotelList = () => {
   }
 
   const getImageUrl = (imagePath) => {
-    if (!imagePath) return 'https://via.placeholder.com/300x200' // Әдепкі сурет
+    if (!imagePath) return 'https://via.placeholder.com/300x200'
     if (imagePath.startsWith('http')) return imagePath
     return `${BASE_URL}${imagePath}`
   }

@@ -1,79 +1,55 @@
-import React, { useState, useEffect } from 'react' // useEffect-ті қостық, себебі API шақыру болады
+import React, { useState, useEffect } from 'react'
 import {
   Box,
-  Container,
-  Grid,
   Typography,
-  Card, // Бұл енді қолданылмайды, бірақ импортта қалдырайық
-  CardMedia, // Бұл енді қолданылады
-  CardContent,
+  Grid,
+  CardMedia,
   Chip,
   Divider,
   Rating,
   Paper,
-  CircularProgress, // Жүктеу үшін
+  CircularProgress,
+  Container,
 } from '@mui/material'
 import { useParams } from 'react-router-dom'
-import { styled, useTheme } from '@mui/material/styles' // useTheme қостық
-import axios from 'axios' // API шақыру үшін axios қостық
+import { styled } from '@mui/material/styles'
+import axios from 'axios'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css' // Leaflet стилдерін импорттау
 
 // --- Styled Components ---
 const GalleryImage = styled(CardMedia)(({ theme }) => ({
   height: 200,
   borderRadius: theme.spacing(1),
-  objectFit: 'cover', // Суреттің толық көрінуін қамтамасыз етеді
+  objectFit: 'cover',
 }))
 
-// --- Helper function for image URL (if not in a separate utils file) ---
-const BASE_URL = 'http://127.0.0.1:8000/storage/' // Сіздің API storage URL-і
+// --- Helper function for image URL ---
+const BASE_URL = 'http://127.0.0.1:8000/storage/'
 
 const getImageUrl = (imagePath) => {
-  if (!imagePath) return 'https://via.placeholder.com/300x200?text=No+Image' // Әдепкі сурет
+  if (!imagePath) return 'https://via.placeholder.com/300x200?text=No+Image'
   if (imagePath.startsWith('http')) return imagePath
-  return `${BASE_URL}${encodeURIComponent(imagePath)}` // encodeURIComponent-ті де қолданыңыз
-}
-
-// --- Mock Data (Replace with API call later) ---
-const mockPlace = {
-  id: 1,
-  name: 'Қайыңды көлі',
-  city: 'Алматы облысы',
-  country: 'Қазақстан',
-  description: `Қайыңды көлі — ерекше табиғи көрінісімен таңғалдыратын көл. 1911 жылғы жер сілкінісінен кейін пайда болған.
-  Судың мөлдірлігінен су астындағы ағаш діңдері көрініп тұрады. Бұл орын фотографтар мен саяхатшылар арасында өте танымал.`,
-  rating: 4.8,
-  images: [
-    'places/R (2).jpg', // Салыстырмалы жол
-    'https://www.advantour.com/img/kazakhstan/images/kolsay/kaindy-lake.jpg', // Толық URL
-    'https://media-cdn.tripadvisor.com/media/photo-s/1a/1f/d3/91/kaindy-lake.jpg',
-  ],
-  coordinates: {
-    lat: 42.9868,
-    lng: 78.3166,
-  },
-  thingsToDo: ['Фото түсіру', 'Жаяу серуендеу', 'Кемемен серуендеу', 'Кемпинг'],
+  return `${BASE_URL}${encodeURIComponent(imagePath)}`
 }
 
 const PlaceDetail = () => {
   const { id } = useParams()
-  const [place, setPlace] = useState(null) // API-ден мәліметтерді алу үшін null етіп бастаймыз
-  const [loading, setLoading] = useState(true) // Жүктеу күйі
-  const [error, setError] = useState(null) // Қателік күйі
-  const theme = useTheme() // Теманы пайдалану үшін
+  const [place, setPlace] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchPlaceData = async () => {
       setLoading(true)
       setError(null)
       try {
-        // API-ден деректерді алу (мұнда сіздің нақты API маршрутыңыз болуы керек)
-        // Мысалы: /api/places/{id}
         const response = await axios.get(
           `http://127.0.0.1:8000/api/places/${id}`
         )
         console.log('API Response for PlaceDetail:', response.data)
-        setPlace(response.data) // API жауабының құрылымына қарай түзету қажет болуы мүмкін
-        // Мысалы, response.data.place немесе response.data.data
+        setPlace(response.data)
       } catch (err) {
         console.error('Көрікті орынды жүктеу кезінде қате кетті:', err)
         setError(
@@ -85,7 +61,28 @@ const PlaceDetail = () => {
     }
 
     fetchPlaceData()
-  }, [id]) // id өзгергенде қайта жүктеу
+  }, [id])
+
+  useEffect(() => {
+    // Leaflet icon bug fix for Webpack
+    delete L.Icon.Default.prototype._getIconUrl
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl:
+        'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      shadowUrl:
+        'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    })
+  }, [])
+
+  const ResetMapView = ({ lat, lng }) => {
+    const map = useMap()
+    useEffect(() => {
+      map.invalidateSize()
+      map.setView([lat, lng], 13)
+    }, [map, lat, lng])
+    return null
+  }
 
   // Жүктеу немесе қателік күйлері
   if (loading) {
@@ -118,6 +115,11 @@ const PlaceDetail = () => {
     )
   }
 
+  // Картаға арналған координаттарды дайындау
+  const lat = parseFloat(place.lat)
+  const lng = parseFloat(place.lng)
+  const hasCoordinates = !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0 // 0,0 болмауын да тексеру
+
   return (
     <Container sx={{ py: 14 }}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -133,7 +135,7 @@ const PlaceDetail = () => {
           place.images.map((imgUrl, index) => (
             <Grid item xs={12} sm={4} key={index}>
               <GalleryImage
-                image={getImageUrl(imgUrl)} // Суреттің URL-ін getImageUrl арқылы аламыз
+                image={getImageUrl(imgUrl)}
                 title={`Сурет ${index + 1}`}
               />
             </Grid>
@@ -176,18 +178,15 @@ const PlaceDetail = () => {
         <Typography variant="h6" gutterBottom>
           Қосымша ақпараттар
         </Typography>
-        {place.things_to_do && place.things_to_do.length > 0 ? (
+        {place.things_to_do &&
+        typeof place.things_to_do === 'string' &&
+        place.things_to_do.length > 0 ? (
           <Grid container spacing={1}>
-            {place.things_to_do.split(',').map(
-              (
-                item,
-                index // things_to_do жолын бөлу
-              ) => (
-                <Grid item key={index}>
-                  <Chip label={item.trim()} sx={{ mr: 1, mb: 1 }} />
-                </Grid>
-              )
-            )}
+            {place.things_to_do.split(',').map((item, index) => (
+              <Grid item key={index}>
+                <Chip label={item.trim()} sx={{ mr: 1, mb: 1 }} />
+              </Grid>
+            ))}
           </Grid>
         ) : (
           <Typography variant="body2" color="text.secondary">
@@ -196,26 +195,46 @@ const PlaceDetail = () => {
         )}
       </Box>
 
-      {/* Карта - болашақта нақты карта интеграциялауға болады */}
-      <Box>
+      {/* Карта */}
+      <Box mb={4}>
         <Typography variant="h6" gutterBottom>
           Орын орналасуы (карта)
         </Typography>
-        <Box
-          sx={{
-            width: '100%',
-            height: 300,
-            backgroundColor: '#eee',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 2,
-          }}
-        >
-          <Typography color="text.secondary">
-            Карта осында көрсетіледі
-          </Typography>
-        </Box>
+
+        {hasCoordinates ? ( // Жаңа hasCoordinates айнымалысын қолданамыз
+          <Box sx={{ height: 300, borderRadius: 2, overflow: 'hidden' }}>
+            <MapContainer
+              center={[place.lat, place.lng]}
+              zoom={13}
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Marker position={[place.lat, place.lng]}>
+                <Popup>{place.name}</Popup>
+              </Marker>
+              <ResetMapView lat={place.lat} lng={place.lng} />
+            </MapContainer>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              width: '100%',
+              height: 300,
+              backgroundColor: '#eee',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 2,
+            }}
+          >
+            <Typography color="text.secondary">
+              Координаталар табылмады
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Container>
   )

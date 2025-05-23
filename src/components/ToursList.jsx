@@ -288,23 +288,6 @@ const ToursList = () => {
                   margin="normal"
                 />
 
-                {/* API-де категория жоқ */}
-                {/* <FormControl fullWidth margin="normal">
-                  <InputLabel id="category-select-label">Category</InputLabel>
-                  <Select
-                    labelId="category-select-label"
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                    label="Category"
-                  >
-                    <MenuItem value="">All Categories</MenuItem>
-                    <MenuItem value="mountain">Mountain</MenuItem>
-                    <MenuItem value="beach">Beach</MenuItem>
-                    <MenuItem value="cultural">Cultural</MenuItem>
-                    <MenuItem value="extreme">Extreme</MenuItem>
-                  </Select>
-                </FormControl> */}
-
                 <FormControl fullWidth margin="normal">
                   <InputLabel id="duration-select-label">
                     Ұзақтығы (күндер)

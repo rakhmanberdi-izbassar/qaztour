@@ -93,16 +93,6 @@ function SlideShow() {
           value={searchTerm}
           onChange={handleSearchTermChange}
         />
-
-        {/* <FormLabel>Күніңізді таңдаңыз:</FormLabel>
-        <Input
-          type="date"
-          startDecorator={<DateRangeIcon />}
-          sx={{ borderRadius: 6, bgcolor: '#f5f5f5', p: 1 }}
-          value={selectedDate}
-          onChange={handleDateChange}
-        /> */}
-
         <FormLabel>Басталу күні:</FormLabel>
         <Input
           type="date"

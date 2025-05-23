@@ -9,7 +9,7 @@ import HotelBookingPage from './pages/HotelBookingPage'
 import LoginPage from './pages/LoginPage'
 import TourDetailPage from './pages/TourDetailPage'
 import ProfilePage from './pages/ProfilePage'
-import ProviderPage from './components/Provider'
+// import ProviderPage from './components/Provider'
 import VideoTravelPage from './pages/VideoTravelPage'
 import EventsPage from './pages/EventsPage'
 import EditProfilePage from './pages/EditProfilePage'
@@ -43,9 +43,7 @@ function App() {
               <Route path="/tours" element={<ToursPage />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/auth" element={<LoginPage />} />
-              {/* <Route path="/hotel-booking/:id" element={<HotelBookingPage />} /> */}
               <Route path="/video-travel" element={<VideoTravelPage />} />
-              <Route path="/provider/:id" element={<ProviderPage />} />
               <Route path="/gallery" element={<GalleryPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/tour/:id" element={<TourDetailPage />} />
@@ -65,7 +63,6 @@ function App() {
                 path="/booking-room/:bookingId"
                 element={<BookingRoom />}
               />
-              {/* <Route path="/my-bookings" element={<MyBooking />} /> */}
               <Route path="/places/" element={<PlacesPage />} />
               <Route path="/place/:id" element={<PlacesDetailPage />} />
               <Route path="*" element={<h1>404 Not Found</h1>} />

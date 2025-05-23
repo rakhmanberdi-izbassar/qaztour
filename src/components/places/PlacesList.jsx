@@ -2,15 +2,12 @@ import React, { useState } from 'react'
 import {
   Container,
   Grid,
-  Card,
-  CardContent,
   CardMedia,
   Typography,
   Button,
   Box,
   CircularProgress,
   Rating,
-  IconButton,
 } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { styled, useTheme } from '@mui/material/styles'
@@ -34,13 +31,6 @@ const StyledCard = styled(Box)(({ theme }) => ({
     },
   },
 }))
-
-const CardImage = styled('div')({
-  width: '100%',
-  height: 280,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-})
 
 const CardOverlay = styled(Box)(({ theme }) => ({
   position: 'absolute',

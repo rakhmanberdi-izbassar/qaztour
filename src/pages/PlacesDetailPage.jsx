@@ -3,7 +3,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import PlaceDetail from '../components/places/PlaceDetail'
 
-const EditProfilePage = () => {
+const PlacesDetailPage = () => {
   return (
     <div>
       <Header />
@@ -12,4 +12,4 @@ const EditProfilePage = () => {
     </div>
   )
 }
-export default EditProfilePage
+export default PlacesDetailPage
