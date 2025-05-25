@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios' // axios импорттау
 import {
   Box,
   Container,
@@ -11,56 +12,123 @@ import {
   MenuItem,
   Select,
   Button,
+  CircularProgress, // Жүктеу индикаторы үшін
+  InputLabel, // Select үшін
+  FormControl, // Select үшін
 } from '@mui/material'
+import { Link } from 'react-router-dom' // Толығырақ үшін
+import { styled } from '@mui/material/styles' // styled импорттау
 
-const events = [
-  {
-    id: 1,
-    title: 'Алматы марафоны 2025',
-    date: '2025-04-20',
-    location: 'Алматы',
-    type: 'Спорт',
-    image:
-      'https://ertenmedia.kz/wp-content/uploads/2025/03/6bb92a6c-b1d5-41ff-877c-114965ad3a5b-1024x682.jpeg',
-    description: 'Алматыдағы ең ірі марафонға қатысып, өзіңді сынап көр!',
+// Styled Card (TourList-тен алынғандай)
+const StyledEventCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: theme.spacing(2), // Дөңгелектелген шеттер
+  boxShadow: theme.shadows[3], // Жеңіл көлеңке
+  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-5px)', // Үстіне апарғанда көтерілу
+    boxShadow: theme.shadows[6], // Тереңірек көлеңке
   },
-  {
-    id: 2,
-    title: 'Технологиялық Саммит',
-    date: '2025-06-15',
-    location: 'Астана',
-    type: 'IT',
-    image:
-      'https://sputnik.kz/img/07e8/09/0f/47108883_0:0:1280:853_1440x900_80_0_1_09848a65bcd78be62b340a01f40da271.jpg.webp?source-sid=',
-    description: 'Қазақстандағы ең ірі IT мамандар саммиті.',
-  },
-  {
-    id: 3,
-    title: 'Музыкалық фестиваль',
-    date: '2025-07-10',
-    location: 'Шымкент',
-    type: 'Музыка',
-    image: 'https://massaget.kz/userdata/news/news_17681/photo.jpg',
-    description: 'Ең үздік әншілердің өнерін тамашалаңыз!',
-  },
-]
+}))
 
-function EventsPage() {
+// Styled CardMedia (сурет үшін)
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+  height: 200,
+  objectFit: 'cover',
+  [theme.breakpoints.down('sm')]: {
+    height: 160,
+  },
+  borderRadius: `${theme.spacing(2)} ${theme.spacing(2)} 0 0`, // Жоғарғы бұрыштары дөңгелек
+}))
+
+const EventsPage = () => {
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedLocation, setSelectedLocation] = useState('')
   const [selectedType, setSelectedType] = useState('')
 
-  const filteredEvents = events.filter((event) => {
+  const BASE_URL = 'http://127.0.0.1:8000/storage/' // Суреттер үшін BASE_URL
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath)
+      return 'https://via.placeholder.com/300x200?text=Event+Image'
+    if (imagePath.startsWith('http')) return imagePath
+    return `${BASE_URL}${encodeURIComponent(imagePath)}`
+  }
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const params = {}
+        if (selectedDate) params.date = selectedDate
+        if (selectedLocation) params.location_name = selectedLocation
+        if (selectedType) params.event_type = selectedType
+
+        const response = await axios.get('http://127.0.0.1:8000/api/events', {
+          params,
+        })
+        console.log('API Response:', response.data) // Бұл жолы толық жауапты қараңыз
+
+        // Деректерді дұрыс жолмен алу
+        setEvents(response.data.data.data || []) // <<< Мәселе осында! Қазір API жауабындағы "data" ішінде тағы "data" массиві бар.
+      } catch (err) {
+        console.error('Оқиғаларды жүктеу кезінде қате кетті:', err)
+        setError(err.message || 'Оқиғаларды жүктеу мүмкін болмады.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [selectedDate, selectedLocation, selectedType])
+  // Mock қалалар мен типтер (API-ден City және EventType тізімдерін алу керек)
+  const mockLocations = ['Алматы', 'Астана', 'Шымкент', 'Атырау']
+  const mockTypes = [
+    'Концерт',
+    'Спорттық іс-шара',
+    'Фестиваль',
+    'Көрме',
+    'Білім беру',
+    'Балаларға арналған',
+  ]
+
+  if (loading) {
     return (
-      (!selectedDate || event.date === selectedDate) &&
-      (!selectedLocation || event.location === selectedLocation) &&
-      (!selectedType || event.type === selectedType)
+      <Container
+        sx={{
+          mt: 14,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '50vh',
+        }}
+      >
+        <CircularProgress />
+        <Typography ml={2}>Оқиғалар жүктелуде...</Typography>
+      </Container>
     )
-  })
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ mt: 14, textAlign: 'center' }}>
+        <Typography variant="h6" color="error">
+          Қате: {error}
+        </Typography>
+      </Container>
+    )
+  }
 
   return (
-    <Container>
-      <Box sx={{ textAlign: 'center', mt: 14 }}>
+    <Container sx={{ mt: 14 }}>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           Жақын арадағы іс-шаралар
         </Typography>
@@ -70,7 +138,7 @@ function EventsPage() {
       </Box>
 
       {/* Фильтрлер */}
-      <Grid container spacing={2} sx={{ mt: 3, mb: 3 }}>
+      <Grid container spacing={2} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={4}>
           <TextField
             type="date"
@@ -82,65 +150,74 @@ function EventsPage() {
           />
         </Grid>
         <Grid item xs={12} sm={4}>
-          <Select
-            fullWidth
-            displayEmpty
-            value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
-          >
-            <MenuItem value="">Барлық қалалар</MenuItem>
-            <MenuItem value="Алматы">Алматы</MenuItem>
-            <MenuItem value="Астана">Астана</MenuItem>
-            <MenuItem value="Шымкент">Шымкент</MenuItem>
-          </Select>
+          <FormControl fullWidth>
+            <InputLabel>Қала</InputLabel>
+            <Select
+              value={selectedLocation}
+              label="Қала"
+              onChange={(e) => setSelectedLocation(e.target.value)}
+            >
+              <MenuItem value="">Барлық қалалар</MenuItem>
+              {mockLocations.map((loc) => (
+                <MenuItem key={loc} value={loc}>
+                  {loc}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={4}>
-          <Select
-            fullWidth
-            displayEmpty
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-          >
-            <MenuItem value="">Барлық түрлері</MenuItem>
-            <MenuItem value="Спорт">Спорт</MenuItem>
-            <MenuItem value="IT">IT</MenuItem>
-            <MenuItem value="Музыка">Музыка</MenuItem>
-          </Select>
+          <FormControl fullWidth>
+            <InputLabel>Түрі</InputLabel>
+            <Select
+              value={selectedType}
+              label="Түрі"
+              onChange={(e) => setSelectedType(e.target.value)}
+            >
+              <MenuItem value="">Барлық түрлері</MenuItem>
+              {mockTypes.map((type) => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
 
       {/* Іс-шаралар карточкалары */}
       <Grid container spacing={3}>
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event) => (
+        {events.length > 0 ? (
+          events.map((event) => (
             <Grid item xs={12} sm={6} md={4} key={event.id}>
-              <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={event.image}
-                  alt={event.title}
+              <StyledEventCard>
+                <StyledCardMedia
+                  image={getImageUrl(event.image)}
+                  title={event.title}
                 />
-                <CardContent>
+                <CardContent sx={{ flexGrow: 1 }}>
                   <Typography variant="h6" fontWeight="bold">
                     {event.title}
                   </Typography>
-                  <Typography color="text.secondary">
-                    {event.date} • {event.location}
+                  <Typography color="text.secondary" variant="body2">
+                    {new Date(event.start_date).toLocaleDateString()} •{' '}
+                    {event.location_name || event.city?.name || 'Белгісіз орын'}
                   </Typography>
                   <Typography variant="body2" sx={{ mt: 1 }}>
-                    {event.description}
+                    {event.description?.substring(0, 100)}...
                   </Typography>
                   <Button
                     fullWidth
                     variant="contained"
                     color="primary"
                     sx={{ mt: 2, borderRadius: 3 }}
+                    component={Link}
+                    to={`/events/${event.id}`} // Жеке бетке сілтеме
                   >
                     Толығырақ
                   </Button>
                 </CardContent>
-              </Card>
+              </StyledEventCard>
             </Grid>
           ))
         ) : (

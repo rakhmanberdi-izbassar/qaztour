@@ -8,19 +8,18 @@ import {
   Stack,
   Menu,
   MenuItem,
-  Popover,
   IconButton,
   useMediaQuery,
   useTheme,
+  Avatar,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { motion } from 'framer-motion'
-import { NavLink } from 'react-router-dom'
-// import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { Avatar } from '@mui/material' // Avatar компонентін импорттау
+import { NavLink, useNavigate } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import MenuIcon from '@mui/icons-material/Menu'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle' // AccountCircleIcon импорттау
 import { useWeather } from './WeatherContext'
 
 const DynamicIsland = styled(motion.div)(({ theme }) => ({
@@ -77,7 +76,8 @@ export default function Header() {
   const [selectedCity, setSelectedCity] = useState(cities[0])
 
   const { weather, fetchWeather } = useWeather()
-  const { user, loading } = useContext(UserContext) // Пайдаланушы деректерін контекстен алу
+  const { user, setUser, loading } = useContext(UserContext)
+  const navigate = useNavigate()
 
   const handleMenuOpen = (event) => setExploreMenuEl(event.currentTarget)
   const handleMenuClose = () => setExploreMenuEl(null)
@@ -95,11 +95,22 @@ export default function Header() {
   const handleMobileMenuOpen = (event) => setMobileMenuEl(event.currentTarget)
   const handleMobileMenuClose = () => setMobileMenuEl(null)
 
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    setUser(null)
+    handleUserMenuClose()
+    navigate('/auth')
+  }
+
+  const handleLoginClick = () => {
+    navigate('/auth')
+  }
+
   useEffect(() => {
     if (selectedCity) {
       fetchWeather(selectedCity.lat, selectedCity.lon)
     }
-  }, [selectedCity])
+  }, [selectedCity, fetchWeather])
 
   return (
     <AppBar
@@ -288,7 +299,7 @@ export default function Header() {
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
-                  to="/blogs"
+                  to="/places"
                   onClick={handleMenuClose}
                 >
                   Блог
@@ -328,33 +339,6 @@ export default function Header() {
             </IconButton>
           )}
 
-          <Popover
-            open={Boolean(cityAnchorEl)}
-            anchorEl={cityAnchorEl}
-            onClose={handleCityClose}
-            disableScrollLock={true}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-            PaperProps={{
-              style: {
-                width: isMobile ? '80%' : 'auto',
-                borderRadius: '12px',
-              },
-            }}
-          >
-            <Stack spacing={1} sx={{ p: 2 }}>
-              {cities.map((city) => (
-                <MenuItem
-                  key={city.name}
-                  onClick={() => handleCitySelect(city)}
-                  sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  {city.icon} {city.name}
-                </MenuItem>
-              ))}
-            </Stack>
-          </Popover>
-
           {weather && (
             <Box display="flex" alignItems="center" gap={1}>
               <Typography
@@ -369,18 +353,30 @@ export default function Header() {
             </Box>
           )}
 
-          <IconButton
-            aria-controls="user-menu"
-            aria-haspopup="true"
-            onClick={handleUserMenuOpen}
-            sx={{ color: 'black' }}
-          >
-            <Avatar
-              src={`http://localhost:8000${user?.avatar}`}
-              alt={user?.name}
-              sx={{ width: 30, height: 30 }}
-            />
-          </IconButton>
+          {/* Пайдаланушы аватары немесе Кіру батырмасын шартты түрде көрсету */}
+          {user ? (
+            <IconButton
+              aria-controls="user-menu"
+              aria-haspopup="true"
+              onClick={handleUserMenuOpen}
+              sx={{ color: 'black' }}
+            >
+              <Avatar
+                src={`http://localhost:8000${user?.avatar}`}
+                alt={user?.name}
+                sx={{ width: 30, height: 30 }}
+              />
+            </IconButton>
+          ) : (
+            <IconButton
+              aria-label="login"
+              color="inherit"
+              onClick={handleLoginClick}
+              sx={{ color: 'black' }}
+            >
+              <AccountCircleIcon />
+            </IconButton>
+          )}
 
           <Menu
             id="user-menu"
@@ -397,27 +393,29 @@ export default function Header() {
               },
             }}
           >
-            <MenuItem
-              component={NavLink}
-              to="/profile"
-              onClick={handleUserMenuClose}
-            >
-              Профиль
-            </MenuItem>
-            <MenuItem
-              component={NavLink}
-              to="/settings"
-              onClick={handleUserMenuClose}
-            >
-              Баптаулар
-            </MenuItem>
-            <MenuItem
-              component={NavLink}
-              to="/auth"
-              onClick={handleUserMenuClose}
-            >
-              Шығу
-            </MenuItem>
+            {user && ( // Егер қолданушы жүйеге кірген болса, профиль және баптаулар менюін көрсету
+              <>
+                <MenuItem
+                  component={NavLink}
+                  to="/profile"
+                  onClick={handleUserMenuClose}
+                >
+                  Профиль
+                </MenuItem>
+                <MenuItem
+                  component={NavLink}
+                  to="/settings"
+                  onClick={handleUserMenuClose}
+                >
+                  Баптаулар
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>Шығу</MenuItem>
+              </>
+            )}
+            {/* Егер қолданушы жүйеден шыққан болса, бұл меню әдетте көрсетілмейді,
+                себебі логика тікелей /auth бетіне бағыттайды.
+                Бірақ егер қажет болса, мұнда "Кіру/Тіркелу" опциясын қосуға болады.
+            */}
           </Menu>
         </DynamicIsland>
       </Container>

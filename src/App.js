@@ -26,6 +26,7 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import PostDetailPage from './pages/PostDetailPage'
 import PlacesPage from './pages/PlacesPage'
 import PlacesDetailPage from './pages/PlacesDetailPage'
+import SingleEventsPage from './pages/SingleEventPage'
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/tour/:id" element={<TourDetailPage />} />
               <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:id" element={<SingleEventsPage />} />
               <Route path="/edit-profile" element={<EditProfilePage />} />
               <Route path="/blogs" element={<BlogPages />} />
               <Route path="/blog-create" element={<CreatePost />} />
