@@ -5,14 +5,15 @@ import { useParams } from 'react-router-dom'
 import api from './../../utils/axios'
 import LikeButton from './LikeButton'
 import ShareButton from './ShareButton'
+import CommentSection from './CommentSection'
 
 const StyledImage = styled('img')({
   width: '100%',
   display: 'block',
   borderRadius: 8,
-  marginBottom: 24, // Суреттен кейінгі арақашықтық
-  maxHeight: 600, // Максималды биіктік
-  objectFit: 'cover', // Суретті пропорционалды түрде көрсету
+  marginBottom: 24,
+  maxHeight: 600,
+  objectFit: 'cover',
 })
 
 const ActionBox = styled(Box)(({ theme }) => ({
@@ -31,6 +32,7 @@ const SinglePostPage = () => {
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const user = JSON.parse(localStorage.getItem('user'))
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -61,7 +63,7 @@ const SinglePostPage = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
+    <Container maxWidth="md" sx={{ mt: 14, mb: 14 }}>
       <Typography variant="h4" gutterBottom>
         {post.title}
       </Typography>
@@ -87,6 +89,12 @@ const SinglePostPage = () => {
         </StyledIconButton>
         <ShareButton shareUrl={`/blog/${post.id}`} shareTitle={post.title} />
       </ActionBox>
+      <Box mt={5}>
+        <Typography variant="h5" gutterBottom>
+          Пікірлер
+        </Typography>
+        <CommentSection postId={post?.id} currentUserId={user?.id} />
+      </Box>
     </Container>
   )
 }

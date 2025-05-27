@@ -299,7 +299,7 @@ export default function Header() {
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
-                  to="/places"
+                  to="/blogs"
                   onClick={handleMenuClose}
                 >
                   Блог
