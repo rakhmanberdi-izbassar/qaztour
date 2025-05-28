@@ -27,8 +27,8 @@ const UserProfile = () => {
   const [error, setError] = useState(null)
   const [userReviews, setUserReviews] = useState([])
   const [deleteLoading, setDeleteLoading] = useState(null)
-  const [editingPostId, setEditingPostId] = useState(null) 
-  const [editedContent, setEditedContent] = useState('') 
+  const [editingPostId, setEditingPostId] = useState(null)
+  const [editedContent, setEditedContent] = useState('')
 
   const fetchUserReviews = async () => {
     try {
@@ -412,7 +412,7 @@ const UserProfile = () => {
                   {deleteLoading === review.id ? (
                     <Typography variant="caption">Өшіп жатыр...</Typography>
                   ) : (
-                    'Delete'
+                    <DeleteIcon />
                   )}
                 </IconButton>
               </Box>
@@ -482,32 +482,6 @@ const UserProfile = () => {
           </CardContent>
         </Card>
       )}
-      {/* Қауіпсіздік параметрлері
-      <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
-        <CardContent>
-          <Typography variant="h6" fontWeight={600}>
-            Security Settings
-          </Typography>
-          <Button
-            component={NavLink}
-            to="/change-password"
-            startIcon={<LockIcon />}
-            variant="outlined"
-            sx={{ mt: 2, borderRadius: 2 }}
-          >
-            Change Password
-          </Button>
-          <Button
-            component={NavLink}
-            to="/enable-2fa"
-            startIcon={<LockIcon />}
-            variant="outlined"
-            sx={{ mt: 2, borderRadius: 2, ml: 2 }}
-          >
-            Enable 2FA
-          </Button>
-        </CardContent>
-      </Card> */}
     </Box>
   )
 }
