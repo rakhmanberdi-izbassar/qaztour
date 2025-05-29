@@ -11,27 +11,103 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress, // Жүктеу индикаторы үшін
+  Alert, // Қате/сәттілік хабарламасы үшін
+  Paper, // Формаға фон беру үшін
 } from '@mui/material'
 import PhotoCamera from '@mui/icons-material/PhotoCamera'
-import api from '../../utils/axios'
+import api from '../../utils/axios' // Axios инстансы
+import { useTheme } from '@mui/material/styles' // Теманы пайдалану үшін
+import { useNavigate } from 'react-router-dom' // Бағыттау үшін
 
-const StyledPreviewImage = styled('img')({
+// --- Styled Components ---
+
+const FormContainer = styled(Container)(({ theme }) => ({
+  marginTop: theme.spacing(10),
+  marginBottom: theme.spacing(10),
+  [theme.breakpoints.down('sm')]: {
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(5),
+  },
+}))
+
+const FormPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.spacing(2),
+  boxShadow: theme.shadows[8], // Көбірек көлеңке
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center', // Элементтерді ортаға теңшеу
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
+}))
+
+const FormTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: theme.typography.fontWeightBold,
+  fontSize: '2.5rem',
+  color: theme.palette.primary.dark,
+  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.8rem',
+  },
+}))
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  margin: theme.spacing(1.5, 0), // Арақашықтық
+  '& .MuiOutlinedInput-root': {
+    borderRadius: theme.spacing(1), // Кішірек радиус
+  },
+}))
+
+const SubmitButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  padding: theme.spacing(1.5),
+  fontSize: '1.1rem',
+  fontWeight: theme.typography.fontWeightBold,
+  borderRadius: theme.spacing(1.5),
+  backgroundColor: theme.palette.primary.main,
+  '&:hover': {
+    backgroundColor: theme.palette.primary.dark,
+  },
+}))
+
+const ImageUploadBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-start', // Сол жаққа теңшеу
+  width: '100%',
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+}))
+
+const UploadIconButton = styled(IconButton)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+  color: theme.palette.primary.main,
+}))
+
+const StyledPreviewImage = styled('img')(({ theme }) => ({
   height: 100,
   width: 'auto',
-  borderRadius: 4,
-  marginTop: 8,
-})
+  borderRadius: theme.spacing(1),
+  marginLeft: theme.spacing(2),
+  border: `1px solid ${theme.palette.divider}`,
+  objectFit: 'cover',
+}))
 
 const CreatePost = () => {
-  const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [savedImage, setSavedImage] = useState(null)
   const [locationId, setLocationId] = useState('')
-  const [locations, setLocations] = useState([]) // Локациялар тізімі үшін жаңа күй
+  const [locations, setLocations] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [locationsLoading, setLocationsLoading] = useState(true) // Локациялар жүктелу күйі
-  const [locationsError, setLocationsError] = useState(null) // Локациялар қатесі
+  const [locationsLoading, setLocationsLoading] = useState(true)
+  const [locationsError, setLocationsError] = useState(null)
+
+  const theme = useTheme() // Теманы пайдалану үшін
+  const navigate = useNavigate() // Бағыттау үшін
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -62,30 +138,36 @@ const CreatePost = () => {
     setLocationId(event.target.value)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault() // Форманың әдепкі жіберуін болдырмау
     setLoading(true)
     setError(null)
+
+    // Валидацияны фронтендте қосымша тексеру
+    if (!content.trim() || !locationId) {
+      setError('Барлық міндетті өрістерді толтырыңыз.')
+      setLoading(false)
+      return
+    }
+
     try {
       const formData = new FormData()
-      formData.append('title', title)
-      formData.append('content', content)
+      formData.append('content', content.trim())
       if (savedImage) {
-        // `savedImage` күйі суретті сақтайды деп болжаймыз
-        formData.append('image', savedImage) // Кілтті `saved`-тен `image`-ге ауыстырыңыз
+        formData.append('image', savedImage)
       }
       formData.append('location_id', locationId)
-      const response = await api.post('/posts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+
+      // Axios-та `Content-Type` FormData үшін автоматты түрде орнатылады, қолмен беру қажет емес.
+      const response = await api.post('/posts', formData)
+
       console.log('Пост жарияланды:', response.data)
-      setTitle('')
       setContent('')
       setSavedImage(null)
       setLocationId('')
       setLoading(false)
       alert('Пост сәтті жарияланды!')
+      navigate('/profile') // Профиль бетіне бағыттау
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -98,101 +180,102 @@ const CreatePost = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-           {' '}
-      <Typography variant="h4" gutterBottom>
-                Жаңа пост жазу      {' '}
-      </Typography>
-           {' '}
-      <TextField
-        label="Немен бөліскіңіз келеді?"
-        multiline
-        rows={4}
-        fullWidth
-        value={content}
-        onChange={handleContentChange}
-        margin="normal"
-      />
-           {' '}
-      <FormControl fullWidth margin="normal" disabled={locationsLoading}>
-               {' '}
-        <InputLabel id="location-id-label">Локацияны таңдаңыз</InputLabel>     
-         {' '}
-        <Select
-          labelId="location-id-label"
-          id="location-id"
-          value={locationId}
-          label="Локацияны таңдаңыз"
-          onChange={handleLocationIdChange}
-        >
-                   {' '}
-          <MenuItem value="">
-                        <em>Жоқ</em>         {' '}
-          </MenuItem>
-                   {' '}
-          {locations.map((location) => (
-            <MenuItem key={location.id} value={location.id}>
-                            {location.name}           {' '}
+    <FormContainer maxWidth="md">
+      <FormPaper elevation={3}>
+        <FormTitle variant="h4">Жаңа пост жазу</FormTitle>
+
+        <StyledTextField
+          label="Немен бөліскіңіз келеді?"
+          multiline
+          rows={4}
+          fullWidth
+          value={content}
+          onChange={handleContentChange}
+          required // Міндетті өріс
+        />
+
+        <FormControl fullWidth margin="normal" disabled={locationsLoading}>
+          <InputLabel id="location-id-label" required>
+            Локацияны таңдаңыз
+          </InputLabel>
+          <Select
+            labelId="location-id-label"
+            id="location-id"
+            value={locationId}
+            label="Локацияны таңдаңыз"
+            onChange={handleLocationIdChange}
+            required // Міндетті өріс
+          >
+            <MenuItem value="">
+              <em>Жоқ</em>
             </MenuItem>
-          ))}
-                 {' '}
-        </Select>
-               {' '}
-        {locationsError && (
-          <Typography color="error" sx={{ mt: 1 }}>
-                        Қате: {locationsError}         {' '}
+            {locations.map((location) => (
+              <MenuItem key={location.id} value={location.id}>
+                {location.name}
+              </MenuItem>
+            ))}
+          </Select>
+          {locationsError && (
+            <Typography color="error" sx={{ mt: 1, fontSize: '0.85rem' }}>
+              Қате: {locationsError}
+            </Typography>
+          )}
+          {locationsLoading && (
+            <Typography
+              color="textSecondary"
+              sx={{ mt: 1, fontSize: '0.85rem' }}
+            >
+              Локациялар жүктелуде...
+            </Typography>
+          )}
+        </FormControl>
+
+        <ImageUploadBox>
+          <UploadIconButton color="primary" component="label">
+            <PhotoCamera />
+            <input
+              hidden
+              accept="image/*"
+              type="file"
+              onChange={handleImageUpload}
+            />
+          </UploadIconButton>
+          <Typography sx={{ ml: 1, color: theme.palette.text.secondary }}>
+            Сурет қосу
           </Typography>
+          {savedImage && (
+            <StyledPreviewImage
+              src={URL.createObjectURL(savedImage)}
+              alt="Жүктелген сурет"
+            />
+          )}
+        </ImageUploadBox>
+
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+            {error}
+          </Alert>
         )}
-               {' '}
-        {locationsLoading && (
-          <Typography color="textSecondary" sx={{ mt: 1 }}>
-                        Локациялар жүктелуде...          {' '}
-          </Typography>
-        )}
-             {' '}
-      </FormControl>
-           {' '}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-               {' '}
-        <IconButton color="primary" component="label">
-                    <PhotoCamera />         {' '}
-          <input
-            hidden
-            accept="image/*"
-            type="file"
-            onChange={handleImageUpload}
-          />
-                 {' '}
-        </IconButton>
-                <Typography sx={{ ml: 1 }}>Сурет қосу</Typography>       {' '}
-        {savedImage && (
-          <StyledPreviewImage
-            src={URL.createObjectURL(savedImage)}
-            alt="Жүктелген сурет"
-          />
-        )}
-             {' '}
-      </Box>
-           {' '}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit}
-        disabled={
-          loading ||
-          locationsLoading ||
-          locationsError ||
-          (locations.length === 0 && !locationId)
-        }
-      >
-                {loading ? 'Жариялануда...' : 'Жариялау'}     {' '}
-      </Button>
-      {error && (
-        <Typography color="error" sx={{ mt: 2 }}>
-                    Қате: {error}   
-        </Typography>
-      )}
-    </Container>
+
+        <SubmitButton
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          disabled={
+            loading ||
+            locationsLoading ||
+            locationsError ||
+            (locations.length === 0 && !locationId)
+          }
+        >
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'Жариялау'
+          )}
+        </SubmitButton>
+      </FormPaper>
+    </FormContainer>
   )
 }
 

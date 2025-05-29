@@ -1,9 +1,29 @@
-import React, { useState } from "react";
-import { Container, Grid, Card, Typography, Box, Modal, IconButton } from "@mui/material";
-import { TravelExplore, Language, LocalDining, Security, DirectionsCar, MedicalServices, Close } from "@mui/icons-material";
+import React, { useState } from 'react'
+import {
+  Container,
+  Grid,
+  Card,
+  Typography,
+  Box,
+  Modal,
+  IconButton,
+} from '@mui/material'
+import {
+  TravelExplore,
+  Language,
+  LocalDining,
+  Security,
+  DirectionsCar,
+  MedicalServices,
+  Close,
+} from '@mui/icons-material'
 
 const infoItems = [
-  { icon: <TravelExplore fontSize="large" />, title: "Визалық талаптар", desc: "Туристік визалар, құжаттар және шекаралық ережелер туралы мәліметтер.", content: `Толық ақпарат: # Қазақстанға кіру ережелері
+  {
+    icon: <TravelExplore fontSize="large" />,
+    title: 'Визалық талаптар',
+    desc: 'Туристік визалар, құжаттар және шекаралық ережелер туралы мәліметтер.',
+    content: `Толық ақпарат: # Қазақстанға кіру ережелері
 
 ## Визалық талаптар
 
@@ -40,8 +60,13 @@ const infoItems = [
 
 - Қазақстан аумағы арқылы басқа елге транзитпен өтетін шетелдіктерге Қазақстанның транзиттік визасы қажет.
 - Автомобиль көлігімен транзит тек халықаралық автомобиль қозғалысы үшін ашық жолдар арқылы жүзеге асырылады.
-` },
-  { icon: <Language fontSize="large" />, title: "Тілдік кедергілер", desc: "Негізгі фразалар, аударма қосымшалары және тілдік көмек қызметтері.", content: `Қазақстандағы тілдер
+`,
+  },
+  {
+    icon: <Language fontSize="large" />,
+    title: 'Тілдік кедергілер',
+    desc: 'Негізгі фразалар, аударма қосымшалары және тілдік көмек қызметтері.',
+    content: `Қазақстандағы тілдер
 Еліміздегі мемлекеттік тіл мәртебесі – қазақ тіліне тиесілі. Мемлекеттік мекемелер мен жергілікті өзін-өзі басқару органдарында қазақ тілімен қатар ресми түрде орыс тілі қолданылады.
 
 Жергілікті халықтың 80-90 пайызы орыс тілінде тілдесіп, ойын еркін жеткізе алады. Шығу туризміне мамандандырылған туристік кәсіпорындарда, ірі қалаларда орналасқан қонақ үйлерде, мейрамханалар мен дүкендерде жұмыс жасайтын қызметкерлердің барлығы дерлік ағылшын тілін меңгерген.
@@ -54,10 +79,25 @@ const infoItems = [
 
 жергілікті халықтың кем дегенде 3 тілді: қазақ, орыс, ағылшын, еркін қолданып, жетік меңгеруі – мемлекеттік деңгейде қолға алынған бастама;
 қазақ тілі – түркі тілдері тобындағы ірі тармақтардың бірі болып табылады;
-2017 жылы қазақ тілі әліпбиі кирилл қарпінен латын қарпіне ауысуы жөніндегі жарлыққа қол қойылды. Үрдіс кезең-кезеңмен ұйымдастырылып, 2025 жылға дейін толық орындалады деп жоспарланған.` },
-  { icon: <LocalDining fontSize="large" />, title: "Жергілікті тағамдар", desc: "Қандай дәстүрлі тағамдарды көру керек және қай жерлерде дәм татуға болады.", content: "Толық ақпарат: Жергілікті тағамдар..." },
-  { icon: <Security fontSize="large" />, title: "Қауіпсіздік шаралары", desc: "Туристер үшін қауіпсіздік бойынша кеңестер мен ережелер.", content: "Толық ақпарат: Қауіпсіздік шаралары..." },
-  { icon: <DirectionsCar fontSize="large" />, title: "Көлік және бағыттар", desc: "Қоғамдық көлік, жалға беру қызметтері және навигация кеңестері.", content: `Көлік инфраструктурасы
+2017 жылы қазақ тілі әліпбиі кирилл қарпінен латын қарпіне ауысуы жөніндегі жарлыққа қол қойылды. Үрдіс кезең-кезеңмен ұйымдастырылып, 2025 жылға дейін толық орындалады деп жоспарланған.`,
+  },
+  {
+    icon: <LocalDining fontSize="large" />,
+    title: 'Жергілікті тағамдар',
+    desc: 'Қандай дәстүрлі тағамдарды көру керек және қай жерлерде дәм татуға болады.',
+    content: 'Толық ақпарат: Жергілікті тағамдар...',
+  },
+  {
+    icon: <Security fontSize="large" />,
+    title: 'Қауіпсіздік шаралары',
+    desc: 'Туристер үшін қауіпсіздік бойынша кеңестер мен ережелер.',
+    content: 'Толық ақпарат: Қауіпсіздік шаралары...',
+  },
+  {
+    icon: <DirectionsCar fontSize="large" />,
+    title: 'Көлік және бағыттар',
+    desc: 'Қоғамдық көлік, жалға беру қызметтері және навигация кеңестері.',
+    content: `Көлік инфраструктурасы
 Аэропорт, вокзалдар, көлік вокзалдары – көлік инфрақұрылымы жайындағы қысқаша ақпарат
 
 Әуе көлігі
@@ -77,41 +117,71 @@ const infoItems = [
 
 
 Такси қызметі
-Егер де сізге бір күннің ішінде бірнеше жерге бару қажет болса, Қазақстанда такси қызметі керек болады, ал қалған жағдайларда қоғамдық көлік жүйесін қолданған ыңғайлы. Кішігірім топ қатарында саяхат жасаушы туристерге Қазақстанда такси қолдану тиімді. Сонымен бірге, такси қызметі қалаларға таяу жерлерге де сапар жасауға ыңғайлы. Көлік төбесінде сары белгісі бар автокөліктерді әр уақытта әуежайлардың, метро станциялардың және автобус аялдамаларының маңында табуға болады. Оған қоса, олар сауда орталықтарының және базарлардың қасында жолаушыларды күтеді.` },
-  { icon: <MedicalServices fontSize="large" />, title: "Медициналық көмек", desc: "Дәріханалар, ауруханалар және шұғыл медициналық байланыс нөмірлері.", content: "Толық ақпарат: Медициналық көмек..." },
-];
+Егер де сізге бір күннің ішінде бірнеше жерге бару қажет болса, Қазақстанда такси қызметі керек болады, ал қалған жағдайларда қоғамдық көлік жүйесін қолданған ыңғайлы. Кішігірім топ қатарында саяхат жасаушы туристерге Қазақстанда такси қолдану тиімді. Сонымен бірге, такси қызметі қалаларға таяу жерлерге де сапар жасауға ыңғайлы. Көлік төбесінде сары белгісі бар автокөліктерді әр уақытта әуежайлардың, метро станциялардың және автобус аялдамаларының маңында табуға болады. Оған қоса, олар сауда орталықтарының және базарлардың қасында жолаушыларды күтеді.`,
+  },
+  {
+    icon: <MedicalServices fontSize="large" />,
+    title: 'Медициналық көмек',
+    desc: 'Дәріханалар, ауруханалар және шұғыл медициналық байланыс нөмірлері.',
+    content: 'Толық ақпарат: Медициналық көмек...',
+  },
+]
 
 export default function TouristInfo() {
-  const [open, setOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [open, setOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(null)
 
   const handleOpen = (item) => {
-    setSelectedItem(item);
-    setOpen(true);
-  };
+    setSelectedItem(item)
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-    setSelectedItem(null);
-  };
+    setOpen(false)
+    setSelectedItem(null)
+  }
 
   return (
-    <Box sx={{ position: "relative", overflow: "hidden" }}>
-      <Box sx={{ background: "linear-gradient(90deg, #0093E9 0%, #80D0C7 100%)", py: 8 }}>
+    <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+      <Box
+        sx={{
+          background: 'linear-gradient(90deg, #0093E9 0%, #80D0C7 100%)',
+          py: 8,
+        }}
+      >
         <Container>
-          <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold", color: "white", mb: 4 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: 'white',
+              mb: 4,
+            }}
+          >
             Турист үшін пайдалы ақпарат
           </Typography>
           <Grid container spacing={4}>
             {infoItems.map((item, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card
-                  sx={{ p: 3, textAlign: "center", borderRadius: 3, transition: "0.3s", cursor: "pointer", "&:hover": { transform: "scale(1.05)" } }}
+                  sx={{
+                    p: 3,
+                    textAlign: 'center',
+                    borderRadius: 3,
+                    transition: '0.3s',
+                    cursor: 'pointer',
+                    '&:hover': { transform: 'scale(1.05)' },
+                  }}
                   onClick={() => handleOpen(item)}
                 >
-                  <Box sx={{ color: "#0077b6", mb: 2 }}>{item.icon}</Box>
-                  <Typography variant="h6" fontWeight="bold">{item.title}</Typography>
-                  <Typography variant="body2" color="text.secondary">{item.desc}</Typography>
+                  <Box sx={{ color: '#0077b6', mb: 2 }}>{item.icon}</Box>
+                  <Typography variant="h6" fontWeight="bold">
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {item.desc}
+                  </Typography>
                 </Card>
               </Grid>
             ))}
@@ -121,47 +191,49 @@ export default function TouristInfo() {
 
       {/* Modal терезесі */}
       <Modal open={open} onClose={handleClose}>
-  <Box 
-    sx={{ 
-      bgcolor: "white", 
-      p: 4, 
-      borderRadius: 2, 
-      width: "90%", 
-      maxWidth: 600, 
-      mx: "auto", 
-      mt: 10, 
-      boxShadow: 24, 
-      position: "relative"
-    }}
-  >
-    <IconButton sx={{ position: "absolute", right: 10, top: 10 }} onClick={handleClose}>
-      <Close />
-    </IconButton>
-    
-    {selectedItem && (
-      <>
-        <Typography 
-          variant="h5" 
-          fontWeight="bold" 
-          sx={{ mb: 2, color: "#0077b6", textAlign: "center" }}
+        <Box
+          sx={{
+            bgcolor: 'white',
+            p: 4,
+            borderRadius: 2,
+            width: '90%',
+            maxWidth: 600,
+            mx: 'auto',
+            mt: 10,
+            boxShadow: 24,
+            position: 'relative',
+          }}
         >
-          {selectedItem.title}
-        </Typography>
-        
-        <Box sx={{ maxHeight: "60vh", overflowY: "auto", pr: 2 }}>
-          <Typography 
-            variant="body1" 
-            component="div" 
-            sx={{ lineHeight: 1.6, whiteSpace: "pre-line" }}
+          <IconButton
+            sx={{ position: 'absolute', right: 10, top: 10 }}
+            onClick={handleClose}
           >
-            {selectedItem.content}
-          </Typography>
-        </Box>
-      </>
-    )}
-  </Box>
-</Modal>
+            <Close />
+          </IconButton>
 
+          {selectedItem && (
+            <>
+              <Typography
+                variant="h5"
+                fontWeight="bold"
+                sx={{ mb: 2, color: '#0077b6', textAlign: 'center' }}
+              >
+                {selectedItem.title}
+              </Typography>
+
+              <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 2 }}>
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ lineHeight: 1.6, whiteSpace: 'pre-line' }}
+                >
+                  {selectedItem.content}
+                </Typography>
+              </Box>
+            </>
+          )}
+        </Box>
+      </Modal>
     </Box>
-  );
+  )
 }
