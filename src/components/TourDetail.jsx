@@ -23,7 +23,6 @@ import axios from 'axios'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
 import ReviewForm from './ReviewForm'
 import { useNavigate, useParams } from 'react-router-dom'
-import BookingForm from './BookingForm'
 
 // Custom styled components
 const PriceTypography = styled(Typography)(({ theme }) => ({
@@ -72,7 +71,7 @@ const TourDetail = () => {
           }
         )
         console.log('Detailed Tour Response:', response.data)
-        setTour(response.data)
+        setTour(response.data.tour) // ✅ Осы жол: response.data.tour-ды тікелей tour күйіне сақтаймыз
         setReviews(response.data.tour.reviews || [])
         console.log('Reviews:', response.data.tour.reviews)
         if (
@@ -86,9 +85,8 @@ const TourDetail = () => {
           setAverageRating(totalRating / response.data.tour.reviews.length)
         } else {
           setAverageRating(0)
-        }
+        } // Жаңа galleryImages массивін құру
 
-        // Жаңа galleryImages массивін құру
         const imagesFromImages =
           response.data?.tour?.images?.map(
             (img) => BASE_URL + img.image_path
@@ -96,7 +94,7 @@ const TourDetail = () => {
         const imagesFromGallery =
           response.data?.tour?.gallery?.map(getImageUrl) || []
         const mainImage = response.data?.tour?.image
-          ? [BASE_URL + response.data.tour.image]
+          ? [getImageUrl(response.data.tour.image)]
           : []
 
         setGalleryImages([
@@ -160,25 +158,25 @@ const TourDetail = () => {
         variant="h6"
         sx={{ textAlign: 'center', mt: 5, color: 'error.main' }}
       >
-        Error: {error}
+                Error: {error}     {' '}
       </Typography>
     )
   }
 
-  if (!tour?.tour) {
+  if (!tour) {
+    // ✅ Осы жол: !tour.tour емес, !tour
     return (
       <Typography
         variant="h5"
         sx={{ textAlign: 'center', mt: 5, color: 'error.main' }}
       >
-        Tour not found
+                Тур табылмады      {' '}
       </Typography>
     )
   }
 
-  const locationName =
-    tour.locations.find((location) => location.id === tour.tour.location_id)
-      ?.name || 'Unknown'
+  const locationName = tour.location?.name || 'Unknown'
+  const userName = tour.user?.name || '—'
 
   return (
     <>
@@ -186,9 +184,7 @@ const TourDetail = () => {
         sx={{
           width: '100%',
           height: '400px',
-          background: `url(${getImageUrl(
-            tour.tour.image
-          )}) center/cover no-repeat`,
+          background: `url(${getImageUrl(tour.image)}) center/cover no-repeat`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -199,7 +195,7 @@ const TourDetail = () => {
       >
         <Box sx={{ bgcolor: 'rgba(0, 0, 0, 0.5)', p: 3, borderRadius: 2 }}>
           <Typography variant="h3" fontWeight="bold">
-            {tour.tour.name}
+            {tour.name}
           </Typography>
         </Box>
       </Box>
@@ -215,12 +211,12 @@ const TourDetail = () => {
               <IconButton onClick={handleGoBack}>
                 <ArrowBackIosIcon />
               </IconButton>
-              <PriceTypography>₸ {tour.tour.price}</PriceTypography>
+              <PriceTypography>₸ {tour.price}</PriceTypography>
 
-              {tour.tour.date && (
+              {tour.date && (
                 <DetailIconText>
                   <AccessTimeIcon sx={{ color: 'gray', mr: 0.5 }} />
-                  <Typography variant="body2">{tour.tour.date} days</Typography>
+                  <Typography variant="body2">{tour.date} days</Typography>
                 </DetailIconText>
               )}
               {/* Турдың түрі мен тілі туралы ақпарат API-де жоқ */}
@@ -256,7 +252,7 @@ const TourDetail = () => {
                 Шолу
               </Typography>
               <Typography variant="body1" color="text.secondary" paragraph>
-                {tour.tour.description}
+                {tour.description}
               </Typography>
               <Typography
                 variant="h6"
@@ -298,7 +294,17 @@ const TourDetail = () => {
                 ))}
               </ImageList>
               <Divider sx={{ my: 3 }} />
-              <BookingForm />
+              <Box sx={{ my: 3, textAlign: 'center' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  onClick={() => navigate(`/tour-booking-details/${tour.id}`)} // ✅ Батырманы басқанда бағыттау
+                  sx={{ borderRadius: 2, py: 1.5, px: 4 }}
+                >
+                  Брондау
+                </Button>
+              </Box>
               <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md">
                 {selectedImage && (
                   <img
@@ -333,7 +339,7 @@ const TourDetail = () => {
                       {tour?.tour?.user?.avatar && (
                         <Avatar
                           alt="Tour Guide"
-                          src={`${BASE_URL}${tour.tour.user.avatar}`}
+                          src={`${BASE_URL}${tour.user.avatar}`}
                           sx={{ width: 30, height: 30, mr: 1 }}
                         />
                       )}
@@ -379,12 +385,12 @@ const TourDetail = () => {
                   {tour?.tour?.user?.avatar && (
                     <Avatar
                       alt="Tour Guide"
-                      src={`http://localhost:8000${tour.tour.user.avatar}`}
+                      src={`http://localhost:8000${tour.user.avatar}`}
                       sx={{ width: 80, height: 80, mb: 1 }}
                     />
                   )}
                   <Typography variant="subtitle1" fontWeight="bold">
-                    {tour.tour.user.name || 'Анықталмаған'}
+                    {tour.user.name || 'Анықталмаған'}
                   </Typography>
                   <Box display="flex" alignItems="center">
                     <Rating

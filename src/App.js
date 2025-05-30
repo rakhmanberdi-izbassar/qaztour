@@ -27,6 +27,7 @@ import PostDetailPage from './pages/PostDetailPage'
 import PlacesPage from './pages/PlacesPage'
 import PlacesDetailPage from './pages/PlacesDetailPage'
 import SingleEventsPage from './pages/SingleEventPage'
+import TourBookingPage from './pages/TourBookingPage'
 
 function App() {
   return (
@@ -64,6 +65,10 @@ function App() {
               <Route
                 path="/booking-room/:bookingId"
                 element={<BookingRoom />}
+              />
+              <Route
+                path="tour-booking-details/:id"
+                element={<TourBookingPage />}
               />
               <Route path="/places/" element={<PlacesPage />} />
               <Route path="/place/:id" element={<PlacesDetailPage />} />
