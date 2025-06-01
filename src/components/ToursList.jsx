@@ -20,6 +20,7 @@ import {
 } from '@mui/material'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
+import { useTranslation } from 'react-i18next'
 
 const ToursList = () => {
   const navigate = useNavigate()
@@ -31,6 +32,7 @@ const ToursList = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const BASE_URL = 'http://127.0.0.1:8000/storage/'
+  const { t } = useTranslation()
 
   const [searchParams] = useSearchParams()
   const initialSearch = searchParams.get('search') || ''
@@ -281,7 +283,7 @@ const ToursList = () => {
               <CardContent>
                 <TextField
                   fullWidth
-                  label="Турды іздеу"
+                  label={t('tours_list_page.search_tours')}
                   variant="outlined"
                   value={searchQuery}
                   onChange={handleSearchChange}
@@ -290,7 +292,7 @@ const ToursList = () => {
 
                 <FormControl fullWidth margin="normal">
                   <InputLabel id="duration-select-label">
-                    Ұзақтығы (күндер)
+                    {t('tours_list_page.duration_days')}
                   </InputLabel>
                   <Select
                     labelId="duration-select-label"
@@ -298,7 +300,7 @@ const ToursList = () => {
                     onChange={handleDurationChange}
                     label="Duration (Days)"
                   >
-                    <MenuItem value="">Барлығы</MenuItem>
+                    <MenuItem value="">{t('tours_list_page.all_durations')}</MenuItem>
                     <MenuItem value="1-3">1-3</MenuItem>
                     <MenuItem value="4-7">4-7</MenuItem>
                     <MenuItem value="7+">7+</MenuItem>
@@ -306,7 +308,7 @@ const ToursList = () => {
                 </FormControl>
 
                 <FormControl fullWidth margin="normal">
-                  <InputLabel id="price-range-label">Баға диапазоны</InputLabel>
+                  <InputLabel id="price-range-label">{t('tours_list_page.price_range')}</InputLabel>
                   <Slider
                     labelId="price-range-label"
                     value={priceRange}
@@ -324,7 +326,7 @@ const ToursList = () => {
 
                 <FormControl fullWidth margin="normal">
                   <InputLabel id="sort-by-label">
-                    ... бойынша сұрыптау
+                    ... {t('tours_list_page.sort_by')}
                   </InputLabel>
                   <Select
                     labelId="sort-by-label"
@@ -332,12 +334,12 @@ const ToursList = () => {
                     onChange={handleSortChange}
                     label="Sort By"
                   >
-                    <MenuItem value="">Әдепкі</MenuItem>
-                    <MenuItem value="name">Аты</MenuItem>
-                    <MenuItem value="price">Бағасы</MenuItem>
-                    <MenuItem value="date">Күні</MenuItem>
-                    <MenuItem value="location">Локациясы</MenuItem>
-                    <MenuItem value="rating">Рейтингі</MenuItem>
+                    <MenuItem value="">{t('tours_list_page.default')}</MenuItem>
+                    <MenuItem value="name">{t('tours_list_page.name')}</MenuItem>
+                    <MenuItem value="price">{t('tours_list_page.price')}</MenuItem>
+                    <MenuItem value="date">{t('tours_list_page.date')}</MenuItem>
+                    <MenuItem value="location">{t('tours_list_page.location')}</MenuItem>
+                    <MenuItem value="rating">{t('tours_list_page.rating')}</MenuItem>
                   </Select>
                 </FormControl>
               </CardContent>
@@ -425,9 +427,6 @@ const ToursList = () => {
                       >
                         ₸{tour.price}
                       </Typography>
-                      <Button variant="contained" fullWidth sx={{ mt: 2 }}>
-                        Explore Now
-                      </Button>
                     </CardContent>
                   </Card>
                 </Grid>

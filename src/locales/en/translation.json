@@ -54,7 +54,10 @@
     "review_successful": "Review submitted successfully!",
     "review_failed": "Failed to submit review.",
     "tour_route": "Tour Route",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "location": "Location",
+    "hotels_and_reservations": "Hotels and reservations",
+    "booking_and_payment": "Booking and payment"
   },
   "tours_list_page": {
     "tours_packages": "Tours Packages",

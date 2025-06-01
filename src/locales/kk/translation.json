@@ -54,7 +54,10 @@
     "review_successful": "Пікір сәтті жіберілді!",
     "review_failed": "Пікірді жіберу кезінде қателік кетті.",
     "tour_route": "Тур маршруты",
-    "unknown": "Анықталмаған"
+    "unknown": "Анықталмаған",
+    "location": "Локациясы",
+    "hotels_and_reservations": "Қонақ үйлер және брондау",
+    "booking_and_payment": "Брондау және төлеу"
   },
   "tours_list_page": {
     "tours_packages": "Тур пакеттері",
@@ -64,7 +67,7 @@
     "duration_days": "Ұзақтығы (күн)",
     "all_durations": "Барлық ұзақтықтар",
     "price_range": "Баға диапазоны",
-    "sort_by": "Сұрыптау",
+    "sort_by": "бойынша сұрыптау",
     "default": "Әдепкі",
     "name": "Атауы",
     "price": "Бағасы",

@@ -23,6 +23,7 @@ import axios from 'axios'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
 import ReviewForm from './ReviewForm'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 // Custom styled components
 const PriceTypography = styled(Typography)(({ theme }) => ({
@@ -56,6 +57,7 @@ const TourDetail = () => {
   const navigate = useNavigate()
   const [galleryImages, setGalleryImages] = useState([])
   const BASE_URL = 'http://127.0.0.1:8000/storage/'
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchTour = async () => {
@@ -233,7 +235,7 @@ const TourDetail = () => {
               <DetailIconText>
                 <LocationOnIcon sx={{ color: 'gray', mr: 1 }} />
                 <Typography variant="body2">
-                  Локациясы: {locationName}
+                  {t('tour_detail_page.location')}: {locationName}
                 </Typography>
               </DetailIconText>
             </Box>
@@ -242,14 +244,14 @@ const TourDetail = () => {
               color="success"
               onClick={() => navigate(`/hotels`)}
             >
-              Қонақ үйлер және брондау
+               {t('tour_detail_page.hotels_and_reservations')}
             </BookButton>
           </Box>
           <Divider sx={{ my: 2 }} />
           <Grid container spacing={4}>
             <Grid item xs={12} md={8}>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Шолу
+                {t('tour_detail_page.overview')}
               </Typography>
               <Typography variant="body1" color="text.secondary" paragraph>
                 {tour.description}
@@ -260,7 +262,7 @@ const TourDetail = () => {
                 gutterBottom
                 sx={{ mt: 3 }}
               >
-                Тур галереясы
+                {t('tour_detail_page.tour_gallery')}
               </Typography>
               <ImageList
                 variant="masonry"
@@ -301,7 +303,7 @@ const TourDetail = () => {
                   onClick={() => navigate(`/bookings/create/${id}`)}
                   sx={{ fontSize: '1.2rem', padding: '10px 20px' }}
                 >
-                  Брондау және төлеу
+                  {t('tour_detail_page.booking_and_payment')}
                 </Button>
               </Box>
               <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md">
@@ -315,7 +317,7 @@ const TourDetail = () => {
               </Dialog>
               <Divider sx={{ my: 3 }} />
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Тұтынушы пікірлері
+                {t('tour_detail_page.customer_reviews')}
               </Typography>
               <Box display="flex" alignItems="center" mb={2}>
                 <Rating
@@ -369,7 +371,7 @@ const TourDetail = () => {
                 ))
               ) : (
                 <Typography variant="body2" color="text.secondary">
-                  Әзірге шолулар жоқ. Бірінші болып жазыңыз!
+                  {t('tour_detail_page.no_reviews_yet')}
                 </Typography>
               )}
               <Divider sx={{ my: 3 }} />
@@ -378,7 +380,7 @@ const TourDetail = () => {
             <Grid item xs={12} md={4}>
               <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Экскурсиялық гид
+                  {t('tour_detail_page.tour_guide')}
                 </Typography>
                 <Box display="flex" alignItems="center" flexDirection="column">
                   {tour?.tour?.user?.avatar && (
@@ -415,7 +417,7 @@ const TourDetail = () => {
               </Card>
               <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Ұқсас турлар
+                  {t('tour_detail_page.similar_tours')}
                 </Typography>
                 {/* Ұқсас турларды көрсету логикасы әлі қосылмаған */}
                 <Grid container spacing={2}>
