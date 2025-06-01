@@ -13,8 +13,10 @@ import { motion } from 'framer-motion'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { calculateAverageRating, getImageUrl } from '../utils/helpers'
+import { useTranslation } from 'react-i18next' // useTranslation импорттау
 
 const TopRatedToursCarousel = () => {
+  const { t } = useTranslation() // t функциясын инициализациялау
   const navigate = useNavigate()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -30,13 +32,11 @@ const TopRatedToursCarousel = () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/tours/')
         const toursData = response.data?.data?.data || []
-        // Барлық турларды рейтингі бойынша сұрыптау (ең жоғарыдан төменге)
         const sortedTours = [...toursData].sort(
           (a, b) =>
             calculateAverageRating(b.reviews) -
             calculateAverageRating(a.reviews)
         )
-        // Ең жоғары рейтингі бар бірнеше турды алу (мысалы, алғашқы 5)
         setTopRatedTours(sortedTours.slice(0, 5))
       } catch (err) {
         console.error('Error fetching tours:', err)
@@ -91,13 +91,13 @@ const TopRatedToursCarousel = () => {
           variant={isMobile ? 'h5' : 'h4'}
           sx={{ fontWeight: 'bold', mb: 2 }}
         >
-          🔥 Үздік рейтингті турлар
+          {t('homepage.top_rated_tours')} {/* Аударылған мәтін */}
         </Typography>
         <Typography
           variant="body1"
           sx={{ color: 'gray', mb: 4, fontSize: isMobile ? '0.9rem' : '1rem' }}
         >
-          Ең жоғары бағаланған турлармен танысыңыз!
+          {t('homepage.explore_highest_rated_tours')} {/* Аударылған мәтін */}
         </Typography>
         <Box
           display="flex"
@@ -106,7 +106,7 @@ const TopRatedToursCarousel = () => {
           minHeight="200px"
         >
           <Typography variant="h6" color="textSecondary">
-            Жүктелуде...
+            {t('tours_list_page.loading')} {/* Аударылған мәтін */}
           </Typography>
         </Box>
       </Container>
@@ -120,13 +120,13 @@ const TopRatedToursCarousel = () => {
           variant={isMobile ? 'h5' : 'h4'}
           sx={{ fontWeight: 'bold', mb: 2 }}
         >
-          🔥 Үздік рейтингті турлар
+          {t('homepage.top_rated_tours')} {/* Аударылған мәтін */}
         </Typography>
         <Typography
           variant="body1"
           sx={{ color: 'gray', mb: 4, fontSize: isMobile ? '0.9rem' : '1rem' }}
         >
-          Ең жоғары бағаланған турлармен танысыңыз!
+          {t('homepage.explore_highest_rated_tours')} {/* Аударылған мәтін */}
         </Typography>
         <Box
           display="flex"
@@ -135,7 +135,7 @@ const TopRatedToursCarousel = () => {
           minHeight="200px"
         >
           <Typography variant="h6" color="error">
-            Қате: {error}
+            Error: {error}
           </Typography>
         </Box>
       </Container>
@@ -148,13 +148,13 @@ const TopRatedToursCarousel = () => {
         variant={isMobile ? 'h5' : 'h4'}
         sx={{ fontWeight: 'bold', mb: 2 }}
       >
-        🔥 Үздік рейтингті турлар
+        {t('homepage.top_rated_tours')} {/* Аударылған мәтін */}
       </Typography>
       <Typography
         variant="body1"
         sx={{ color: 'gray', mb: 4, fontSize: isMobile ? '0.9rem' : '1rem' }}
       >
-        Ең жоғары бағаланған турлармен танысыңыз!
+        {t('homepage.explore_highest_rated_tours')} {/* Аударылған мәтін */}
       </Typography>
       <Slider {...settings}>
         {topRatedTours.map((tour, index) => (
@@ -205,7 +205,9 @@ const TopRatedToursCarousel = () => {
                 fontSize: isMobile ? '0.8rem' : '0.9rem',
               }}
             >
-              Рейтинг: {calculateAverageRating(tour.reviews).toFixed(1)}
+              {t('tours_list_page.rating')}:{' '}
+              {calculateAverageRating(tour.reviews).toFixed(1)}{' '}
+              {/* Аударылған мәтін */}
             </Typography>
           </motion.div>
         ))}

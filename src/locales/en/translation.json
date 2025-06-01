@@ -1,0 +1,276 @@
+{
+  "header": {
+    "home": "Home",
+    "tours": "Tours",
+    "explore": "Explore",
+    "gallery": "Gallery",
+    "3d_tour": "3D Tour",
+    "events": "Events",
+    "video_travel": "Video Travel",
+    "blog": "Blog",
+    "login": "Login",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "places": "Places of interest"
+  },
+  "login_page": {
+    "login": "Login",
+    "register": "Register",
+    "welcome_back": "Welcome Back!",
+    "create_account": "Create an Account",
+    "email": "Email",
+    "password": "Password",
+    "full_name": "Full Name",
+    "confirm_password": "Confirm Password",
+    "login_failed": "Login failed. Please check your credentials.",
+    "registration_successful": "Registration successful!",
+    "registration_failed": "Registration failed. Please try again.",
+    "terms_conditions": "By continuing, you agree to our Terms & Conditions."
+  },
+  "hotel_booking_page": {
+    "hotel_booking": "Hotel Booking",
+    "hotel_name": "Hotel Name",
+    "check_in_date": "Check-in Date",
+    "check_out_date": "Check-out Date",
+    "number_of_guests": "Number of Guests",
+    "book": "Book",
+    "fill_all_fields": "Please fill in all fields.",
+    "checkout_after_checkin": "Check-out date must be after check-in date.",
+    "booking_successful": "Hotel booked successfully!",
+    "booking_failed": "Failed to book hotel.",
+    "network_error": "Network error or server unreachable."
+  },
+  "tour_detail_page": {
+    "overview": "Overview",
+    "tour_gallery": "Tour Gallery",
+    "customer_reviews": "Customer Reviews",
+    "tour_guide": "Tour Guide",
+    "similar_tours": "Similar Tours",
+    "no_reviews_yet": "No reviews yet. Be the first to write one!",
+    "write_review": "Leave a Review",
+    "your_review": "Your Review",
+    "submit": "Submit",
+    "review_successful": "Review submitted successfully!",
+    "review_failed": "Failed to submit review.",
+    "tour_route": "Tour Route",
+    "unknown": "Unknown"
+  },
+  "tours_list_page": {
+    "tours_packages": "Tours Packages",
+    "planning_trip": "Planning for a trip? We will organize your trip with the best places and within the best budget!",
+    "search_tours": "Search Tours",
+    "all_categories": "All Categories",
+    "duration_days": "Duration (Days)",
+    "all_durations": "All Durations",
+    "price_range": "Price Range",
+    "sort_by": "Sort By",
+    "default": "Default",
+    "name": "Name",
+    "price": "Price",
+    "date": "Date",
+    "location": "Location",
+    "rating": "Rating",
+    "explore_now": "Explore Now",
+    "no_tours_found": "No tours found matching your criteria.",
+    "loading": "Loading..."
+  },
+  "profile_page": {
+    "edit_profile": "Edit Profile",
+    "create_post": "Create Post",
+    "your_posts": "Your Posts",
+    "your_reviews": "Your Reviews",
+    "your_tours": "Your Tours",
+    "your_bookings": "Your Bookings",
+    "favorite_tours": "Favorite Tours",
+    "security_settings": "Security Settings",
+    "change_password": "Change Password",
+    "enable_2fa": "Enable 2FA",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "no_user_data": "No user data available.",
+    "role": "Role"
+  },
+  "create_post_page": {
+    "new_post": "Write a new post",
+    "what_to_share": "What would you like to share?",
+    "choose_location": "Choose a location",
+    "none": "None",
+    "add_image": "Add image",
+    "publish": "Publish",
+    "publishing": "Publishing...",
+    "post_successful": "Post published successfully!",
+    "publish_error": "Failed to publish post.",
+    "error": "Error"
+  },
+  "blog_page": {
+    "latest_blog_posts": "Latest Blog Posts",
+    "read_more": "Read More",
+    "welcome_to_blog": "Welcome to Our Blog",
+    "find_inspiration": "Find inspiration for your next adventure",
+    "search_blogs": "Search blogs...",
+    "search": "Search",
+    "error_fetching_posts": "Error fetching blog posts."
+  },
+  "video_travel_page": {
+    "kazakhstan_video_travel": "Video Travel to Kazakhstan's tourist destinations",
+    "search": "Search",
+    "view_video": "View Video"
+  },
+  "events_page": {
+    "upcoming_events": "Upcoming Events",
+    "choose_events": "Choose events that suit you and register!",
+    "date": "Date",
+    "all_cities": "All Cities",
+    "all_types": "All Types",
+    "more_details": "More Details",
+    "no_events_found": "Sorry, no events found matching your filters 😔"
+  },
+  "tourist_info_page": {
+    "useful_info_for_tourist": "Useful Information for Tourists",
+    "visa_requirements": "Visa Requirements",
+    "language_barriers": "Language Barriers",
+    "local_cuisine": "Local Cuisine",
+    "safety_measures": "Safety Measures",
+    "transport_directions": "Transport and Directions",
+    "medical_assistance": "Medical Assistance"
+  },
+  "homepage": {
+    "find_ideal_destinations": "Find your ideal destinations",
+    "where_to_go": "Where do you want to go?",
+    "plan_trip_best_budget": "Planning for a trip? We will organize your trip with the best places and within the best budget!",
+    "view_packages": "View Packages",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "search_destination": "Search Destination",
+    "frequently_asked_questions": "Frequently Asked Questions",
+    "top_rated_tours": "Top Rated Tours",
+    "explore_highest_rated_tours": "Explore the highest rated tours!",
+    "frequently_asked_questions.q1": "What is this service about?",
+    "frequently_asked_questions.a1": "We provide the best travel recommendations and booking services.",
+    "frequently_asked_questions.q2": "How can I get started?",
+    "frequently_asked_questions.a2": "Just sign up, choose your destination, and book your trip easily.",
+    "frequently_asked_questions.q3": "Is there a refund policy?",
+    "frequently_asked_questions.a3": "Yes, we offer refunds within 7 days of booking under certain conditions.",
+    "frequently_asked_questions.q4": "Can I use this internationally?",
+    "frequently_asked_questions.a4": "Absolutely! Our services are available worldwide.",
+    "frequently_asked_questions.q5": "What are the payment methods?",
+    "frequently_asked_questions.a5": "We accept credit/debit cards, PayPal, and Apple Pay."
+  },
+  "footer": {
+    "about_us": "About Us",
+    "office": "Office",
+    "company": "Company",
+    "services": "Services",
+    "team": "Team",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "newsletter": "Newsletter",
+    "sign_up_receive_tips": "Sign up and receive the latest tips via email.",
+    "your_email": "Your email",
+    "subscribe": "Subscribe"
+  },
+  "post_strings": {
+    "author": "Author",
+    "published_on": "Published on"
+  },
+  "single_post_page": {
+    "post_loading": "Loading post...",
+    "error_loading_post": "Error loading post.",
+    "post_not_found": "Post not found."
+  },
+  "like_button": {
+    "deleting": "Deleting..."
+  },
+  "share_button": {
+    "share_successful": "Share successful!",
+    "error_sharing": "Error sharing:",
+    "sharing_not_possible": "Sharing not possible. Link:"
+  },
+  "edit_profile_page": {
+    "full_name": "Full Name",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm New Password",
+    "save_changes": "Save Changes",
+    "phone": "Phone",
+    "profile_updated_successfully": "Profile Updated Successfully!",
+    "failed_to_update_profile": "Failed to update profile.",
+    "loading_profile_information": "Loading profile information...",
+    "authentication_token_not_found": "Authentication token not found. Please log in.",
+    "failed_to_load_profile_information": "Failed to load profile information.",
+    "your_comments": "Your Comments"
+  },
+  "user_bookings_page": {
+    "my_bookings": "My bookings",
+    "number_of_participants": "Number of participants",
+    "price": "Price",
+    "paid": "Paid",
+    "not_paid": "Not Paid",
+    "tour_date": "Tour date",
+    "booking_expires": "Booking expires"
+  },
+  "gallery_page": {
+    "kazakhstan_nature_gallery": "🌿 Kazakhstan Nature Gallery"
+  },
+  "provider_page": {
+    "provider_not_found": "Provider not found",
+    "contact_information": "Contact Information",
+    "services": "Services",
+    "available_tours": "Available Tours",
+    "buy_now": "Buy Now",
+    "follow_us": "Follow Us"
+  },
+  "contact_us_page": {
+    "get_in_touch": "Get in touch !",
+    "your_name": "Your Name",
+    "your_email": "Your Email",
+    "your_question": "Your Question",
+    "subject": "Subject",
+    "your_comment": "Your Comment",
+    "submit": "Submit",
+    "phone": "Phone",
+    "email": "Email",
+    "location": "Location",
+    "view_on_google_map": "View on Google map"
+  },
+  "tour_route_creator_page": {
+    "create_tour_route": "Create Tour Route",
+    "route_name": "Route Name",
+    "route_points": "Route Points:",
+    "mark_points_on_map": "Mark points on the map.",
+    "save_route": "Save Route",
+    "route_saved_backend_needed": "Route saved! Data needs to be sent to backend."
+  },
+
+  "error_page": {
+    "page_not_found": "Page not found",
+    "go_home": "Go to home page",
+    "error_occurred": "An error occurred",
+    "try_again_later": "Please try again later"
+  },
+  "success_page": {
+    "action_successful": "Action successful!",
+    "continue": "Continue",
+    "view_details": "View details"
+  },
+  "loading_page": {
+    "loading": "Loading...",
+    "please_wait": "Please wait, we are providing you with the best experience!"
+  },
+  "notifications": {
+    "new_message": "New message",
+    "new_comment": "New comment",
+    "booking_confirmation": "Booking confirmation",
+    "tour_update": "Tour update",
+    "profile_update": "Profile update",
+    "error": "Error",
+    "success": "Success",
+    "info": "Info",
+    "warning": "Warning",
+    "no_notifications": "No new notifications."
+  },
+  "tour_card": {
+    "title": "Tour Packages",
+    "description": "Explore our best, featured tours!"
+  }
+}

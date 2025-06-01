@@ -6,6 +6,7 @@ import Accordion from '@mui/joy/Accordion'
 import AccordionDetails from '@mui/joy/AccordionDetails'
 import AccordionSummary from '@mui/joy/AccordionSummary'
 import myImage from './../assets/photos/traveller-bag-mountains-isolation-1151553.jpg'
+import { useTranslation } from 'react-i18next' // useTranslation импорттау
 
 const Item = styled(Paper)(({ theme }) => ({
   borderRadius: '12px',
@@ -16,32 +17,32 @@ const Item = styled(Paper)(({ theme }) => ({
 }))
 
 const FAQ = () => {
+  const { t } = useTranslation() // t функциясын инициализациялау
   const questions = [
     {
-      q: 'Бұл қызмет не туралы?',
-      a: 'Біз ең жақсы саяхат ұсыныстарын және броньдау қызметтерін ұсынамыз.',
+      q: t('homepage.frequently_asked_questions.q1'), // Жаңа аударма кілттері
+      a: t('homepage.frequently_asked_questions.a1'),
     },
     {
-      q: 'Қалай бастауға болады?',
-      a: 'Тіркеліп, бағытты таңдап, сапарыңызды оңай брондай аласыз.',
+      q: t('homepage.frequently_asked_questions.q2'),
+      a: t('homepage.frequently_asked_questions.a2'),
     },
     {
-      q: 'Қайтару саясаты бар ма?',
-      a: 'Иә, кейбір жағдайларда броньдалған күннен бастап 7 күн ішінде қайтару ұсынылады.',
+      q: t('homepage.frequently_asked_questions.q3'),
+      a: t('homepage.frequently_asked_questions.a3'),
     },
     {
-      q: 'Қызметті шетелде қолдануға бола ма?',
-      a: 'Әрине! Біздің қызметтер бүкіл әлем бойынша қолжетімді.',
+      q: t('homepage.frequently_asked_questions.q4'),
+      a: t('homepage.frequently_asked_questions.a4'),
     },
     {
-      q: 'Төлем әдістері қандай?',
-      a: 'Біз банктік карталарды, PayPal және Apple Pay қабылдаймыз.',
+      q: t('homepage.frequently_asked_questions.q5'),
+      a: t('homepage.frequently_asked_questions.a5'),
     },
   ]
 
   return (
     <>
-      {/* SVG толқын - төменгі бөлім */}
       <Box
         sx={{
           position: 'relative',
@@ -67,15 +68,14 @@ const FAQ = () => {
 
       <Container sx={{ paddingY: 8 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
-          Жиі қойылатын сұрақтар
+          {t('homepage.frequently_asked_questions')} {/* Аударылған мәтін */}
         </Typography>
 
         <Grid container spacing={4} alignItems="center">
-          {/* Сурет бөлімі */}
           <Grid item xs={12} md={6}>
             <img
               src={myImage}
-              alt="Жиі қойылатын сұрақтар"
+              alt="FAQ"
               style={{
                 width: '100%',
                 borderRadius: '12px',
@@ -85,7 +85,6 @@ const FAQ = () => {
             />
           </Grid>
 
-          {/* Аккордеон бөлімі */}
           <Grid item xs={12} md={6}>
             <Item>
               <AccordionGroup variant="outlined" sx={{ borderRadius: '10px' }}>

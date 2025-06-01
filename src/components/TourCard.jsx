@@ -19,6 +19,7 @@ import TypographyJoy from '@mui/joy/Typography' // Joy UI Typography, атын �
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 // --- Styled Components ---
 
@@ -160,6 +161,7 @@ export default function ToursCollection() {
   const [error, setError] = useState(null)
   const theme = useTheme()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchFeaturedTours = async () => {
@@ -197,10 +199,8 @@ export default function ToursCollection() {
     return (
       <SectionWrapper>
         <SectionHeader>
-          <StyledTitle component="h2">✨ Турлар топтамасы</StyledTitle>
-          <StyledSubtitle>
-            Біздің ең үздік, таңдаулы турларымызды зерттеңіз!
-          </StyledSubtitle>
+          <StyledTitle component="h2">✨ {t('tour_card.title')}</StyledTitle>
+          <StyledSubtitle>{t('tour_card.description')}</StyledSubtitle>
         </SectionHeader>
         <Container sx={{ textAlign: 'center', py: 5 }}>
           <CircularProgress color="primary" />
@@ -216,10 +216,8 @@ export default function ToursCollection() {
     return (
       <SectionWrapper>
         <SectionHeader>
-          <StyledTitle component="h2">✨ Турлар топтамасы</StyledTitle>
-          <StyledSubtitle>
-            Біздің ең үздік, таңдаулы турларымызды зерттеңіз!
-          </StyledSubtitle>
+          <StyledTitle component="h2">✨ {t('tour_card.title')}</StyledTitle>
+          <StyledSubtitle>{t('tour_card.description')}</StyledSubtitle>
         </SectionHeader>
         <Container sx={{ textAlign: 'center', py: 5 }}>
           <Typography variant="h6" color="error">
@@ -234,10 +232,8 @@ export default function ToursCollection() {
     <SectionWrapper>
       <Container>
         <SectionHeader>
-          <StyledTitle component="h2">✨ Турлар топтамасы</StyledTitle>
-          <StyledSubtitle>
-            Біздің ең үздік, таңдаулы турларымызды зерттеңіз!
-          </StyledSubtitle>
+          <StyledTitle component="h2">✨ {t('tour_card.title')}</StyledTitle>
+          <StyledSubtitle>{t('tour_card.description')}</StyledSubtitle>
         </SectionHeader>
 
         <Grid container spacing={{ xs: 2, md: 3 }} sx={{ flexGrow: 1 }}>

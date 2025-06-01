@@ -21,6 +21,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTranslation } from 'react-i18next' // useTranslation импорттау
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -34,6 +35,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }))
 
 function SlideShow() {
+  const { t } = useTranslation() // t функциясын инициализациялау
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDate, setSelectedDate] = useState('')
   const navigate = useNavigate()
@@ -82,18 +84,18 @@ function SlideShow() {
           fontWeight="bold"
           sx={{ textAlign: 'center', pb: 2 }}
         >
-          Баратын жеріңізді іздеңіз
+          {t('homepage.search_destination')} {/* Аударылған мәтін */}
         </Typography>
-
-        <FormLabel>Іздеу:</FormLabel>
+        <FormLabel>{t('blog_page.search')}:</FormLabel> {/* Аударылған мәтін */}
         <Input
-          placeholder="Іздеу..."
+          placeholder={t('blog_page.search') + '...'}
           startDecorator={<SearchIcon />}
           sx={{ borderRadius: 6, bgcolor: '#f5f5f5', p: 1 }}
           value={searchTerm}
           onChange={handleSearchTermChange}
         />
-        <FormLabel>Басталу күні:</FormLabel>
+        <FormLabel>{t('homepage.start_date')}:</FormLabel>{' '}
+        {/* Аударылған мәтін */}
         <Input
           type="date"
           startDecorator={<DateRangeIcon />}
@@ -101,8 +103,8 @@ function SlideShow() {
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
-
-        <FormLabel>Аяқталу күні:</FormLabel>
+        <FormLabel>{t('homepage.end_date')}:</FormLabel>{' '}
+        {/* Аударылған мәтін */}
         <Input
           type="date"
           startDecorator={<DateRangeIcon />}
@@ -110,7 +112,6 @@ function SlideShow() {
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
-
         <Button
           onClick={handleSearch}
           sx={{
@@ -125,7 +126,7 @@ function SlideShow() {
             '&:hover': { backgroundColor: 'rgb(4, 107, 198)' },
           }}
         >
-          Іздеу
+          {t('blog_page.search')} {/* Аударылған мәтін */}
         </Button>
       </CardContent>
     </React.Fragment>
@@ -169,7 +170,8 @@ function SlideShow() {
                 >
                   <ThemeProvider theme={themeTypography}>
                     <Typography className="font-css" variant="h3" gutterBottom>
-                      Идеалды мекендерді табыңыз
+                      {t('homepage.find_ideal_destinations')}{' '}
+                      {/* Аударылған мәтін */}
                     </Typography>
                   </ThemeProvider>
                   <Typography
@@ -177,7 +179,7 @@ function SlideShow() {
                     gutterBottom
                     sx={{ fontSize: isMobile ? '1.5rem' : '2rem' }}
                   >
-                    <b>Қайда барғыңыз келеді?</b>
+                    <b>{t('homepage.where_to_go')}</b> {/* Аударылған мәтін */}
                   </Typography>
                   <Typography
                     color="grey"
@@ -186,8 +188,8 @@ function SlideShow() {
                     gutterBottom
                     sx={{ fontSize: isMobile ? '1rem' : '1.125rem' }}
                   >
-                    Сапарды жоспарлап жатырсыз ба? Біз сіздің саяхатыңызды ең
-                    жақсы орындармен және ең жақсы бюджетпен ұйымдастырамыз!
+                    {t('homepage.plan_trip_best_budget')}{' '}
+                    {/* Аударылған мәтін */}
                   </Typography>
                   <Stack spacing={2} direction={isMobile ? 'column' : 'row'}>
                     <Button
@@ -195,7 +197,7 @@ function SlideShow() {
                       size={isMobile ? 'small' : 'medium'}
                       onClick={() => navigate(`/tours`)}
                     >
-                      Пакеттерді қарау
+                      {t('homepage.view_packages')} {/* Аударылған мәтін */}
                     </Button>
                     <IconButton
                       sx={{

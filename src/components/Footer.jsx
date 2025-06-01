@@ -11,8 +11,10 @@ import FacebookIcon from '@mui/icons-material/Facebook'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import { useTranslation } from 'react-i18next' // useTranslation импорттау
 
 export default function Footer() {
+  const { t } = useTranslation() // t функциясын инициализациялау
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: 'transparent',
     color: '#fff',
@@ -59,25 +61,26 @@ export default function Footer() {
           <Grid item xs={12} sm={6} md={3}>
             <Item>
               <Typography variant="h6" fontWeight={600}>
-                Біз туралы
-              </Typography>
+                {t('footer.about_us')}
+              </Typography>{' '}
+              {/* Аударылған мәтін */}
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                Саяхат жоспарлап жүрсіз бе? Біз сіздің сапарыңызды ең үздік
-                орындармен және тиімді бюджетпен ұйымдастырамыз!
+                {t('tours_list_page.planning_trip')} {/* Аударылған мәтін */}
               </Typography>
             </Item>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Item>
               <Typography variant="h6" fontWeight={600}>
-                Кеңсе
-              </Typography>
+                {t('footer.office')}
+              </Typography>{' '}
+              {/* Аударылған мәтін */}
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                QazTour Турлар және Саяхаттар
+                Travosy Tour & Travels
                 <br />
                 C/54 Northwest Freeway,
                 <br />
-                558-офис, Хьюстон, АҚШ 485
+                Suite 558, Houston, USA 485
                 <br />
                 contact@example.com
                 <br />
@@ -88,36 +91,39 @@ export default function Footer() {
           <Grid item xs={12} sm={6} md={3}>
             <Item>
               <Typography variant="h6" fontWeight={600}>
-                Компания
-              </Typography>
+                {t('footer.company')}
+              </Typography>{' '}
+              {/* Аударылған мәтін */}
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                Біз туралы
-                <br />
-                Қызметтер
-                <br />
-                Команда
-                <br />
-                Бағалар
-                <br />
-                Блог
-                <br />
+                {t('footer.about_us')}
+                <br /> {/* Аударылған мәтін */}
+                {t('footer.services')}
+                <br /> {/* Аударылған мәтін */}
+                {t('footer.team')}
+                <br /> {/* Аударылған мәтін */}
+                {t('footer.pricing')}
+                <br /> {/* Аударылған мәтін */}
+                {t('footer.blog')}
+                <br /> {/* Аударылған мәтін */}
               </Typography>
             </Item>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Item>
               <Typography variant="h6" fontWeight={600}>
-                Жаңалықтарға жазылу
-              </Typography>
+                {t('footer.newsletter')}
+              </Typography>{' '}
+              {/* Аударылған мәтін */}
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                Соңғы кеңестер мен жаңалықтарды электронды пошта арқылы алыңыз.
-              </Typography>
+                {t('footer.sign_up_receive_tips')}
+              </Typography>{' '}
+              {/* Аударылған мәтін */}
               <Box
                 sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 2 }}
               >
                 <Input
                   startDecorator={<MailIcon />}
-                  placeholder="Электронды поштаңыз"
+                  placeholder={t('footer.your_email')}
                   sx={{
                     width: '100%',
                     backgroundColor: '#fff',
@@ -140,7 +146,7 @@ export default function Footer() {
                     },
                   }}
                 >
-                  Жазылу
+                  {t('footer.subscribe')} {/* Аударылған мәтін */}
                 </Button>
               </Box>
             </Item>
@@ -165,7 +171,7 @@ export default function Footer() {
           textAlign="center"
           sx={{ mt: 4, opacity: 0.6 }}
         >
-          &copy; {new Date().getFullYear()} QazTour. Барлық құқықтар қорғалған.
+          &copy; {new Date().getFullYear()} QazTour. All rights reserved.
         </Typography>
       </Container>
     </Box>

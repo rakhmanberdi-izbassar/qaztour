@@ -12,6 +12,8 @@ import {
   useMediaQuery,
   useTheme,
   Avatar,
+  FormControl,
+  Select,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { motion } from 'framer-motion'
@@ -19,8 +21,9 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import MenuIcon from '@mui/icons-material/Menu'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle' // AccountCircleIcon импорттау
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { useWeather } from './WeatherContext'
+import { useTranslation } from 'react-i18next'
 
 const DynamicIsland = styled(motion.div)(({ theme }) => ({
   position: 'fixed',
@@ -74,6 +77,7 @@ export default function Header() {
   const [userMenuEl, setUserMenuEl] = useState(null)
   const [mobileMenuEl, setMobileMenuEl] = useState(null)
   const [selectedCity, setSelectedCity] = useState(cities[0])
+  const { t, i18n } = useTranslation()
 
   const { weather, fetchWeather } = useWeather()
   const { user, setUser, loading } = useContext(UserContext)
@@ -111,6 +115,10 @@ export default function Header() {
       fetchWeather(selectedCity.lat, selectedCity.lon)
     }
   }, [selectedCity, fetchWeather])
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng)
+  }
 
   return (
     <AppBar
@@ -154,7 +162,7 @@ export default function Header() {
                     onClick={handleMobileMenuClose}
                     sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
-                    Басты
+                    {t('header.home')}
                   </Button>
                   <Button
                     fullWidth
@@ -163,7 +171,7 @@ export default function Header() {
                     onClick={handleMobileMenuClose}
                     sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
-                    Турлар
+                    {t('header.tours')}
                   </Button>
                   <Button
                     fullWidth
@@ -172,7 +180,7 @@ export default function Header() {
                     onClick={handleMobileMenuClose}
                     sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
-                    Галерея
+                    {t('header.gallery')}
                   </Button>
                   <Button
                     fullWidth
@@ -181,7 +189,7 @@ export default function Header() {
                     onClick={handleMobileMenuClose}
                     sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
-                    3D Тур
+                    {t('header.3d_tour')}
                   </Button>
                   <Button
                     fullWidth
@@ -190,7 +198,7 @@ export default function Header() {
                     onClick={handleMobileMenuClose}
                     sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
-                    Оқиғалар
+                    {t('header.events')}
                   </Button>
                   <Button
                     fullWidth
@@ -199,7 +207,7 @@ export default function Header() {
                     onClick={handleMobileMenuClose}
                     sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
-                    Бейне саяхаттар
+                    {t('header.video_travel')}
                   </Button>
                   <Button
                     fullWidth
@@ -208,7 +216,7 @@ export default function Header() {
                     onClick={handleMobileMenuClose}
                     sx={{ color: 'black', justifyContent: 'flex-start' }}
                   >
-                    Блог
+                    {t('header.blog')}
                   </Button>
                 </MobileMenuContainer>
               </Menu>
@@ -235,14 +243,14 @@ export default function Header() {
                 to="/"
                 sx={{ color: 'black', fontSize: '14px' }}
               >
-                Басты
+                {t('header.home')}
               </Button>
               <Button
                 component={NavLink}
                 to="/tours"
                 sx={{ color: 'black', fontSize: '14px' }}
               >
-                Турлар
+                {t('header.tours')}
               </Button>
               <Button
                 aria-controls="explore-menu"
@@ -253,7 +261,7 @@ export default function Header() {
                   fontSize: '14px',
                 }}
               >
-                Зерттеу
+                {t('header.explore')}
               </Button>
               <Menu
                 id="explore-menu"
@@ -274,35 +282,35 @@ export default function Header() {
                   to="/gallery"
                   onClick={handleMenuClose}
                 >
-                  Галерея
+                  {t('header.gallery')}
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
                   to="https://3dmapcentral.asia/kz/#h85/103.0/5.5/108.5"
                   onClick={handleMenuClose}
                 >
-                  3D Тур
+                  {t('header.3d_tour')}
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
                   to="/events"
                   onClick={handleMenuClose}
                 >
-                  Оқиғалар
+                  {t('header.events')}
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
                   to="/video-travel"
                   onClick={handleMenuClose}
                 >
-                  Бейне саяхаттар
+                  {t('header.video_travel')}
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
                   to="/blogs"
                   onClick={handleMenuClose}
                 >
-                  Блог
+                  {t('header.blog')}
                 </MenuItem>
               </Menu>
               <Button
@@ -310,7 +318,7 @@ export default function Header() {
                 to="/places"
                 sx={{ color: 'black', fontSize: '14px' }}
               >
-                Көрікті орындар
+                {t('header.places')}
               </Button>
             </Stack>
           )}
@@ -338,6 +346,17 @@ export default function Header() {
               <LocationOnIcon />
             </IconButton>
           )}
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 60 }}>
+            <Select
+              value={i18n.language}
+              onChange={(e) => changeLanguage(e.target.value)}
+              disableUnderline
+              sx={{ color: 'black', '& .MuiSelect-icon': { color: 'black' } }}
+            >
+              <MenuItem value="kk">ҚАЗ</MenuItem>
+              <MenuItem value="en">ENG</MenuItem>
+            </Select>
+          </FormControl>
 
           {weather && (
             <Box display="flex" alignItems="center" gap={1}>
@@ -400,16 +419,16 @@ export default function Header() {
                   to="/profile"
                   onClick={handleUserMenuClose}
                 >
-                  Профиль
+                  {t('header.profile')}
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
                   to="/settings"
                   onClick={handleUserMenuClose}
                 >
-                  Баптаулар
+                  {t('header.settings')}
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>Шығу</MenuItem>
+                <MenuItem onClick={handleLogout}>{t('header.logout')}</MenuItem>
               </>
             )}
             {/* Егер қолданушы жүйеден шыққан болса, бұл меню әдетте көрсетілмейді,
