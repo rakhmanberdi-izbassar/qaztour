@@ -17,7 +17,7 @@ const TourBookingPage = () => {
       <Header />
       {/* ✅ TourBookingPageContent-ке id және initialSeats проптарын жіберу */}
       {/* Мұндағы 'id' - URL-ден келген id, 'initialSeats' - URL-ден келген numberOfPeople */}
-      <TourBookingPageContent id={id} initialSeats={numberOfPeople} />
+      <TourBookingPageContent id={id} />
       <Footer />
     </div>
   )

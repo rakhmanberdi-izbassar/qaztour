@@ -17,7 +17,6 @@ import { WeatherProvider } from './components/WeatherContext'
 import { UserProvider } from './contexts/UserContext'
 import CreatePost from './components/post/CreatePost'
 import BlogPages from './pages/BlogPage'
-import BookingForm from './components/BookingForm'
 import HotelListPage from './pages/HotelListPage'
 import HotelDetailPage from './pages/HotelDetailPage'
 import BookingRoom from './components/BookingRoom'
@@ -28,6 +27,7 @@ import PlacesPage from './pages/PlacesPage'
 import PlacesDetailPage from './pages/PlacesDetailPage'
 import SingleEventsPage from './pages/SingleEventPage'
 import TourBookingPage from './pages/TourBookingPage'
+import BookingList from './components/BookingList'
 
 function App() {
   return (
@@ -35,6 +35,7 @@ function App() {
       options={{
         'client-id':
           'AYrGzAFKitQwR53r3vMV9RHt0Wrygn7UQNvhZBEbFkWvj7mAsbl3EKP7gBvePDUX2LQm6C87vSAF2TFm',
+        currency: 'USD',
       }}
     >
       <Router>
@@ -55,7 +56,6 @@ function App() {
               <Route path="/blogs" element={<BlogPages />} />
               <Route path="/blog-create" element={<CreatePost />} />
               <Route path="/blog/:postId" element={<PostDetailPage />} />
-              <Route path="/booking" element={<BookingForm />} />
               <Route path="/hotels/" element={<HotelListPage />} />
               <Route path="/hotels/:id" element={<HotelDetailPage />} />
               <Route
@@ -67,11 +67,12 @@ function App() {
                 element={<BookingRoom />}
               />
               <Route
-                path="tour-booking-details/:id"
+                path="/bookings/create/:tourId"
                 element={<TourBookingPage />}
               />
               <Route path="/places/" element={<PlacesPage />} />
               <Route path="/place/:id" element={<PlacesDetailPage />} />
+              <Route path="/tour_bookings" element={<BookingList />} />
               <Route path="*" element={<h1>404 Not Found</h1>} />
             </Routes>
           </WeatherProvider>

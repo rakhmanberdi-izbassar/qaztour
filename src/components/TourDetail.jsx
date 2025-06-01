@@ -298,11 +298,10 @@ const TourDetail = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  size="large"
-                  onClick={() => navigate(`/tour-booking-details/${tour.id}`)} // ✅ Батырманы басқанда бағыттау
-                  sx={{ borderRadius: 2, py: 1.5, px: 4 }}
+                  onClick={() => navigate(`/bookings/create/${id}`)}
+                  sx={{ fontSize: '1.2rem', padding: '10px 20px' }}
                 >
-                  Брондау
+                  Брондау және төлеу
                 </Button>
               </Box>
               <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md">
