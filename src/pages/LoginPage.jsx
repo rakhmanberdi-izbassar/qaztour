@@ -12,9 +12,16 @@ import {
   Divider,
   styled,
   useTheme,
+  FormControl,
+  Select,
+  MenuItem,
+  Snackbar,
+  Alert
+
 } from '@mui/material'
 import { Email, Lock, Person } from '@mui/icons-material'
 import axios from 'axios'
+import { useTranslation } from 'react-i18next'
 
 const API_BASE_URL = 'http://localhost:8000/api'
 
@@ -44,7 +51,6 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   margin: theme.spacing(1, 0),
 }))
 
-// LoginForm компонентін сыртқа шығару
 const LoginForm = ({
   email,
   password,
@@ -52,17 +58,12 @@ const LoginForm = ({
   onPasswordChange,
   onSubmit,
   theme,
+  t
 }) => (
-  <Box
-    component="form"
-    noValidate
-    autoComplete="off"
-    sx={{ mt: 2 }}
-    onSubmit={onSubmit}
-  >
+  <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }} onSubmit={onSubmit}>
     <StyledTextField
       fullWidth
-      label="Емайл"
+      label={t('login_page.email')}
       variant="outlined"
       margin="normal"
       value={email}
@@ -77,7 +78,7 @@ const LoginForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Құпия сөз"
+      label={t('login_page.password')}
       variant="outlined"
       margin="normal"
       type="password"
@@ -92,12 +93,11 @@ const LoginForm = ({
       }}
     />
     <StyledButton variant="contained" fullWidth type="submit">
-      Кіру
+      {t('login_page.login')}
     </StyledButton>
   </Box>
 )
 
-// RegisterForm компонентін сыртқа шығару
 const RegisterForm = ({
   fullName,
   email,
@@ -109,17 +109,12 @@ const RegisterForm = ({
   onConfirmPasswordChange,
   onSubmit,
   theme,
+  t
 }) => (
-  <Box
-    component="form"
-    noValidate
-    autoComplete="off"
-    sx={{ mt: 2 }}
-    onSubmit={onSubmit}
-  >
+  <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }} onSubmit={onSubmit}>
     <StyledTextField
       fullWidth
-      label="Толық аты-жөні"
+      label={t('login_page.full_name')}
       variant="outlined"
       margin="normal"
       value={fullName}
@@ -134,7 +129,7 @@ const RegisterForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Емайл"
+      label={t('login_page.email')}
       variant="outlined"
       margin="normal"
       value={email}
@@ -149,7 +144,7 @@ const RegisterForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Құпия сөз"
+      label={t('login_page.password')}
       variant="outlined"
       margin="normal"
       type="password"
@@ -165,7 +160,7 @@ const RegisterForm = ({
     />
     <StyledTextField
       fullWidth
-      label="Құпия сөзді растау"
+      label={t('login_page.confirm_password')}
       variant="outlined"
       margin="normal"
       type="password"
@@ -180,12 +175,13 @@ const RegisterForm = ({
       }}
     />
     <StyledButton variant="contained" fullWidth type="submit">
-      Тіркелу
+      {t('login_page.register')}
     </StyledButton>
   </Box>
 )
 
 const LoginPage = () => {
+  const { t, i18n } = useTranslation()
   const [tabIndex, setTabIndex] = useState(0)
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
@@ -194,36 +190,41 @@ const LoginPage = () => {
   const [registerPassword, setRegisterPassword] = useState('')
   const [registerConfirmPassword, setRegisterConfirmPassword] = useState('')
   const theme = useTheme()
+  const [errorMessage, setErrorMessage] = useState('');
+const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng)
+  }
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue)
   }
 
   const handleLoginSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const response = await axios.post(`${API_BASE_URL}/login`, {
-        email: loginEmail,
-        password: loginPassword,
-      })
-      localStorage.setItem('authToken', response.data.token)
-      window.location.href = '/'
-    } catch (error) {
-      console.error(
-        'Login error:',
-        error.response ? error.response.data : error.message
-      )
-      alert('Login failed. Please check your credentials.')
-    }
+  e.preventDefault();
+  try {
+    const response = await axios.post(`${API_BASE_URL}/login`, {
+      email: loginEmail,
+      password: loginPassword,
+    });
+    localStorage.setItem('authToken', response.data.token);
+    window.location.href = '/';
+  } catch (error) {
+    console.error('Login error:', error.response ? error.response.data : error.message);
+    setErrorMessage('Login failed. Please check your credentials.');
+    setOpenSnackbar(true);
   }
+};
+
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault()
     try {
-      const csrfResponse = await axios.get(
-        `${API_BASE_URL}/sanctum/csrf-cookie`,
-        { withCredentials: true }
-      )
+      const csrfResponse = await axios.get(`${API_BASE_URL}/sanctum/csrf-cookie`, {
+        withCredentials: true,
+      })
       const xsrfToken = csrfResponse.headers['x-xsrf-token']
       const response = await axios.post(
         `${API_BASE_URL}/register`,
@@ -250,105 +251,125 @@ const LoginPage = () => {
   }
 
   return (
-    <>
-      <Container maxWidth="sm" sx={{ py: 5 }}>
-        <StyledPaper>
-          {/* Decorative elements */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: -50,
-              right: -50,
-              width: 150,
-              height: 150,
-              backgroundColor: theme.palette.secondary.main,
-              borderRadius: '50%',
-              opacity: 0.2,
-              zIndex: 0,
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: -50,
-              left: -50,
-              width: 150,
-              height: 150,
-              backgroundColor: theme.palette.primary.main,
-              borderRadius: '50%',
-              opacity: 0.2,
-              zIndex: 0,
-            }}
-          />
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            variant="fullWidth"
-            textColor="primary"
-            indicatorColor="primary"
-            sx={{ mb: 3, position: 'relative', zIndex: 1 }}
-          >
-            <StyledTab label="Кіру" />
-            <StyledTab label="Тіркелу" />
-          </Tabs>
-          <Box sx={{ position: 'relative', zIndex: 1 }}>
-            <Typography
-              variant="h5"
-              textAlign="center"
-              sx={{ fontWeight: 600, color: theme.palette.text.primary, mb: 2 }}
-            >
-              {tabIndex === 0 ? 'Қош келдіңіз!' : 'Аккаунт жасаңыз!'}
-            </Typography>
-            {tabIndex === 0 && (
-              <LoginForm
-                email={loginEmail}
-                password={loginPassword}
-                onEmailChange={(e) => setLoginEmail(e.target.value)}
-                onPasswordChange={(e) => setLoginPassword(e.target.value)}
-                onSubmit={handleLoginSubmit}
-                theme={theme}
-              />
-            )}
-            {tabIndex === 1 && (
-              <RegisterForm
-                fullName={registerFullName}
-                email={registerEmail}
-                password={registerPassword}
-                confirmPassword={registerConfirmPassword}
-                onFullNameChange={(e) => setRegisterFullName(e.target.value)}
-                onEmailChange={(e) => setRegisterEmail(e.target.value)}
-                onPasswordChange={(e) => setRegisterPassword(e.target.value)}
-                onConfirmPasswordChange={(e) =>
-                  setRegisterConfirmPassword(e.target.value)
-                }
-                onSubmit={handleRegisterSubmit}
-                theme={theme}
-              />
-            )}
-          </Box>
-          <Divider
-            sx={{
-              my: 3,
-              backgroundColor: theme.palette.divider,
-              opacity: 0.5,
-              zIndex: 1,
-              position: 'relative',
-            }}
-          />
+    <Container maxWidth="sm" sx={{ py: 5 }}>
+      <StyledPaper>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: -50,
+            right: -50,
+            width: 150,
+            height: 150,
+            backgroundColor: theme.palette.secondary.main,
+            borderRadius: '50%',
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: -50,
+            left: -50,
+            width: 150,
+            height: 150,
+            backgroundColor: theme.palette.primary.main,
+            borderRadius: '50%',
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+        />
+        <Tabs
+          value={tabIndex}
+          onChange={handleTabChange}
+          variant="fullWidth"
+          textColor="primary"
+          indicatorColor="primary"
+          sx={{ mb: 3, position: 'relative', zIndex: 1 }}
+        >
+          <StyledTab label="Кіру" />
+          <StyledTab label="Тіркелу" />
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 60 }}>
+                      <Select
+                        value={i18n.language}
+                        onChange={(e) => changeLanguage(e.target.value)}
+                        disableUnderline
+                        sx={{ color: 'black', '& .MuiSelect-icon': { color: 'black' } }}
+                      >
+                        <MenuItem value="kk">ҚАЗ</MenuItem>
+                        <MenuItem value="en">ENG</MenuItem>
+                      </Select>
+                    </FormControl>
+        </Tabs>
+        <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Typography
-            variant="body2"
+            variant="h5"
             textAlign="center"
-            sx={{
-              color: theme.palette.text.secondary,
-              position: 'relative',
-              zIndex: 1,
-            }}
+            sx={{ fontWeight: 600, color: theme.palette.text.primary, mb: 2 }}
           >
-            Жалғастыру арқылы сіз біздің Шарттарымызбен келісесіз.
+            {tabIndex === 0 ? t('login_page.welcome_back') : t('login_page.create_account')}
           </Typography>
-        </StyledPaper>
-      </Container>
-    </>
+          {tabIndex === 0 && (
+            <LoginForm
+              email={loginEmail}
+              password={loginPassword}
+              onEmailChange={(e) => setLoginEmail(e.target.value)}
+              onPasswordChange={(e) => setLoginPassword(e.target.value)}
+              onSubmit={handleLoginSubmit}
+              theme={theme}
+              t={t}
+            />
+          )}
+          {tabIndex === 1 && (
+            <RegisterForm
+              fullName={registerFullName}
+              email={registerEmail}
+              password={registerPassword}
+              confirmPassword={registerConfirmPassword}
+              onFullNameChange={(e) => setRegisterFullName(e.target.value)}
+              onEmailChange={(e) => setRegisterEmail(e.target.value)}
+              onPasswordChange={(e) => setRegisterPassword(e.target.value)}
+              onConfirmPasswordChange={(e) => setRegisterConfirmPassword(e.target.value)}
+              onSubmit={handleRegisterSubmit}
+              theme={theme}
+              t={t}
+            />
+          )}
+        </Box>
+        <Divider
+          sx={{
+            my: 3,
+            backgroundColor: theme.palette.divider,
+            opacity: 0.5,
+            zIndex: 1,
+            position: 'relative',
+          }}
+        />
+        <Typography
+          variant="body2"
+          textAlign="center"
+          sx={{
+            color: theme.palette.text.secondary,
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          {t('login_page.terms_conditions')}
+        </Typography>
+        <Snackbar
+  open={openSnackbar}
+  autoHideDuration={4000}
+  onClose={() => setOpenSnackbar(false)}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+>
+  <Alert onClose={() => setOpenSnackbar(false)} severity="error" sx={{ width: '100%' }}>
+    {errorMessage}
+  </Alert>
+</Snackbar>
+
+      </StyledPaper>
+    </Container>
+    
   )
 }
 

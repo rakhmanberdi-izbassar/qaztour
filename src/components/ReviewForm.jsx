@@ -9,6 +9,7 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import axios from 'axios'
 
@@ -24,7 +25,7 @@ const ReviewForm = ({ tourId, onReviewAdded }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('')
 
   const [snackbarSeverity, setSnackbarSeverity] = useState('success')
-
+const { t } = useTranslation()
   const handleSubmit = async (event) => {
     event.preventDefault()
 
@@ -97,7 +98,7 @@ const ReviewForm = ({ tourId, onReviewAdded }) => {
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
            {' '}
       <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Пікір қалдырыңыз      {' '}
+        {t('tour_detail_page.write_review')}
       </Typography>
            {' '}
       <Rating
@@ -109,7 +110,7 @@ const ReviewForm = ({ tourId, onReviewAdded }) => {
       />
            {' '}
       <TextField
-        label="Сіздің пікіріңіз"
+        label={t('tour_detail_page.your_review')}
         multiline
         rows={4}
         fullWidth
@@ -119,16 +120,16 @@ const ReviewForm = ({ tourId, onReviewAdded }) => {
       />
            {' '}
       <Button type="submit" variant="contained" color="primary">
-                Жіберу      {' '}
+        {t('tour_detail_page.submit')}
       </Button>
-           {' '}
+     
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-               {' '}
+        
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity}
