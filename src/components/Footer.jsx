@@ -76,15 +76,15 @@ export default function Footer() {
               </Typography>{' '}
               {/* Аударылған мәтін */}
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                Travosy Tour & Travels
+                Aventra
                 <br />
-                C/54 Northwest Freeway,
+                Almaty
                 <br />
-                Suite 558, Houston, USA 485
+                Zhualy, 15
                 <br />
-                contact@example.com
+                aventra@gmail.com
                 <br />
-                +152 534-468-854
+                +7 777 157 0165
               </Typography>
             </Item>
           </Grid>

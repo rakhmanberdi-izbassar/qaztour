@@ -136,7 +136,7 @@ const SingleEventPage = () => {
       <Card sx={{ boxShadow: 3, borderRadius: 3 }}>
         <CardMedia
           component="img"
-          alt={event.title}
+          alt={event.title_kz}
           height="400"
           image={getImageUrl(event.image)} // Негізгі сурет
           sx={{ objectFit: 'cover', borderRadius: 'inherit' }}
@@ -148,7 +148,7 @@ const SingleEventPage = () => {
             component="h1"
             fontWeight="bold"
           >
-            {event.title}
+            {event.title_kz}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             {event.eventType?.name} | {event.organizer}
@@ -159,7 +159,7 @@ const SingleEventPage = () => {
               Сипаттама
             </Typography>
             <Typography variant="body1" color="text.secondary" paragraph>
-              {event.description}
+              {event.description_kz}
             </Typography>
           </Box>
 

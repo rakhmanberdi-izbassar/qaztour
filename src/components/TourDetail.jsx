@@ -197,7 +197,7 @@ const TourDetail = () => {
       >
         <Box sx={{ bgcolor: 'rgba(0, 0, 0, 0.5)', p: 3, borderRadius: 2 }}>
           <Typography variant="h3" fontWeight="bold">
-            {tour.name}
+            {tour.name_kz}
           </Typography>
         </Box>
       </Box>
@@ -254,7 +254,7 @@ const TourDetail = () => {
                 {t('tour_detail_page.overview')}
               </Typography>
               <Typography variant="body1" color="text.secondary" paragraph>
-                {tour.description}
+                {tour.description_kz}
               </Typography>
               <Typography
                 variant="h6"
@@ -296,7 +296,7 @@ const TourDetail = () => {
                 ))}
               </ImageList>
               <Divider sx={{ my: 3 }} />
-              <Box sx={{ my: 3, textAlign: 'center' }}>
+
                 <Button
                   variant="contained"
                   color="primary"
@@ -305,7 +305,7 @@ const TourDetail = () => {
                 >
                   {t('tour_detail_page.booking_and_payment')}
                 </Button>
-              </Box>
+
               <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md">
                 {selectedImage && (
                   <img
@@ -415,74 +415,74 @@ const TourDetail = () => {
                   </Typography>
                 </Box>
               </Card>
-              <Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>
-                <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  {t('tour_detail_page.similar_tours')}
-                </Typography>
-                {/* Ұқсас турларды көрсету логикасы әлі қосылмаған */}
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Card>
-                      <img
-                        src="https://travosy.vercel.app/static/media/almaty-city-tour.c7b7935b.jpg"
-                        alt="Almaty City Tour"
-                        style={{ width: '100%', display: 'block' }}
-                      />
-                      <Box p={1} textAlign="center">
-                        <Typography variant="subtitle2" fontWeight="bold">
-                          Алматы қаласы
-                        </Typography>
-                        <Typography variant="caption">$50</Typography>
-                      </Box>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Card>
-                      <img
-                        src="https://travosy.vercel.app/static/media/charyn-canyon.8c514287.jpg"
-                        alt="Charyn Canyon"
-                        style={{ width: '100%', display: 'block' }}
-                      />
-                      <Box p={1} textAlign="center">
-                        <Typography variant="subtitle2" fontWeight="bold">
-                          Шарын каньоны
-                        </Typography>
-                        <Typography variant="caption">$120</Typography>
-                      </Box>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Card>
-                      <img
-                        src="https://travosy.vercel.app/static/media/nomadic-experience.9e9c6b6d.jpg"
-                        alt="Nomadic Experience"
-                        style={{ width: '100%', display: 'block' }}
-                      />
-                      <Box p={1} textAlign="center">
-                        <Typography variant="subtitle2" fontWeight="bold">
-                          Көшпелі тәжірибе
-                        </Typography>
-                        <Typography variant="caption">$150</Typography>
-                      </Box>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Card>
-                      <img
-                        src="https://travosy.vercel.app/static/media/nomadic-culture.698b5a8c.jpg"
-                        alt="Nomadic Culture"
-                        style={{ width: '100%', display: 'block' }}
-                      />
-                      <Box p={1} textAlign="center">
-                        <Typography variant="subtitle2" fontWeight="bold">
-                          Көшпелілер мәдениеті
-                        </Typography>
-                        <Typography variant="caption">$130</Typography>
-                      </Box>
-                    </Card>
-                  </Grid>
-                </Grid>
-              </Card>
+              {/*<Card sx={{ p: 2, mt: 3, boxShadow: 3 }}>*/}
+              {/*  <Typography variant="h6" fontWeight="bold" gutterBottom>*/}
+              {/*    {t('tour_detail_page.similar_tours')}*/}
+              {/*  </Typography>*/}
+              {/*  /!* Ұқсас турларды көрсету логикасы әлі қосылмаған *!/*/}
+              {/*  <Grid container spacing={2}>*/}
+              {/*    <Grid item xs={6}>*/}
+              {/*      <Card>*/}
+              {/*        <img*/}
+              {/*          src="https://travosy.vercel.app/static/media/almaty-city-tour.c7b7935b.jpg"*/}
+              {/*          alt="Almaty City Tour"*/}
+              {/*          style={{ width: '100%', display: 'block' }}*/}
+              {/*        />*/}
+              {/*        <Box p={1} textAlign="center">*/}
+              {/*          <Typography variant="subtitle2" fontWeight="bold">*/}
+              {/*            Алматы қаласы*/}
+              {/*          </Typography>*/}
+              {/*          <Typography variant="caption">$50</Typography>*/}
+              {/*        </Box>*/}
+              {/*      </Card>*/}
+              {/*    </Grid>*/}
+              {/*    <Grid item xs={6}>*/}
+              {/*      <Card>*/}
+              {/*        <img*/}
+              {/*          src="https://travosy.vercel.app/static/media/charyn-canyon.8c514287.jpg"*/}
+              {/*          alt="Charyn Canyon"*/}
+              {/*          style={{ width: '100%', display: 'block' }}*/}
+              {/*        />*/}
+              {/*        <Box p={1} textAlign="center">*/}
+              {/*          <Typography variant="subtitle2" fontWeight="bold">*/}
+              {/*            Шарын каньоны*/}
+              {/*          </Typography>*/}
+              {/*          <Typography variant="caption">$120</Typography>*/}
+              {/*        </Box>*/}
+              {/*      </Card>*/}
+              {/*    </Grid>*/}
+              {/*    <Grid item xs={6}>*/}
+              {/*      <Card>*/}
+              {/*        <img*/}
+              {/*          src="https://travosy.vercel.app/static/media/nomadic-experience.9e9c6b6d.jpg"*/}
+              {/*          alt="Nomadic Experience"*/}
+              {/*          style={{ width: '100%', display: 'block' }}*/}
+              {/*        />*/}
+              {/*        <Box p={1} textAlign="center">*/}
+              {/*          <Typography variant="subtitle2" fontWeight="bold">*/}
+              {/*            Көшпелі тәжірибе*/}
+              {/*          </Typography>*/}
+              {/*          <Typography variant="caption">$150</Typography>*/}
+              {/*        </Box>*/}
+              {/*      </Card>*/}
+              {/*    </Grid>*/}
+              {/*    <Grid item xs={6}>*/}
+              {/*      <Card>*/}
+              {/*        <img*/}
+              {/*          src="https://travosy.vercel.app/static/media/nomadic-culture.698b5a8c.jpg"*/}
+              {/*          alt="Nomadic Culture"*/}
+              {/*          style={{ width: '100%', display: 'block' }}*/}
+              {/*        />*/}
+              {/*        <Box p={1} textAlign="center">*/}
+              {/*          <Typography variant="subtitle2" fontWeight="bold">*/}
+              {/*            Көшпелілер мәдениеті*/}
+              {/*          </Typography>*/}
+              {/*          <Typography variant="caption">$130</Typography>*/}
+              {/*        </Box>*/}
+              {/*      </Card>*/}
+              {/*    </Grid>*/}
+              {/*  </Grid>*/}
+              {/*</Card>*/}
             </Grid>
           </Grid>
         </Card>

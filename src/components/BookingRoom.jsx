@@ -154,10 +154,10 @@ const BookingRoom = () => {
               <Grid item xs={12} md={6}>
                 <Typography variant="h6">{hotel.name}</Typography>
                 <Typography variant="body1" gutterBottom>
-                  {hotel.description}
+                  {hotel.description_kz}
                 </Typography>
                 <Typography variant="body2">
-                  {hotel.address}, {hotel.country}
+                  {hotel.address_kz}, {hotel.country}
                 </Typography>
                 <Typography variant="body2">
                   Жұлдыздар: {hotel.stars}

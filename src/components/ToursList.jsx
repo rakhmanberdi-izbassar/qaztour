@@ -388,7 +388,7 @@ const ToursList = () => {
 
                     <CardContent sx={{ paddingTop: 0, paddingBottom: 1 }}>
                       <Typography variant="h6" fontWeight="bold">
-                        {tour.name}
+                        {tour.name_kz}
                       </Typography>
                       <Typography variant="subtitle2" color="text.secondary">
                         {tour.location?.name}
@@ -398,8 +398,8 @@ const ToursList = () => {
                         color="text.secondary"
                         sx={{ mt: 0.5, mb: 1 }}
                       >
-                        {tour.description?.length > 80
-                          ? `${tour.description.substring(0, 80)}...`
+                        {tour.description_kz?.length > 80
+                          ? `${tour.description_kz.substring(0, 80)}...`
                           : tour.description}
                       </Typography>
                       <Box display="flex" alignItems="center" mb={0.5}>

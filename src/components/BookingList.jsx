@@ -25,7 +25,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+
 
 // Иконкаларды импорттау
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
@@ -37,7 +37,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import PendingActionsIcon from '@mui/icons-material/PendingActions'
 import DeleteIcon from '@mui/icons-material/Delete'
 import PaymentsIcon from '@mui/icons-material/Payments'
-
+import { useTranslation } from 'react-i18next'
 // PayPal импорттары
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 

@@ -19,6 +19,7 @@ import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
 import PublicIcon from '@mui/icons-material/Public'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import { useTranslation } from 'react-i18next'
 
 const HotelList = () => {
   const [hotels, setHotels] = useState([])
@@ -26,6 +27,7 @@ const HotelList = () => {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
   const BASE_URL = 'http://127.0.0.1:8000/storage/'
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchHotels = async () => {
@@ -88,7 +90,7 @@ const HotelList = () => {
         <IconButton onClick={handleGoBack} sx={{ mb: 2 }}>
           <ArrowBackIosIcon />
         </IconButton>
-        Қонақүйлер тізімі
+        {t('hotel_list.list_hotel')}
       </Typography>
       <Grid container spacing={3}>
         {hotels.map((hotel) => (
@@ -114,10 +116,10 @@ const HotelList = () => {
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   <LocationOnIcon sx={{ mr: 0.5, fontSize: 'inherit' }} />{' '}
-                  {hotel.address}, {hotel.city}, {hotel.country}
+                  {hotel.address_kz}, {hotel.city}, {hotel.country}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  {hotel.description?.substring(0, 100)}...
+                  {hotel.description_kz?.substring(0, 100)}...
                 </Typography>
                 <Box display="flex" alignItems="center" mb={0.5}>
                   <Rating
@@ -132,7 +134,7 @@ const HotelList = () => {
                   </Typography>
                 </Box>
                 <Typography variant="subtitle1" mt={1}>
-                  ${hotel.price_per_night} / night
+                  ${hotel.price_per_night} / {t('hotel_list.night')}
                 </Typography>
               </CardContent>
               <Box sx={{ p: 2 }}>
@@ -160,7 +162,7 @@ const HotelList = () => {
                     href={hotel.website}
                     target="_blank"
                   >
-                    Website
+                    {t('hotel_list.web_site')}
                   </Button>
                 )}
               </Box>

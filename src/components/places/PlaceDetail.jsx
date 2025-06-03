@@ -17,7 +17,7 @@ import axios from 'axios'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css' // Leaflet стилдерін импорттау
-
+import { useTranslation } from 'react-i18next'
 // --- Styled Components ---
 const GalleryImage = styled(CardMedia)(({ theme }) => ({
   height: 200,
@@ -39,6 +39,7 @@ const PlaceDetail = () => {
   const [place, setPlace] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchPlaceData = async () => {
@@ -89,7 +90,7 @@ const PlaceDetail = () => {
     return (
       <Container sx={{ py: 10, textAlign: 'center' }}>
         <CircularProgress />
-        <Typography mt={2}>Көрікті орын жүктелуде...</Typography>
+        <Typography mt={2}>{t('places_detail.loading')}</Typography>
       </Container>
     )
   }
@@ -109,7 +110,7 @@ const PlaceDetail = () => {
     return (
       <Container sx={{ py: 10, textAlign: 'center' }}>
         <Typography variant="h5" color="error">
-          Бұл орын табылмады.
+          {t('places_detail.notfound')}
         </Typography>
       </Container>
     )
@@ -123,7 +124,7 @@ const PlaceDetail = () => {
   return (
     <Container sx={{ py: 14 }}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
-        {place.name}
+        {place.name_kz}
       </Typography>
       <Typography variant="subtitle1" color="text.secondary" gutterBottom>
         {place.city}, {place.country}
@@ -143,7 +144,7 @@ const PlaceDetail = () => {
         ) : (
           <Grid item xs={12}>
             <Typography variant="body2" color="text.secondary">
-              Суреттер жоқ.
+              {t('places_detail.notfound_img')}
             </Typography>
           </Grid>
         )}
@@ -152,10 +153,10 @@ const PlaceDetail = () => {
       {/* Негізгі сипаттама */}
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom>
-          Орын сипаттамасы
+          {t('places_detail.overview')}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          {place.description}
+          {place.description_kz}
         </Typography>
       </Paper>
 
@@ -176,7 +177,7 @@ const PlaceDetail = () => {
       {/* Қызметтер немесе қосымша мәліметтер */}
       <Box mb={4}>
         <Typography variant="h6" gutterBottom>
-          Қосымша ақпараттар
+          {t('places_detail.information')}
         </Typography>
         {place.things_to_do &&
         typeof place.things_to_do === 'string' &&
@@ -190,7 +191,7 @@ const PlaceDetail = () => {
           </Grid>
         ) : (
           <Typography variant="body2" color="text.secondary">
-            Қосымша мәліметтер жоқ.
+            {t('places_detail.notfound_information')}
           </Typography>
         )}
       </Box>
@@ -198,7 +199,7 @@ const PlaceDetail = () => {
       {/* Карта */}
       <Box mb={4}>
         <Typography variant="h6" gutterBottom>
-          Орын орналасуы (карта)
+          {t('places_detail.location')}
         </Typography>
 
         {hasCoordinates ? ( // Жаңа hasCoordinates айнымалысын қолданамыз
@@ -213,7 +214,7 @@ const PlaceDetail = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <Marker position={[place.lat, place.lng]}>
-                <Popup>{place.name}</Popup>
+                <Popup>{place.name_kz}</Popup>
               </Marker>
               <ResetMapView lat={place.lat} lng={place.lng} />
             </MapContainer>
@@ -231,7 +232,7 @@ const PlaceDetail = () => {
             }}
           >
             <Typography color="text.secondary">
-              Координаталар табылмады
+              {t('places_detail.notfound_coordinate')}
             </Typography>
           </Box>
         )}

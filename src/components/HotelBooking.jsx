@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { useTranslation } from 'react-i18next'
 
 const HotelBooking = () => {
   const { hotelId, roomId } = useParams()
@@ -22,7 +23,7 @@ const HotelBooking = () => {
   const [notes, setNotes] = useState('')
   const [hotelData, setHotelData] = useState(null)
   const [loading, setLoading] = useState(true)
-
+  const { t } = useTranslation()
   const token = localStorage.getItem('authToken')
   const userId = localStorage.getItem('userId') || 1 // уақытша 1
 
@@ -123,7 +124,7 @@ const HotelBooking = () => {
   if (!hotelData) {
     return (
       <Typography sx={{ mt: 12, textAlign: 'center' }}>
-        Мәлімет табылмады
+        {t('hotel_booking_page.notfound_info')}
       </Typography>
     )
   }
@@ -139,35 +140,35 @@ const HotelBooking = () => {
   return (
     <Paper sx={{ p: 3, maxWidth: 1200, margin: '0 auto', mt: 12 }}>
       <Typography variant="h6" gutterBottom>
-        Жаңа брондау
+        {t('hotel_booking_page.new_booking')}
       </Typography>
 
       <Box mb={2}>
         <Typography>
-          <strong>Қонақ үй:</strong> {hotel.name}
+          <strong>{t('hotel_booking_page.hotel_name')}:</strong> {hotel.name}
         </Typography>
         <Typography>
-          <strong>Бөлме түрі:</strong> {room_type.name}
+          <strong>{t('hotel_booking_page.room')}:</strong> {room_type.name}
         </Typography>
         <Typography>
-          <strong>Бір түннің бағасы:</strong> {room_type.price_per_night} ₸
+          <strong>{t('hotel_booking_page.price_for_night')}:</strong> {room_type.price_per_night} ₸
         </Typography>
         <Typography>
-          <strong>Максималды қонақтар:</strong> {room_type.max_guests}
+          <strong>{t('hotel_booking_page.max_guid')}:</strong> {room_type.max_guests}
         </Typography>
         <Typography>
-          <strong>Қол жетімді бөлмелер саны:</strong>{' '}
+          <strong>{t('hotel_booking_page.qwe')}:</strong>{' '}
           {room_type.available_rooms}
         </Typography>
         <Typography>
-          <strong>Сипаттама:</strong> {room_type.description}
+          <strong>{t('hotel_booking_page.description')}:</strong> {room_type.description}
         </Typography>
       </Box>
 
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Келу күні"
+            label={t('hotel_booking_page.check_in_date')}
             type="date"
             fullWidth
             value={checkIn}
@@ -177,7 +178,7 @@ const HotelBooking = () => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Шығу күні"
+            label={t('hotel_booking_page.check_out_date')}
             type="date"
             fullWidth
             value={checkOut}
@@ -187,7 +188,7 @@ const HotelBooking = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="Қонақтар саны"
+            label={t('hotel_booking_page.number_of_guests')}
             type="number"
             fullWidth
             value={guests}
@@ -196,7 +197,7 @@ const HotelBooking = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="Қосымша тілектер"
+            label={t('hotel_booking_page.add')}
             multiline
             rows={3}
             fullWidth
@@ -209,12 +210,12 @@ const HotelBooking = () => {
       <Divider sx={{ my: 3 }} />
 
       <Typography variant="subtitle1" gutterBottom>
-        <strong>Брондау құны</strong>
+        <strong>{t('hotel_booking_page.check')}</strong>
       </Typography>
       <Typography>Бір түннің бағасы: {room_type.price_per_night} ₸</Typography>
-      <Typography>Түндер саны: {nights || 0}</Typography>
+      <Typography>{t('hotel_booking_page.night')}: {nights || 0}</Typography>
       <Typography>
-        <strong>Жалпы құны: {totalPrice || 0} ₸</strong>
+        <strong>{t('hotel_booking_page.totalPrice')}: {totalPrice || 0} ₸</strong>
       </Typography>
 
       <Box mt={3} display="flex" gap={2}>
@@ -227,11 +228,11 @@ const HotelBooking = () => {
             handleSubmit()
           }}
         >
-          Қазір тапсырыс беру
+          {t('hotel_booking_page.right_now')}
         </Button>
 
         <Button variant="outlined" fullWidth color="inherit">
-          Болдырмау
+          {t('hotel_booking_page.cencel')}
         </Button>
       </Box>
 

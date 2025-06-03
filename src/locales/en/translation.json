@@ -31,15 +31,29 @@
   "hotel_booking_page": {
     "hotel_booking": "Hotel Booking",
     "hotel_name": "Hotel Name",
-    "check_in_date": "Check-in Date",
-    "check_out_date": "Check-out Date",
-    "number_of_guests": "Number of Guests",
+    "check_in_date": "Check-in date",
+    "check_out_date": "Check-out date",
+    "number_of_guests": "Number of guests",
     "book": "Book",
-    "fill_all_fields": "Please fill in all fields.",
-    "checkout_after_checkin": "Check-out date must be after check-in date.",
-    "booking_successful": "Hotel booked successfully!",
-    "booking_failed": "Failed to book hotel.",
-    "network_error": "Network error or server unreachable."
+    "fill_all_fields": "Fill all fields",
+    "checkout_after_checkin": "Check-out date must be after check-in date",
+    "booking_successful": "Hotel successfully booked!",
+    "booking_failed": "There was an error while booking the hotel",
+    "network_error": "Network error or server unavailable",
+    "new_booking": "New booking",
+    "room": "Room type",
+    "price_for_night": "Price per night",
+    "max_guid": "Maximum guests",
+    "qwe": "Number of rooms available",
+    "description": "Description",
+    "add": "Additional",
+    "check": "Booking cost",
+    "price_per_night": "Price per night",
+    "night": "Number of nights",
+    "totalPrice": "Total price",
+    "right_now": "Book now",
+    "cencel": "Cancel",
+    "notfound_info": "Information not found"
   },
   "tour_detail_page": {
     "overview": "Overview",
@@ -275,5 +289,38 @@
   "tour_card": {
     "title": "Tour Packages",
     "description": "Explore our best, featured tours!"
+  },
+  "places": {
+    "title": "Pearls of Kazakhstan",
+    "description": "Discover the most beautiful and unique sights of our country. Get inspired for your travels!",
+    "notfound": "Landmarks not yet added."
+  },
+  "places_detail":{
+    "loading": "Loading the place of interest...",
+    "notfound": "This place was not found.",
+    "notfound_img": "No images.",
+    "overview": "Place description",
+    "information": "Additional information",
+    "notfound_information": "No additional information.",
+    "location": "Location (map)",
+    "notfound_coordinate": "Coordinates not found"
+  },
+  "hotel_list": {
+    "list_hotel": "List of hotels",
+    "night": "night",
+    "web_site": "Website"
+  },
+  "events": {
+    "events": "Upcoming events",
+    "description": "Select the events that are most convenient for you and register!",
+    "all_cities": "All cities",
+    "city": "City",
+    "type": "Type",
+    "all_types": "All types",
+    "more": "More",
+    "notfound": "Sorry, no events were found that match your filters \uD83D\uDE14",
+    "loading": "Loading events",
+    "error": "Error",
+    "day": "Day"
   }
 }
