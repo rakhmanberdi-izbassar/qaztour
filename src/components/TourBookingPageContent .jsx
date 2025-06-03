@@ -2,6 +2,17 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Alert,
+  Paper,
+  Grid,
+} from '@mui/material'
+
 const TourBookingPageContent = () => {
   const { tourId } = useParams()
   const navigate = useNavigate()
@@ -14,15 +25,15 @@ const TourBookingPageContent = () => {
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/tours/${tourId}`)
-      .then((res) => {
-        setTour(res.data.tour)
-        setLoading(false)
-      })
-      .catch(() => {
-        setError('Турды жүктеу сәтсіз болды')
-        setLoading(false)
-      })
+        .get(`http://127.0.0.1:8000/api/tours/${tourId}`)
+        .then((res) => {
+          setTour(res.data.tour)
+          setLoading(false)
+        })
+        .catch(() => {
+          setError('Турды жүктеу сәтсіз болды')
+          setLoading(false)
+        })
   }, [tourId])
 
   const handleSubmit = async (e) => {
@@ -30,27 +41,20 @@ const TourBookingPageContent = () => {
     if (!tour) return
     setSubmitting(true)
     try {
-      // CSRF cookie алу (Laravel Sanctum үшін)
       await axios.get('http://127.0.0.1:8000/sanctum/csrf-cookie')
-
-      // Token алу
       const token = localStorage.getItem('authToken')
-
-      // Авторизацияланған POST сұраныс
       await axios.post(
-        'http://127.0.0.1:8000/api/bookings_tours',
-        {
-          tour_id: tour.id,
-          seats,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+          'http://127.0.0.1:8000/api/bookings_tours',
+          {
+            tour_id: tour.id,
+            seats,
           },
-        }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
       )
-
-      // Сәтті брондау -> басқа бетке өту
       navigate('/tour_bookings')
     } catch (err) {
       setError('Брондау сәтсіз аяқталды')
@@ -59,70 +63,71 @@ const TourBookingPageContent = () => {
     }
   }
 
-  if (loading) return <p>Жүктелуде...</p>
-  if (error) return <p>{error}</p>
+  if (loading)
+    return (
+        <Box textAlign="center" mt={5}>
+          <CircularProgress />
+        </Box>
+    )
+  if (error)
+    return (
+        <Box mt={3}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
+    )
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Турды брондау: {tour.name}</h2>
-      <form onSubmit={handleSubmit}>
-        <label className="block mb-2">
-          Орын саны (қалдығы: {tour.volume}):
-          <input
-            type="number"
-            min={1}
-            max={tour.volume}
-            value={seats}
-            onChange={(e) => setSeats(Number(e.target.value))}
-            className="border p-2 w-full"
-            required
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-        >
-          {submitting ? 'Брондалып жатыр...' : 'Брондау'}
-        </button>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-        >
-          {submitting ? 'Брондалып жатыр...' : 'Брондау'}
-        </button>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-        >
-          {submitting ? 'Брондалып жатыр...' : 'Брондау'}
-        </button>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-        >
-          {submitting ? 'Брондалып жатыр...' : 'Брондау'}
-        </button>
-      </form>
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold">Тур туралы ақпарат</h3>
-        <p>
-          <strong>Аты:</strong> {tour.name}
-        </p>
-        <p>
-          <strong>Бағасы:</strong> {tour.price} ₸
-        </p>
-        <p>
-          <strong>Күні:</strong> {new Date(tour.date).toLocaleDateString()}
-        </p>
-        <p>
-          <strong>Сипаттама:</strong> {tour.description}
-        </p>
-      </div>
-    </div>
+      <Box maxWidth="md" mx="auto" mt={14} component={Paper} p={4}>
+        <Typography variant="h5" fontWeight="bold" mb={3}>
+          Турды брондау: {tour.name}
+        </Typography>
+
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                  label={`Орын саны (қалдығы: ${tour.volume})`}
+                  type="number"
+                  fullWidth
+                  value={seats}
+                  inputProps={{ min: 1, max: tour.volume }}
+                  onChange={(e) => setSeats(Number(e.target.value))}
+                  required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} display="flex" alignItems="center">
+              <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={submitting}
+                  fullWidth
+              >
+                {submitting ? 'Брондалып жатыр...' : 'Брондау'}
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+
+        <Box mt={5}>
+          <Typography variant="h6" gutterBottom>
+            Тур туралы ақпарат
+          </Typography>
+          <Typography>
+            <strong>Аты:</strong> {tour.name}
+          </Typography>
+          <Typography>
+            <strong>Бағасы:</strong> {tour.price} ₸
+          </Typography>
+          <Typography>
+            <strong>Күні:</strong>{' '}
+            {new Date(tour.date).toLocaleDateString('kk-KZ')}
+          </Typography>
+          <Typography>
+            <strong>Сипаттама:</strong> {tour.description}
+          </Typography>
+        </Box>
+      </Box>
   )
 }
 

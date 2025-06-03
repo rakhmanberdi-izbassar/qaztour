@@ -15,6 +15,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import SectionTitle from './SectionTitle'
 import SectionSubtitle from './SectionSubtitle'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const StyledCard = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -50,7 +51,7 @@ const PlacesList = () => {
   // const [places, setPlaces] = useState(placesData) // Уақытша статикалық деректер
   const [loading, setLoading] = useState(false) // Статикалық болғандықтан false
   const [error, setError] = useState(null) // Қате жоқ
-
+  const { t } = useTranslation()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -125,10 +126,9 @@ const PlacesList = () => {
 
   return (
     <Container sx={{ pt: 14 }}>
-      <SectionTitle>🇰🇿 Қазақстанның інжу-маржандары</SectionTitle>
+      <SectionTitle>🇰🇿 {t('places.title')}</SectionTitle>
       <SectionSubtitle>
-        Біздің еліміздің ең әсем және ерекше көрікті жерлерімен танысыңыз.
-        Саяхаттарыңызға шабыт алыңыз!
+        {t('places.description')}
       </SectionSubtitle>
 
       <Grid container spacing={isMobile ? 2 : 4}>
@@ -145,7 +145,7 @@ const PlacesList = () => {
 
               <CardOverlay className="overlay">
                 <Typography variant="h6" fontWeight="bold">
-                  {place.name}
+                  {place.name_kz}
                 </Typography>
                 <Typography variant="body2" mb={1}>
                   {place.city}, {place.country}
@@ -182,7 +182,7 @@ const PlacesList = () => {
           textAlign="center"
           mt={4}
         >
-          Көрікті орындар әлі қосылмаған.
+          {t('places.notfound')}
         </Typography>
       )}
       <br />

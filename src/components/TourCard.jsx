@@ -267,7 +267,7 @@ export default function ToursCollection() {
                     }}
                   >
                     <Box sx={{ mr: 1 }}>
-                      <TourTitle>{tour.name}</TourTitle>
+                      <TourTitle>{tour.name_kz}</TourTitle>
                       <TourDateLocation>
                         {new Date(tour.date).toLocaleDateString()} •{' '}
                         {tour.location?.name || 'Белгісіз локация'}

@@ -289,18 +289,19 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
         >
           <StyledTab label="Кіру" />
           <StyledTab label="Тіркелу" />
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 60 }}>
-                      <Select
-                        value={i18n.language}
-                        onChange={(e) => changeLanguage(e.target.value)}
-                        disableUnderline
-                        sx={{ color: 'black', '& .MuiSelect-icon': { color: 'black' } }}
-                      >
-                        <MenuItem value="kk">ҚАЗ</MenuItem>
-                        <MenuItem value="en">ENG</MenuItem>
-                      </Select>
-                    </FormControl>
+
         </Tabs>
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 60 }}>
+              <Select
+                  value={i18n.language}
+                  onChange={(e) => changeLanguage(e.target.value)}
+                  disableUnderline
+                  sx={{ color: 'black', '& .MuiSelect-icon': { color: 'black' } }}
+              >
+                  <MenuItem value="kk">ҚАЗ</MenuItem>
+                  <MenuItem value="en">ENG</MenuItem>
+              </Select>
+          </FormControl>
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Typography
             variant="h5"

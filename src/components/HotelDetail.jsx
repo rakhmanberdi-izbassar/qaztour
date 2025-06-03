@@ -120,7 +120,7 @@ const HotelDetail = () => {
           </Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
             <LocationOnIcon sx={{ mr: 0.5, fontSize: 'inherit' }} />{' '}
-            {hotel.address}, {hotel.city}, {hotel.country}
+            {hotel.address_kz}, {hotel.city_kz}, {hotel.country}
           </Typography>
           <Box display="flex" alignItems="center" mb={1}>
             <Rating
@@ -134,7 +134,7 @@ const HotelDetail = () => {
             </Typography>
           </Box>
           <Typography variant="body1" paragraph>
-            {hotel.description}
+            {hotel.description_kz}
           </Typography>
           <Typography variant="subtitle1">
             {hotel.price_per_night} ₸ / night
@@ -157,7 +157,7 @@ const HotelDetail = () => {
                 />
                 <CardContent sx={{ p: 2 }}>
                   <Typography gutterBottom variant="h6" component="h2">
-                    {room.name}
+                    {room.name_kz}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
                     {room.price_per_night} ₸ / night

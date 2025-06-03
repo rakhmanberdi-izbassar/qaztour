@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 import { Link } from 'react-router-dom' // Толығырақ үшін
 import { styled } from '@mui/material/styles' // styled импорттау
-
+import { useTranslation } from 'react-i18next'
 // Styled Card (TourList-тен алынғандай)
 const StyledEventCard = styled(Card)(({ theme }) => ({
   height: '100%',
@@ -47,7 +47,7 @@ const EventsPage = () => {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
+  const { t } = useTranslation()
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedLocation, setSelectedLocation] = useState('')
   const [selectedType, setSelectedType] = useState('')
@@ -111,7 +111,7 @@ const EventsPage = () => {
         }}
       >
         <CircularProgress />
-        <Typography ml={2}>Оқиғалар жүктелуде...</Typography>
+        <Typography ml={2}>{t('events.loading')}...</Typography>
       </Container>
     )
   }
@@ -120,7 +120,7 @@ const EventsPage = () => {
     return (
       <Container sx={{ mt: 14, textAlign: 'center' }}>
         <Typography variant="h6" color="error">
-          Қате: {error}
+          {t('events.error')}: {error}
         </Typography>
       </Container>
     )
@@ -130,10 +130,11 @@ const EventsPage = () => {
     <Container sx={{ mt: 14 }}>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Жақын арадағы іс-шаралар
+
+          {t('events.events')}
         </Typography>
         <Typography variant="subtitle1" color="gray">
-          Өзіңізге ыңғайлы іс-шараларды таңдап, тіркеліңіз!
+          {t('events.description')}
         </Typography>
       </Box>
 
@@ -143,7 +144,7 @@ const EventsPage = () => {
           <TextField
             type="date"
             fullWidth
-            label="Күні"
+            label={t('events.day')}
             InputLabelProps={{ shrink: true }}
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
@@ -151,13 +152,13 @@ const EventsPage = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <FormControl fullWidth>
-            <InputLabel>Қала</InputLabel>
+            <InputLabel>{t('events.city')}</InputLabel>
             <Select
               value={selectedLocation}
-              label="Қала"
+              label={t('events.city')}
               onChange={(e) => setSelectedLocation(e.target.value)}
             >
-              <MenuItem value="">Барлық қалалар</MenuItem>
+              <MenuItem value="">{t('events.all_cities')}</MenuItem>
               {mockLocations.map((loc) => (
                 <MenuItem key={loc} value={loc}>
                   {loc}
@@ -168,13 +169,13 @@ const EventsPage = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <FormControl fullWidth>
-            <InputLabel>Түрі</InputLabel>
+            <InputLabel>{t('events.type')}</InputLabel>
             <Select
               value={selectedType}
               label="Түрі"
               onChange={(e) => setSelectedType(e.target.value)}
             >
-              <MenuItem value="">Барлық түрлері</MenuItem>
+              <MenuItem value="">{t('events.all_types')}</MenuItem>
               {mockTypes.map((type) => (
                 <MenuItem key={type} value={type}>
                   {type}
@@ -214,7 +215,7 @@ const EventsPage = () => {
                     component={Link}
                     to={`/events/${event.id}`} // Жеке бетке сілтеме
                   >
-                    Толығырақ
+                    {t('events.more')}
                   </Button>
                 </CardContent>
               </StyledEventCard>
@@ -222,7 +223,7 @@ const EventsPage = () => {
           ))
         ) : (
           <Typography sx={{ textAlign: 'center', mt: 4, width: '100%' }}>
-            Кешіріңіз, сіздің фильтрлеріңізге сәйкес іс-шаралар табылмады 😔
+            {t('events.notfound')}
           </Typography>
         )}
       </Grid>
