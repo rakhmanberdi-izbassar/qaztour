@@ -22,6 +22,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'
 import { useTranslation } from 'react-i18next'
 
+
 const ToursList = () => {
   const navigate = useNavigate()
   const [tours, setTours] = useState([])
@@ -33,7 +34,8 @@ const ToursList = () => {
   const [error, setError] = useState(null)
   const BASE_URL = 'http://127.0.0.1:8000/storage/'
   const { t } = useTranslation()
-
+const { i18n } = useTranslation();
+  const currentLang = i18n.language;
   const [searchParams] = useSearchParams()
   const initialSearch = searchParams.get('search') || ''
   const initialDate = searchParams.get('date') || ''
@@ -45,6 +47,8 @@ const ToursList = () => {
   const [filteredTours, setFilteredTours] = useState([])
   const [sortBy, setSortBy] = useState('')
   const [sortDirection, setSortDirection] = useState('asc')
+  
+
 
   useEffect(() => {
     const fetchTours = async () => {

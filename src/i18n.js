@@ -6,36 +6,38 @@ import translationEN from './locales/en/translation.json'
 import translationKK from './locales/kk/translation.json'
 
 const resources = {
-  en: {
-    translation: translationEN,
-  },
-  kk: {
-    translation: translationKK,
-  },
+    en: {
+        translation: translationEN,
+    },
+    kk: {
+        translation: translationKK,
+    },
+
 }
 
 i18n
-  .use(LanguageDetector) // Браузер тілін анықтау
-  .use(initReactI18next) // react-i18next-ті іске қосу
-  .init({
-    resources,
-    fallbackLng: 'kk', // Әдепкі тіл қазақша
-    debug: false, // Даму кезінде true қоюға болады
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+        resources,
+        lng: localStorage.getItem('i18nextLng') || 'kk', // Әдепкі тіл қазақша
+        fallbackLng: 'en', // Егер аударма табылмаса, ағылшыншаны қолдану
+        debug: false,
 
-    interpolation: {
-      escapeValue: false, // react компоненттері XSS шабуылынан қорғайды
-    },
-    detection: {
-      order: [
-        'queryString',
-        'cookie',
-        'localStorage',
-        'sessionStorage',
-        'navigator',
-        'htmlTag',
-      ],
-      caches: ['localStorage', 'cookie'],
-    },
-  })
+        interpolation: {
+            escapeValue: false,
+        },
+        detection: {
+            order: [
+                'queryString',
+                'cookie',
+                'localStorage',
+                'sessionStorage',
+                'navigator',
+                'htmlTag',
+            ],
+            caches: ['localStorage', 'cookie'],
+        },
+    })
 
 export default i18n

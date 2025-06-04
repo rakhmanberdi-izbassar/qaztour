@@ -8,6 +8,8 @@ import {
   Box,
   Container,
   CircularProgress,
+  Alert,
+  Snackbar 
 } from '@mui/material'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -15,11 +17,13 @@ import { PayPalButtons } from '@paypal/react-paypal-js'
 import Header from './Header'
 import Footer from './Footer'
 
+
 const BookingRoom = () => {
   const { bookingId } = useParams() // URL параметрін алу
   const [booking, setBooking] = useState(null)
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate() // navigate хукын инциализациялау
+const [alert, setAlert] = useState({ open: false, severity: 'info', message: '' })
 
   console.log(bookingId)
 
@@ -27,12 +31,12 @@ const BookingRoom = () => {
     const token = localStorage.getItem('authToken')
 
     if (!bookingId) {
-      alert('Қате! Бронь ID табылмады.')
+      showAlert('error', 'Қате! Бронь ID табылмады.')
       return
     }
 
     if (!token) {
-      alert('Қолданушы авторизациядан өтпеген.')
+      showAlert('warning','Қолданушы авторизациядан өтпеген.')
       return
     }
 
@@ -51,6 +55,8 @@ const BookingRoom = () => {
         setLoading(false)
       })
   }, [bookingId])
+
+  
 
   if (loading) {
     return (
@@ -88,7 +94,7 @@ const BookingRoom = () => {
     const token = localStorage.getItem('authToken')
 
     if (!token) {
-      alert('Қолданушы авторизациядан өтпеген.')
+      showAlert('warning','Қолданушы авторизациядан өтпеген.')
       return
     }
 
@@ -103,7 +109,7 @@ const BookingRoom = () => {
         }
       )
       .then((response) => {
-        alert('Бронь сәтті жойылды')
+        showAlert('success','Бронь сәтті жойылды')
         setBooking((prevBooking) => ({
           ...prevBooking,
           status: 'cancelled',
@@ -114,9 +120,14 @@ const BookingRoom = () => {
       })
       .catch((error) => {
         console.error('Қате шықты:', error)
-        alert('Бронь жою барысында қате шықты')
+        showAlert('error','Бронь жою барысында қате шықты')
       })
   }
+
+  const showAlert = (severity, message) => {
+  setAlert({ open: true, severity, message })
+}
+
 
   return (
     <>
@@ -292,6 +303,22 @@ const BookingRoom = () => {
           )}
         </Paper>
       </Box>
+      <Snackbar
+  open={alert.open}
+  autoHideDuration={6000}
+  onClose={() => setAlert({ ...alert, open: false })}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+>
+  <Alert
+    onClose={() => setAlert({ ...alert, open: false })}
+    severity={alert.severity}
+    sx={{ width: '100%' }}
+    variant="filled"
+  >
+    {alert.message}
+  </Alert>
+</Snackbar>
+
       <Footer />
     </>
   )

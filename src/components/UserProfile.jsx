@@ -18,8 +18,7 @@ import InstagramIcon from '@mui/icons-material/Instagram'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import AddIcon from '@mui/icons-material/Add' // "Пост қосу" иконкасы
 import { NavLink, Link } from 'react-router-dom'
-import api from './../utils/axios'
-import { useTranslation } from 'react-i18next'
+import api from './../utils/axios' // Сіздің axios инстансыңыз
 
 const UserProfile = () => {
   const [user, setUser] = useState(null)
@@ -30,7 +29,6 @@ const UserProfile = () => {
   const [deleteLoading, setDeleteLoading] = useState(null)
   const [editingPostId, setEditingPostId] = useState(null)
   const [editedContent, setEditedContent] = useState('')
-  const { t } = useTranslation()
 
   const fetchUserReviews = async () => {
     try {
@@ -240,16 +238,16 @@ const UserProfile = () => {
           Role: {user.role}
         </Typography>
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 1 }}>
-          {/*<Button*/}
-          {/*  component={NavLink}*/}
-          {/*  to="/bookmarked-hotels"*/}
-          {/*  startIcon={<AddIcon />}*/}
-          {/*  variant="contained"*/}
-          {/*  color="primary"*/}
-          {/*  sx={{ borderRadius: 2 }}*/}
-          {/*>*/}
-          {/*  Брондалған қонақүйлер*/}
-          {/*</Button>*/}
+          <Button
+            component={NavLink}
+            to="/bookmarked-hotels"
+            startIcon={<AddIcon />}
+            variant="contained"
+            color="primary"
+            sx={{ borderRadius: 2 }}
+          >
+            Брондалған қонақүйлер
+          </Button>
           <Button
             component={NavLink}
             to="/edit-profile"
@@ -257,7 +255,7 @@ const UserProfile = () => {
             variant="outlined"
             sx={{ borderRadius: 2 }}
           >
-            {t('profile_page.edit_profile')}
+            Профильді өңдеу
           </Button>
           <Button
             component={NavLink}
@@ -267,7 +265,7 @@ const UserProfile = () => {
             color="primary"
             sx={{ borderRadius: 2 }}
           >
-            {t('profile_page.create_post')}
+            Жаңа пост
           </Button>
         </Box>
         {/* Әлеуметтік желі иконкалары */}
@@ -306,7 +304,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              {t('profile_page.your_posts')}
+              Сіздің жазбаларыңыз
             </Typography>
             {user.posts.map((post) => (
               <Box
@@ -345,7 +343,7 @@ const UserProfile = () => {
                       color="primary"
                       size="small"
                     >
-                      {t('profile_page.your_posts')}
+                      Сақтау
                     </Button>
                     <Button onClick={handleCancelEdit} size="small">
                       Болдырмау
@@ -385,7 +383,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              {t('profile_page.your_reviews')}
+              Сіздің пікірлеріңіз
             </Typography>
             {userReviews.map((review) => (
               <Box
@@ -427,7 +425,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              {t('profile_page.your_tours')}
+              Сіздің турларыңыз
             </Typography>
             {user.tours.map((tour) => (
               <Box
@@ -438,7 +436,7 @@ const UserProfile = () => {
                   to={`/tour/${tour.id}`}
                   style={{ textDecoration: 'none' }}
                 >
-                  <Typography>{tour.name_kz}</Typography>
+                  <Typography>{tour.name}</Typography>
                 </Link>
                 <Typography sx={{ ml: 2 }}>(Price: {tour.price})</Typography>
               </Box>
@@ -452,7 +450,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              {t('profile_page.your_bookings')}
+              Сіздің броньдарыңыз
             </Typography>
             {bookings.map((booking) => (
               <Typography key={booking.id} sx={{ mt: 1 }}>
@@ -469,7 +467,7 @@ const UserProfile = () => {
         <Card sx={{ mt: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
-              {t('profile_page.favorite_tours')}
+              Сіздің сақталған турларыңыз
             </Typography>
             {user.favorite_tours.map((favorite) => (
               <Typography

@@ -28,6 +28,7 @@ import PlacesDetailPage from './pages/PlacesDetailPage'
 import SingleEventsPage from './pages/SingleEventPage'
 import TourBookingPage from './pages/TourBookingPage'
 import BookingList from './components/BookingList'
+import AIAdvisor from './components/AIAdvisor'
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
               <Route path="/tour_bookings" element={<BookingList />} />
               <Route path="*" element={<h1>404 Not Found</h1>} />
             </Routes>
+            <AIAdvisor />
           </WeatherProvider>
         </UserProvider>
       </Router>

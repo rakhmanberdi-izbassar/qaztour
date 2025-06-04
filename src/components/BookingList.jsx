@@ -17,6 +17,8 @@ import {
   Avatar,
   useTheme,
   styled,
+  Alert,
+  Snackbar 
 } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -140,6 +142,11 @@ const BookingList = () => {
   const [openPayPalDialog, setOpenPayPalDialog] = useState(false) // ✅ PayPal диалогын басқару
   const [bookingToPay, setBookingToPay] = useState(null) // ✅ Төленетін бронь
   const theme = useTheme()
+const [alert, setAlert] = useState({ open: false, severity: '', message: '' });
+
+const showAlert = (severity, message) => {
+  setAlert({ open: true, severity, message });
+};
 
   const fetchBookings = async () => {
     setLoading(true)
@@ -194,7 +201,7 @@ const BookingList = () => {
       handleCloseConfirmDialog()
     } catch (error) {
       console.error('Броньды жою кезінде қате кетті:', error)
-      alert('Броньды жою кезінде қате кетті.')
+      showAlert('error','Броньды жою кезінде қате кетті.')
     }
   }
 
@@ -221,7 +228,7 @@ const BookingList = () => {
         'PayPal ордерін жасау қатесі:',
         error.response?.data || error.message
       )
-      alert(
+      showAlert('error',
         'PayPal ордерін жасау кезінде қате пайда болды: ' +
           (error.response?.data?.message || error.message)
       )
@@ -243,7 +250,7 @@ const BookingList = () => {
       )
 
       console.log('PayPal төлемі сәтті аяқталды:', response.data)
-      alert('Төлем сәтті аяқталды!')
+      showAlert('success','Төлем сәтті аяқталды!')
       setOpenPayPalDialog(false) // Диалогты жабу
       fetchBookings() // Броньдар тізімін жаңарту
     } catch (error) {
@@ -251,7 +258,7 @@ const BookingList = () => {
         'PayPal төлемін орындау қатесі:',
         error.response?.data || error.message
       )
-      alert(
+      showAlert('error',
         'PayPal төлемін орындау кезінде қате пайда болды: ' +
           (error.response?.data?.message || error.message)
       )
@@ -262,7 +269,7 @@ const BookingList = () => {
   // ✅ PayPal қатесі
   const onError = (err) => {
     console.error('PayPal Error:', err)
-    alert('PayPal төлемі кезінде қате пайда болды.')
+    showAlert('error','PayPal төлемі кезінде қате пайда болды.')
     setOpenPayPalDialog(false) // Диалогты жабу
   }
 
@@ -533,6 +540,21 @@ const BookingList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+  open={alert.open}
+  autoHideDuration={6000}
+  onClose={() => setAlert({ ...alert, open: false })}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+>
+  <Alert
+    onClose={() => setAlert({ ...alert, open: false })}
+    severity={alert.severity}
+    sx={{ width: '100%' }}
+  >
+    {alert.message}
+  </Alert>
+</Snackbar>
+
     </StyledContainer>
   )
 }
