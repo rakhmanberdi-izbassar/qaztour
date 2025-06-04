@@ -353,7 +353,7 @@ export default function Header() {
               disableUnderline
               sx={{ color: 'black', '& .MuiSelect-icon': { color: 'black' } }}
             >
-              <MenuItem value="kk">ҚАЗ</MenuItem>
+              <MenuItem value="kz">ҚАЗ</MenuItem>
               <MenuItem value="en">ENG</MenuItem>
             </Select>
           </FormControl>

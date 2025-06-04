@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Button,
   Grid,
@@ -8,69 +8,86 @@ import {
   Box,
   Container,
   CircularProgress,
-} from '@mui/material'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { PayPalButtons } from '@paypal/react-paypal-js'
-import Header from './Header'
-import Footer from './Footer'
+  Alert,
+  Snackbar
+} from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { PayPalButtons } from '@paypal/react-paypal-js';
+import Header from './Header'; // Бұл компонент бар деп есептейміз
+import Footer from './Footer'; // Бұл компонент бар деп есептейміз
+import { useTranslation } from 'react-i18next'; // ✅ useTranslation импорты
+
 
 const BookingRoom = () => {
-  const { bookingId } = useParams() // URL параметрін алу
-  const [booking, setBooking] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const navigate = useNavigate() // navigate хукын инциализациялау
+  const { bookingId } = useParams();
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [alert, setAlert] = useState({ open: false, severity: 'info', message: '' });
+  const { t, i18n } = useTranslation(); // ✅ i18n объектісін аламыз
 
-  console.log(bookingId)
+  // Хабарламаларды көрсету функциясы
+  const showAlert = (severity, message) => {
+    setAlert({ open: true, severity, message });
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken')
+    const token = localStorage.getItem('authToken');
 
     if (!bookingId) {
-      alert('Қате! Бронь ID табылмады.')
-      return
+      showAlert('error', t('booking_room.error_booking_id_not_found')); // Локализация
+      return;
     }
 
     if (!token) {
-      alert('Қолданушы авторизациядан өтпеген.')
-      return
+      showAlert('warning', t('booking_room.user_not_authorized')); // Локализация
+      // navigate('/login'); // Қолданушы авторизациядан өтпесе, логин бетіне бағыттауға болады
+      return;
     }
 
     axios
-      .get(`http://127.0.0.1:8000/api/bookings/${bookingId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setBooking(response.data.booking)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.error('Қате шықты:', error)
-        setLoading(false)
-      })
-  }, [bookingId])
+        .get(`http://127.0.0.1:8000/api/bookings/${bookingId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // API жауабындағы құрылымға сәйкес booking дерегін алу
+          // (Мысалы: response.data.booking немесе response.data.data.booking, API-ға байланысты)
+          if (response.data.booking) { // response.data.booking деп болжаймыз
+            setBooking(response.data.booking);
+          } else {
+            showAlert('error', t('booking_room.booking_details_not_found')); // Локализация
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Қате шықты:', error);
+          showAlert('error', error.message || t('booking_room.failed_to_fetch_booking')); // Локализация
+          setLoading(false);
+        });
+  }, [bookingId, t, i18n.language]); // ✅ i18n.language-ді тәуелділікке қосыңыз!
 
   if (loading) {
     return (
-      <Container sx={{ paddingY: 14 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '50vh',
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    )
+        <Container sx={{ paddingY: 14 }}>
+          <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '50vh',
+              }}
+          >
+            <CircularProgress />
+          </Box>
+        </Container>
+    );
   }
 
   if (!booking) {
-    return <Typography>Брондау мәліметтері табылмады</Typography>
+    return <Typography variant="h6" sx={{ textAlign: 'center', mt: 5 }}>{t('booking_room.booking_details_not_found')}</Typography>; // Локализация
   }
 
   const {
@@ -82,219 +99,248 @@ const BookingRoom = () => {
     total_price,
     notes,
     status,
-  } = booking
+  } = booking;
+
+  // API-да name_kk, address_kk, description_kk сияқты кілттер жоқ, сондықтан i18n.language 'kk' болса, 'kz' деп өңдейміз
+  const effectiveLang = i18n.language === 'kk' ? 'kz' : i18n.language;
+
+  // Қонақүй деректерін локализациялау
+  const hotelName = hotel?.name || t('booking_room.no_name');
+  const hotelAddress = hotel?.[`address_${effectiveLang}`] || hotel?.address_kz || hotel?.address_en || t('booking_room.unknown_address');
+  const hotelDescription = hotel?.[`description_${effectiveLang}`] || hotel?.description_kz || hotel?.description_en || t('booking_room.no_description');
+  const hotelCity = hotel?.city?.name || hotel?.city_id || t('booking_room.unknown_city'); // Егер city объектісі бар болса
+  const hotelCountry = hotel?.country || t('booking_room.unknown_country');
+
+  // Бөлме типінің деректерін локализациялау
+  const roomTypeName = room_type?.[`name_${effectiveLang}`] || room_type?.name_kz || room_type?.name_en || t('booking_room.no_name_room');
+  const roomTypeDescription = room_type?.[`description_${effectiveLang}`] || room_type?.description_kz || room_type?.description_en || t('booking_room.no_description_room');
 
   const handleCancelBooking = () => {
-    const token = localStorage.getItem('authToken')
+    const token = localStorage.getItem('authToken');
 
     if (!token) {
-      alert('Қолданушы авторизациядан өтпеген.')
-      return
+      showAlert('warning', t('booking_room.user_not_authorized')); // Локализация
+      return;
     }
 
     axios
-      .post(
-        `http://127.0.0.1:8000/api/bookings/${bookingId}/cancel`,
-        { status: 'cancelled' },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        alert('Бронь сәтті жойылды')
-        setBooking((prevBooking) => ({
-          ...prevBooking,
-          status: 'cancelled',
-        }))
+        .post(
+            `http://127.0.0.1:8000/api/bookings/${bookingId}/cancel`,
+            { status: 'cancelled' },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        )
+        .then((response) => {
+          showAlert('success', t('booking_room.booking_cancelled_success')); // Локализация
+          setBooking((prevBooking) => ({
+            ...prevBooking,
+            status: 'cancelled',
+          }));
 
-        // Қолданушыны /hotels/ бетіне қайта бағыттау
-        navigate('/hotels/') // navigate хукын қолданамыз
-      })
-      .catch((error) => {
-        console.error('Қате шықты:', error)
-        alert('Бронь жою барысында қате шықты')
-      })
-  }
+          navigate('/hotels/');
+        })
+        .catch((error) => {
+          console.error('Қате шықты:', error);
+          showAlert('error', error.message || t('booking_room.error_cancelling_booking')); // Локализация
+        });
+  };
 
   return (
-    <>
-      <Header />
-      <Box sx={{ maxWidth: 1240, margin: 'auto', padding: 3, mt: 14 }}>
-        <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, borderRadius: 4 }}>
-          <Typography
-            variant="h4"
-            gutterBottom
-            textAlign="center"
-            fontWeight="bold"
-          >
-            Брондау мәліметтері
-          </Typography>
-
-          {/* Қонақүй ақпараты */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>
-              Қонақүй
+      <>
+        <Header />
+        <Box sx={{ maxWidth: 1240, margin: 'auto', padding: 3, mt: 14 }}>
+          <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, borderRadius: 4 }}>
+            <Typography
+                variant="h4"
+                gutterBottom
+                textAlign="center"
+                fontWeight="bold"
+            >
+              {t('booking_room.booking_details')}
             </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Box
-                  component="img"
-                  src={`http://localhost:8000/storage/${hotel.image}`}
-                  alt={hotel.name}
-                  sx={{
-                    width: '100%',
-                    height: 250,
-                    borderRadius: 2,
-                    objectFit: 'cover',
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography variant="h6">{hotel.name}</Typography>
-                <Typography variant="body1" gutterBottom>
-                  {hotel.description_kz}
-                </Typography>
-                <Typography variant="body2">
-                  {hotel.address_kz}, {hotel.country}
-                </Typography>
-                <Typography variant="body2">
-                  Жұлдыздар: {hotel.stars}
-                </Typography>
-                <Typography variant="body2">
-                  Баға/түн: {hotel.price_per_night} KZT
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
 
-          {/* Бөлме түрі */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>
-              Бөлме түрі
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Box
-                  component="img"
-                  src={`http://localhost:8000/storage/${room_type.image}`}
-                  alt={room_type.name}
-                  sx={{
-                    width: '100%',
-                    height: 250,
-                    borderRadius: 2,
-                    objectFit: 'cover',
-                  }}
-                />
+            {/* Қонақүй ақпараты */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" gutterBottom fontWeight="bold">
+                {t('booking_room.hotel_information')}
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Box
+                      component="img"
+                      src={`http://localhost:8000/storage/${hotel?.image}`} // Optional chaining
+                      alt={hotelName}
+                      sx={{
+                        width: '100%',
+                        height: 250,
+                        borderRadius: 2,
+                        objectFit: 'cover',
+                      }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="h6" fontWeight="bold">{hotelName}</Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {hotelDescription}
+                  </Typography>
+                  <Typography variant="body2">
+                    {hotelAddress}, {hotelCity}, {hotelCountry}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.stars')}: {hotel?.stars || 'N/A'} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.price_per_night')}: {hotel?.price_per_night || 'N/A'} KZT {/* Локализация */}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography variant="h6">{room_type.name}</Typography>
-                <Typography variant="body1" gutterBottom>
-                  {room_type.description}
-                </Typography>
-                <Typography variant="body2">
-                  Қонақтар саны: {room_type.max_guests}
-                </Typography>
-                <Typography variant="body2">
-                  Бөлмелер: {room_type.available_rooms}
-                </Typography>
-                <Typography variant="body2">
-                  Баға/түн: {room_type.price_per_night} KZT
-                </Typography>
-                <Typography variant="body2">
-                  Таңғы ас: {room_type.has_breakfast ? 'Иә' : 'Жоқ'}
-                </Typography>
-                <Typography variant="body2">
-                  Wi-Fi: {room_type.has_wifi ? 'Иә' : 'Жоқ'}
-                </Typography>
-                <Typography variant="body2">
-                  ТВ: {room_type.has_tv ? 'Иә' : 'Жоқ'}
-                </Typography>
-                <Typography variant="body2">
-                  Кондиционер: {room_type.has_air_conditioning ? 'Иә' : 'Жоқ'}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          {/* Брондау детализациясы */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>
-              Брондау
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2">
-                  Тіркелу күні: {new Date(check_in_date).toLocaleDateString()}
-                </Typography>
-                <Typography variant="body2">
-                  Шығу күні: {new Date(check_out_date).toLocaleDateString()}
-                </Typography>
-                <Typography variant="body2">
-                  Қонақтар саны: {guests_count}
-                </Typography>
-                <Typography variant="body2">
-                  Ескертпелер: {notes || 'Жоқ'}
-                </Typography>
-                <Typography variant="body2">Статус: {status}</Typography>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography variant="h5" color="primary">
-                  Жалпы баға: {total_price} KZT
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          {/* Төлеу батырмасы */}
-          {status === 'pending' && (
-            <Box mt={3} display="flex" gap={2}>
-              <Button
-                variant="contained"
-                color="error"
-                size="large"
-                fullWidth
-                sx={{ borderRadius: 2, py: 1.5, fontWeight: 'bold' }}
-                onClick={handleCancelBooking}
-              >
-                Бронды өшіру
-              </Button>
-
-              <Box sx={{ flexGrow: 1 }}>
-                <PayPalButtons
-                  style={{ layout: 'horizontal' }}
-                  createOrder={(data, actions) => {
-                    return actions.order.create({
-                      purchase_units: [
-                        {
-                          amount: {
-                            value: total_price.toString(),
-                          },
-                        },
-                      ],
-                    })
-                  }}
-                  onApprove={(data, actions) => {
-                    return actions.order.capture().then((details) => {
-                      alert(
-                        `Төлем сәтті өтті, рахмет ${details.payer.name.given_name}!`
-                      )
-                    })
-                  }}
-                  onError={(err) => {
-                    console.error('PayPal төлем қатесі:', err)
-                    alert('Төлем кезінде қате шықты, қайтадан көріңізші.')
-                  }}
-                />
-              </Box>
             </Box>
-          )}
-        </Paper>
-      </Box>
-      <Footer />
-    </>
-  )
-}
 
-export default BookingRoom
+            {/* Бөлме түрі */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" gutterBottom fontWeight="bold">
+                {t('booking_room.room_type_heading')}
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Box
+                      component="img"
+                      src={`http://localhost:8000/storage/${room_type?.image}`} // Optional chaining
+                      alt={roomTypeName}
+                      sx={{
+                        width: '100%',
+                        height: 250,
+                        borderRadius: 2,
+                        objectFit: 'cover',
+                      }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="h6" fontWeight="bold">{roomTypeName}</Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {roomTypeDescription}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.max_guests')}: {room_type?.max_guests || 'N/A'} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.available_rooms')}: {room_type?.available_rooms || 'N/A'} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.price_per_night')}: {room_type?.price_per_night || 'N/A'} KZT {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.breakfast')}: {room_type?.has_breakfast ? t('booking_room.yes') : t('booking_room.no')} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.wifi')}: {room_type?.has_wifi ? t('booking_room.yes') : t('booking_room.no')} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.tv')}: {room_type?.has_tv ? t('booking_room.yes') : t('booking_room.no')} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.air_conditioning')}: {room_type?.has_air_conditioning ? t('booking_room.yes') : t('booking_room.no')} {/* Локализация */}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* Брондау детализациясы */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" gutterBottom fontWeight="bold">
+                {t('booking_room.booking_details_heading')} {/* Локализация */}
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="body2">
+                    {t('booking_room.check_in_date')}: {new Date(check_in_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.check_out_date')}: {new Date(check_out_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.guests_count')}: {guests_count} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.notes')}: {notes || t('booking_room.none')} {/* Локализация */}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('booking_room.status')}: {t(`booking_room.status_${status}`)} {/* Статусты локализациялау */}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="h5" color="primary" fontWeight="bold">
+                    {t('booking_room.total_price')}: {total_price} KZT {/* Локализация */}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* Төлеу батырмасы */}
+            {status === 'pending' && (
+                <Box mt={3} display="flex" gap={2}>
+                  <Button
+                      variant="contained"
+                      color="error"
+                      size="large"
+                      fullWidth
+                      sx={{ borderRadius: 2, py: 1.5, fontWeight: 'bold' }}
+                      onClick={handleCancelBooking}
+                  >
+                    {t('booking_room.cancel_booking_button')} {/* Локализация */}
+                  </Button>
+
+                  <Box sx={{ flexGrow: 1 }}>
+                    <PayPalButtons
+                        style={{ layout: 'horizontal' }}
+                        createOrder={(data, actions) => {
+                          return actions.order.create({
+                            purchase_units: [
+                              {
+                                amount: {
+                                  value: total_price.toString(),
+                                },
+                              },
+                            ],
+                          });
+                        }}
+                        onApprove={(data, actions) => {
+                          return actions.order.capture().then((details) => {
+                            showAlert('success', t('booking_room.payment_success_message', { name: details.payer.name.given_name })); // Локализация
+                          });
+                        }}
+                        onError={(err) => {
+                          console.error('PayPal төлем қатесі:', err);
+                          showAlert('error', t('booking_room.payment_error_message')); // Локализация
+                        }}
+                    />
+                  </Box>
+                </Box>
+            )}
+          </Paper>
+        </Box>
+        <Snackbar
+            open={alert.open}
+            autoHideDuration={6000}
+            onClose={() => setAlert({ ...alert, open: false })}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert
+              onClose={() => setAlert({ ...alert, open: false })}
+              severity={alert.severity}
+              sx={{ width: '100%' }}
+              variant="filled"
+          >
+            {alert.message}
+          </Alert>
+        </Snackbar>
+
+        <Footer />
+      </>
+  );
+};
+
+export default BookingRoom;
