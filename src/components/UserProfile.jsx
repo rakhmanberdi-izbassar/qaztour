@@ -9,7 +9,7 @@ import {
   IconButton,
   CircularProgress,
   Container,
-  TextField, // TextField импорттау
+  TextField,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete' // DeleteIcon импорттау
@@ -31,7 +31,7 @@ const UserProfile = () => {
   const [editingPostId, setEditingPostId] = useState(null)
   const [editedContent, setEditedContent] = useState('')
   const { t } = useTranslation()
-
+ 
   const fetchUserReviews = async () => {
     try {
       const token = localStorage.getItem('authToken')
