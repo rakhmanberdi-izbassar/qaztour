@@ -150,32 +150,158 @@ export default function ToursCollection() {
     const theme = useTheme();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
+    const [locations, setLocations] = useState([]);
 
     useEffect(() => {
         console.log('TOUR COLLECTION: useEffect triggered. Current language:', i18n.language);
 
-        const fetchFeaturedTours = async () => {
+        const fetchData = async () => { // ✅ fetchTours орнына fetchData деп атадық
             setLoading(true);
             setError(null);
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/tours_featured');
-                setFeaturedTours(response.data.data || []);
+                // 1. Турларды жүктеу
+                const toursResponse = await axios.get('http://127.0.0.1:8000/api/tours_featured');
+                const fetchedTours = toursResponse.data.data || [];
+
+                // 2. Локацияларды жүктеу
+                const locationsResponse = await axios.get('http://127.0.0.1:8000/api/locations');
+                // ✅ API жауабының құрылымын тексеріңіз. Егер locations.data.data болса
+                const fetchedLocations = locationsResponse.data.data || locationsResponse.data || [];
+                setLocations(fetchedLocations); // ✅ Локацияларды күйге сақтау
+
+                setFeaturedTours(fetchedTours);
+                setLoading(false);
             } catch (err) {
-                console.error('Error fetching featured tours:', err);
-                setError(err.message || 'Турлар топтамасын жүктеу мүмкін болмады.');
+                console.error('Error fetching data for ToursCollection:', err);
+                setError(err.message || 'Деректерді жүктеу мүмкін болмады.');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchFeaturedTours();
+        fetchData();
     }, [i18n.language]);
 
-    const getImageUrl = (imagePath) => { /* ... */ };
+    const getImageUrl = (imagePath) => {
+
+        if (!imagePath) return 'https://via.placeholder.com/400x250?text=Tour+Image' // Әдепкі сурет
+
+        if (imagePath.startsWith('http')) return imagePath
+
+        return `http://127.0.0.1:8000/storage/${encodeURIComponent(imagePath)}`
+
+    }
     const handleCardClick = (tourId) => { navigate(`/tour/${tourId}`); };
 
-    if (loading) { /* ... */ }
-    if (error) { /* ... */ }
+    if (loading) {
+
+        return (
+
+            <SectionWrapper>
+
+                <SectionHeader>
+
+                    <StyledTitle component="h2">✨ {t('tour_card.title')}</StyledTitle>
+
+                    <StyledSubtitle>{t('tour_card.description')}</StyledSubtitle>
+
+                </SectionHeader>
+
+                <Container sx={{ textAlign: 'center', py: 5 }}>
+
+                    <CircularProgress color="primary" />
+
+                    <Typography variant="body1" mt={2}>
+
+                        Турлар жүктелуде...
+
+                    </Typography>
+
+                </Container>
+                <WaveSeparator>
+                    <svg
+                        viewBox="0 0 500 150"
+                        preserveAspectRatio="none"
+                        style={{ height: '100%', width: '100%' }}
+                    >
+                        <defs>
+                            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop
+                                    offset="0%"
+                                    style={{ stopColor: '#0093E9', stopOpacity: 1 }}
+                                />
+                                <stop
+                                    offset="100%"
+                                    style={{ stopColor: '#80D0C7', stopOpacity: 1 }}
+                                />
+                            </linearGradient>
+                        </defs>
+                        <path
+                            d="M-2.54,95.23 C222.63,199.84 369.35,37.02 501.97,99.19 L500.00,150.00 L0.00,150.00 Z"
+                            style={{ stroke: 'none', fill: 'url(#waveGradient)' }}
+                        />
+                    </svg>
+                </WaveSeparator>
+
+            </SectionWrapper>
+
+
+        )
+
+    }
+    if (error) {
+
+        return (
+
+            <SectionWrapper>
+
+                <SectionHeader>
+
+                    <StyledTitle component="h2">✨ {t('tour_card.title')}</StyledTitle>
+
+                    <StyledSubtitle>{t('tour_card.description')}</StyledSubtitle>
+
+                </SectionHeader>
+
+                <Container sx={{ textAlign: 'center', py: 5 }}>
+
+                    <Typography variant="h6" color="error">
+
+                        Қате: {error}
+
+                    </Typography>
+
+                </Container>
+                <WaveSeparator>
+                    <svg
+                        viewBox="0 0 500 150"
+                        preserveAspectRatio="none"
+                        style={{ height: '100%', width: '100%' }}
+                    >
+                        <defs>
+                            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop
+                                    offset="0%"
+                                    style={{ stopColor: '#0093E9', stopOpacity: 1 }}
+                                />
+                                <stop
+                                    offset="100%"
+                                    style={{ stopColor: '#80D0C7', stopOpacity: 1 }}
+                                />
+                            </linearGradient>
+                        </defs>
+                        <path
+                            d="M-2.54,95.23 C222.63,199.84 369.35,37.02 501.97,99.19 L500.00,150.00 L0.00,150.00 Z"
+                            style={{ stroke: 'none', fill: 'url(#waveGradient)' }}
+                        />
+                    </svg>
+                </WaveSeparator>
+
+            </SectionWrapper>
+
+        )
+
+    }
 
     return (
         <SectionWrapper>
@@ -203,12 +329,13 @@ export default function ToursCollection() {
                                 tour.description_en || // Fallback: ағылшынша
                                 'Сипаттама жоқ';
 
-                            // Location атын локализациялау
-                            const localizedLocationName = tour.location ?
-                                (tour.location[`name_${currentLang}`] ||
-                                    tour.location.name_kz || // Fallback: қазақша
-                                    tour.location.name_en || // Fallback: ағылшынша
+                            const tourLocation = locations.find(loc => loc.id === tour.location_id);
+                            const localizedLocationName = tourLocation ?
+                                (tourLocation[`name_${currentLang}`] ||
+                                    tourLocation.name_en ||
+                                    tourLocation.name_kz ||
                                     '—') : '—';
+
 
                             console.log(`TOUR: ID ${tour.id}, Lang: ${currentLang}, Localized name: ${localizedTourName}`);
 
@@ -248,25 +375,13 @@ export default function ToursCollection() {
                                                 </TourDateLocation>
                                             </Box>
                                             <Box sx={{ textAlign: 'right' }}>
-                                                <TypographyJoy variant="body2" color="text.secondary">
-                                                    {t('tour_card.total_price')}:
-                                                </TypographyJoy>
+
                                                 <TourPrice>
                                                     ₸{parseFloat(tour.price).toLocaleString('kk-KZ')}
                                                 </TourPrice>
                                             </Box>
                                         </MuiCardContent>
-                                        <ViewButton
-                                            variant="solid"
-                                            size="md"
-                                            color="primary"
-                                            aria-label={t('tour_card.view_tour')}
-                                            sx={{ mt: 2, alignSelf: 'center' }}
-                                            component={Link}
-                                            to={`/tour/${tour.id}`}
-                                        >
-                                            {t('tour_card.view_tour_button')}
-                                        </ViewButton>
+
                                     </StyledTourCard>
                                 </Grid>
                             );

@@ -47,13 +47,23 @@
     "qwe": "Number of rooms available",
     "description": "Description",
     "add": "Additional",
-    "check": "Booking cost",
+    "check": "Booking price",
     "price_per_night": "Price per night",
     "night": "Number of nights",
     "totalPrice": "Total price",
     "right_now": "Book now",
     "cencel": "Cancel",
-    "notfound_info": "Information not found"
+    "notfound_info": "Information not found",
+    "max_guests": "Maximum guests",
+    "available_rooms": "Available rooms",
+    "notes_label": "Additional",
+    "booking_summary": "Booking summary",
+    "price_per_night_summary": "Price per night",
+    "nights": "nights",
+    "total_price": "Total price",
+    "stars": "stars",
+    "status": "Status",
+    "guests_count": "Guests count"
   },
   "tour_detail_page": {
     "overview": "Overview",
@@ -71,7 +81,8 @@
     "unknown": "Unknown",
     "location": "Location",
     "hotels_and_reservations": "Hotels and reservations",
-    "booking_and_payment": "Booking and payment"
+    "booking_and_payment": "Booking and payment",
+    "reviews_count_label": "Reviews count"
   },
   "tours_list_page": {
     "tours_packages": "Tours Packages",
@@ -293,7 +304,9 @@
   "places": {
     "title": "Pearls of Kazakhstan",
     "description": "Discover the most beautiful and unique sights of our country. Get inspired for your travels!",
-    "notfound": "Landmarks not yet added."
+    "notfound": "Landmarks not yet added.",
+    "more_details_button": "More"
+
   },
   "places_detail":{
     "loading": "Loading the place of interest...",
@@ -303,7 +316,8 @@
     "information": "Additional information",
     "notfound_information": "No additional information.",
     "location": "Location (map)",
-    "notfound_coordinate": "Coordinates not found"
+    "notfound_coordinate": "Coordinates not found",
+    "unknown_city": "Unknown place"
   },
   "hotel_list": {
     "list_hotel": "List of hotels",
@@ -322,5 +336,92 @@
     "loading": "Loading events",
     "error": "Error",
     "day": "Day"
+  },
+  "hotel_detail": {
+    "night" : "night",
+    "room_types_heading": "Room Types",
+    "max_guests": "Maximum number of guests",
+    "available_rooms": "Available rooms",
+    "book_now_button": "Book now",
+    "web_site": "Website"
+  },
+  "booking_room": {
+    "booking_details": "Booking details",
+    "hotel_information": "Hotel information",
+    "booking_details_heading": "Booking details heading",
+    "guests_count": "Number of guests",
+    "none": "none",
+    "room_type_heading": "Room type",
+    "status_pending": "Pending...",
+    "breakfast": "Breakfast",
+    "wifi": "WiFi",
+    "yes": "Yes",
+    "tv": "TV",
+    "air_conditioning": "Air conditioning"
+  },
+  "event_detail": {
+    "loading_event": "Event loading",
+    "event_not_found_message": "Could not retrieve event details.",
+    "failed_to_load_event": "Failed to load event.",
+    "event_not_found": "Event not found.",
+    "no_title": "Untitled event",
+    "no_description": "No description",
+    "unknown_type": "Unknown type",
+    "unknown_organizer": "Unknown organizer",
+    "description": "Description",
+    "details": "Details",
+    "date_time": "Date & Time",
+    "ongoing": "ongoing",
+    "location": "Location",
+    "price": "Price",
+    "free": "Free",
+    "phone": "Phone",
+    "email": "Email",
+    "website": "Website",
+    "video": "Video",
+    "gallery": "Gallery",
+    "gallery_image": "Gallery image",
+    "location_on_map": "Location on Map",
+    "unknown_location": "Unknown location",
+    "no_address": "No address",
+    "back_to_events": "Back to Events Page",
+    "website_heading": "website",
+    "price_heading": "Price",
+    "location_heading": "Venue",
+    "description_heading": "Description",
+    "details_heading": "More",
+    "video_heading": "Video",
+    "location_on_map_heading": "Location on map"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error: {{errorMessage}}",
+    "not_found": "{{item}} not found.",
+    "no_data_available": "No data available.",
+    "anonymous": "Anonymous",
+    "loading_tours": "Tours are loading...",
+    "error_fetching_tours": "Error fetching tours: {{errorMessage}}"
+  },
+  "create_post": {
+    "new_post_heading": "Create New Post",
+    "title_label": "Title",
+    "share_thoughts_label": "What do you want to share?",
+    "select_location_label": "Select Location",
+    "location_loading_error": "Error loading locations.",
+    "loading_locations": "Loading locations",
+    "add_image": "Add Image",
+    "uploaded_image_alt": "Uploaded image",
+    "all_fields_required_error": "Please fill in all required fields.",
+    "post_published_success": "Post published successfully!",
+    "post_publish_error": "An error occurred while publishing the post",
+    "publish_button": "Publish"
+  },
+  "ai_advisor": {
+    "title": "🤖 Smart Travel Advisor",
+    "initial_prompt": "Ask a question about travel in Kazakhstan!",
+    "you_label": "You",
+    "advisor_label": "Advisor",
+    "loading_response": "AI preparing response",
+    "input_placeholder": "Enter your question..."
   }
 }

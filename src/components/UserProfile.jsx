@@ -251,7 +251,7 @@ const UserProfile = () => {
             {user.email}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('user_profile.role')}: {user.role || t('user_profile.not_specified')}
+            {t('user_profile.role')}: {user.role || t('user_profile.not_specified')} {/* ✅ Рольді локализациялау */}
           </Typography>
           <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 1 }}>
             <Button
@@ -452,10 +452,10 @@ const UserProfile = () => {
                           to={`/tour/${tour.id}`}
                           style={{ textDecoration: 'none' }}
                       >
-                        <Typography>{tour[`name_${effectiveLang}`] || tour.name_kz || tour.name_en || t('user_profile.no_name')}</Typography>
+                        <Typography>{tour[`name_${effectiveLang}`] || tour.name_kz || tour.name_en || t('user_profile.no_name')}</Typography> {/* ✅ Тур атауын локализациялау */}
                       </Link>
                       <Typography sx={{ ml: 2 }}>
-                        ({t('user_profile.price')}: {tour.price || 'N/A'})
+                        ({t('user_profile.price')}: {tour.price || 'N/A'}) {/* ✅ Бағаны локализациялау */}
                       </Typography>
                     </Box>
                 ))}
@@ -469,6 +469,7 @@ const UserProfile = () => {
               <CardContent>
                 <Typography variant="h6" fontWeight={600} mb={2}>
                   {t('user_profile.your_bookings')}
+
                 </Typography>
                 {bookings.map((booking) => (
                     <Typography key={booking.id} sx={{ mt: 1 }}>
@@ -476,7 +477,7 @@ const UserProfile = () => {
                       {booking.hotel?.name || booking.tour?.name || t('user_profile.no_name')}{' '} -{' '}
                       {t('user_profile.check_in')}: {new Date(booking.check_in_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} -{' '}
                       {t('user_profile.check_out')}: {new Date(booking.check_out_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')}{' '}
-                      ({t('user_profile.status')}: {t(`booking_room.status_${booking.status}`)})
+                      ({t('user_profile.status')}: {t(`booking_room.status_${booking.status}`)}) {/* ✅ Статусты BookingRoom-нан аудару */}
                     </Typography>
                 ))}
               </CardContent>

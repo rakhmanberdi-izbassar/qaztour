@@ -196,7 +196,7 @@ const PlaceDetail = () => {
         {/* Қызметтер немесе қосымша мәліметтер */}
         <Box mb={4}>
           <Typography variant="h6" gutterBottom>
-            {t('places_detail.additional_information')} {/* ✅ Локализация */}
+            {t('places_detail.information')} {/* ✅ Локализация */}
           </Typography>
           {place.things_to_do &&
           typeof place.things_to_do === 'string' &&
@@ -210,7 +210,7 @@ const PlaceDetail = () => {
               </Grid>
           ) : (
               <Typography variant="body2" color="text.secondary">
-                {t('places_detail.no_additional_info')} {/* ✅ Локализация */}
+                {t('places_detail.notfound_information')} {/* ✅ Локализация */}
               </Typography>
           )}
         </Box>
@@ -218,7 +218,7 @@ const PlaceDetail = () => {
         {/* Карта */}
         <Box mb={4}>
           <Typography variant="h6" gutterBottom>
-            {t('places_detail.location_on_map')} {/* ✅ Локализация */}
+            {t('places_detail.location')} {/* ✅ Локализация */}
           </Typography>
 
           {hasCoordinates ? (

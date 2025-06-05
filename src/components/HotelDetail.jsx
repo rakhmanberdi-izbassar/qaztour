@@ -163,7 +163,7 @@ const HotelDetail = () => {
 
             {/* Бөлмелерді көрсету */}
             <Typography variant="h6" gutterBottom fontWeight="bold">
-              {t('hotel_detail.room_types_heading')}
+                {t('hotel_detail.room_types_heading')}
             </Typography>
             {hotel.room_types && hotel.room_types.length > 0 ? (
                 hotel.room_types.map((room) => (

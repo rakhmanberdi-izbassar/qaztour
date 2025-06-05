@@ -190,10 +190,10 @@ const BookingRoom = () => {
                     {hotelAddress}, {hotelCity}, {hotelCountry}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.stars')}: {hotel?.stars || 'N/A'} {/* Локализация */}
+                    {t('hotel_booking_page.stars')}: {hotel?.stars || 'N/A'} {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.price_per_night')}: {hotel?.price_per_night || 'N/A'} KZT {/* Локализация */}
+                    {t('hotel_booking_page.price_per_night')}: {hotel?.price_per_night || 'N/A'} KZT {/* Локализация */}
                   </Typography>
                 </Grid>
               </Grid>
@@ -224,13 +224,13 @@ const BookingRoom = () => {
                     {roomTypeDescription}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.max_guests')}: {room_type?.max_guests || 'N/A'} {/* Локализация */}
+                    {t('hotel_detail.max_guests')}: {room_type?.max_guests || 'N/A'} {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.available_rooms')}: {room_type?.available_rooms || 'N/A'} {/* Локализация */}
+                    {t('hotel_detail.available_rooms')}: {room_type?.available_rooms || 'N/A'} {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.price_per_night')}: {room_type?.price_per_night || 'N/A'} KZT {/* Локализация */}
+                    {t('hotel_booking_page.price_per_night')}: {room_type?.price_per_night || 'N/A'} KZT {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
                     {t('booking_room.breakfast')}: {room_type?.has_breakfast ? t('booking_room.yes') : t('booking_room.no')} {/* Локализация */}
@@ -256,24 +256,24 @@ const BookingRoom = () => {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <Typography variant="body2">
-                    {t('booking_room.check_in_date')}: {new Date(check_in_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} {/* Локализация */}
+                    {t('hotel_booking_page.check_in_date')}: {new Date(check_in_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.check_out_date')}: {new Date(check_out_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} {/* Локализация */}
+                    {t('hotel_booking_page.check_out_date')}: {new Date(check_out_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.guests_count')}: {guests_count} {/* Локализация */}
+                    {t('hotel_booking_page.guests_count')}: {guests_count} {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.notes')}: {notes || t('booking_room.none')} {/* Локализация */}
+                    {t('hotel_booking_page.notes_label')}: {notes || t('booking_room.none')} {/* Локализация */}
                   </Typography>
                   <Typography variant="body2">
-                    {t('booking_room.status')}: {t(`booking_room.status_${status}`)} {/* Статусты локализациялау */}
+                    {t('hotel_booking_page.status')}: {t(`booking_room.status_${status}`)} {/* Статусты локализациялау */}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Typography variant="h5" color="primary" fontWeight="bold">
-                    {t('booking_room.total_price')}: {total_price} KZT {/* Локализация */}
+                    {t('hotel_booking_page.total_price')}: {total_price} USD
                   </Typography>
                 </Grid>
               </Grid>
@@ -290,7 +290,7 @@ const BookingRoom = () => {
                       sx={{ borderRadius: 2, py: 1.5, fontWeight: 'bold' }}
                       onClick={handleCancelBooking}
                   >
-                    {t('booking_room.cancel_booking_button')} {/* Локализация */}
+                    {t('hotel_booking_page.cencel')} {/* Локализация */}
                   </Button>
 
                   <Box sx={{ flexGrow: 1 }}>

@@ -144,7 +144,11 @@ const SingleEventPage = () => {
       event[`location_name_${effectiveLang}`] || event.location_name_kz || event.location_name_en || t('event_detail.unknown_location');
   const eventAddress =
       event[`address_${effectiveLang}`] || event.address_kz || event.address_en || t('event_detail.no_address');
-  const eventType = event.eventType?.name || t('event_detail.unknown_type'); // eventType.name-ді локализациялау керек болса, API-дан оның тілдік кілттерін тексеріңіз
+  const localizedEventType = event.event_type ?
+      (event.event_type[`name_${effectiveLang}`] ||
+          event.event_type.name_kz ||
+          event.event_type.name_en ||
+          t('event_detail.unknown_type')) : t('event_detail.unknown_type');
   const eventOrganizer = event.organizer || t('event_detail.unknown_organizer');
   const eventPriceInfo = event.price_info || t('event_detail.free');
 
@@ -179,7 +183,7 @@ const SingleEventPage = () => {
               {eventTitle}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-              {eventType} | {eventOrganizer}
+              {localizedEventType} | {eventOrganizer}
             </Typography>
 
             <Box sx={{ my: 3 }}>

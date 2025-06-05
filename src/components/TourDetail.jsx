@@ -443,9 +443,9 @@ const TourDetail = () => {
                         4.8
                       </Typography>
                     </Box>
-                    <Typography variant="caption" color="text.secondary">
-                      {t('tour_detail_page.tours_count', { count: 5 })}
-                    </Typography>
+                    {/*<Typography variant="caption" color="text.secondary">*/}
+                    {/*  {t('tour_detail_page.tours_count', { count: 5 })}*/}
+                    {/*</Typography>*/}
                   </Box>
                 </Card>
               </Grid>

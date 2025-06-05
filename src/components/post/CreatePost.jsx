@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
@@ -11,16 +11,19 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  CircularProgress, // Жүктеу индикаторы үшін
-  Alert, // Қате/сәттілік хабарламасы үшін
-  Paper, // Формаға фон беру үшін
-} from '@mui/material'
-import PhotoCamera from '@mui/icons-material/PhotoCamera'
-import api from '../../utils/axios' // Axios инстансы
-import { useTheme } from '@mui/material/styles' // Теманы пайдалану үшін
-import { useNavigate } from 'react-router-dom' // Бағыттау үшін
+  CircularProgress,
+  Alert,
+  Paper,
+} from '@mui/material';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import api from '../../utils/axios'; // Axios инстансы
+import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import Header from '../Header';
+import Footer from '../Footer';
+import { useTranslation } from 'react-i18next'; // ✅ useTranslation импорттау
 
-// --- Styled Components ---
+// --- Styled Components (өзгеріссіз қалады) ---
 
 const FormContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(10),
@@ -29,19 +32,19 @@ const FormContainer = styled(Container)(({ theme }) => ({
     marginTop: theme.spacing(5),
     marginBottom: theme.spacing(5),
   },
-}))
+}));
 
 const FormPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   borderRadius: theme.spacing(2),
-  boxShadow: theme.shadows[8], // Көбірек көлеңке
+  boxShadow: theme.shadows[8],
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center', // Элементтерді ортаға теңшеу
+  alignItems: 'center',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
-}))
+}));
 
 const FormTitle = styled(Typography)(({ theme }) => ({
   fontWeight: theme.typography.fontWeightBold,
@@ -52,14 +55,14 @@ const FormTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     fontSize: '1.8rem',
   },
-}))
+}));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
-  margin: theme.spacing(1.5, 0), // Арақашықтық
+  margin: theme.spacing(1.5, 0),
   '& .MuiOutlinedInput-root': {
-    borderRadius: theme.spacing(1), // Кішірек радиус
+    borderRadius: theme.spacing(1),
   },
-}))
+}));
 
 const SubmitButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(3),
@@ -71,21 +74,21 @@ const SubmitButton = styled(Button)(({ theme }) => ({
   '&:hover': {
     backgroundColor: theme.palette.primary.dark,
   },
-}))
+}));
 
 const ImageUploadBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-start', // Сол жаққа теңшеу
+  justifyContent: 'flex-start',
   width: '100%',
   marginTop: theme.spacing(2),
   marginBottom: theme.spacing(2),
-}))
+}));
 
 const UploadIconButton = styled(IconButton)(({ theme }) => ({
   marginRight: theme.spacing(1),
   color: theme.palette.primary.main,
-}))
+}));
 
 const StyledPreviewImage = styled('img')(({ theme }) => ({
   height: 100,
@@ -94,189 +97,224 @@ const StyledPreviewImage = styled('img')(({ theme }) => ({
   marginLeft: theme.spacing(2),
   border: `1px solid ${theme.palette.divider}`,
   objectFit: 'cover',
-}))
+}));
 
+// --- Main Component ---
 const CreatePost = () => {
-  const [content, setContent] = useState('')
-  const [savedImage, setSavedImage] = useState(null)
-  const [locationId, setLocationId] = useState('')
-  const [locations, setLocations] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [locationsLoading, setLocationsLoading] = useState(true)
-  const [locationsError, setLocationsError] = useState(null)
+  const [title, setTitle] = useState(''); // ✅ Title күйін қосу (егер постқа қажет болса)
+  const [content, setContent] = useState('');
+  const [savedImage, setSavedImage] = useState(null);
+  const [locationId, setLocationId] = useState('');
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [locationsLoading, setLocationsLoading] = useState(true);
+  const [locationsError, setLocationsError] = useState(null);
 
-  const theme = useTheme() // Теманы пайдалану үшін
-  const navigate = useNavigate() // Бағыттау үшін
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation(); // ✅ useTranslation хукі
 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await api.get('http://127.0.0.1:8000/api/locations')
-        setLocations(response.data)
-        setLocationsLoading(false)
+        const response = await api.get('http://127.0.0.1:8000/api/locations');
+        // ✅ API жауабындағы "data" немесе тікелей массив
+        setLocations(response.data.data || response.data);
+        setLocationsLoading(false);
       } catch (error) {
-        console.error('Локацияларды жүктеу кезінде қате кетті:', error)
-        setLocationsError('Локацияларды жүктеу кезінде қате кетті.')
-        setLocationsLoading(false)
+        console.error('Локацияларды жүктеу кезінде қате кетті:', error);
+        setLocationsError(t('create_post.location_loading_error')); // ✅ Локализация
+        setLocationsLoading(false);
       }
-    }
+    };
 
-    fetchLocations()
-  }, [])
+    fetchLocations();
+  }, [t]); // ✅ 't' функциясын тәуелділікке қосу
+
+  const handleTitleChange = (event) => { // ✅ Title өзгерту функциясы
+    setTitle(event.target.value);
+  };
 
   const handleContentChange = (event) => {
-    setContent(event.target.value)
-  }
+    setContent(event.target.value);
+  };
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0]
-    setSavedImage(file)
-  }
+    const file = event.target.files[0];
+    setSavedImage(file);
+  };
 
   const handleLocationIdChange = (event) => {
-    setLocationId(event.target.value)
-  }
+    setLocationId(event.target.value);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault() // Форманың әдепкі жіберуін болдырмау
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-    // Валидацияны фронтендте қосымша тексеру
-    if (!content.trim() || !locationId) {
-      setError('Барлық міндетті өрістерді толтырыңыз.')
-      setLoading(false)
-      return
+    // ✅ Front-end валидация: title, content, locationId міндетті
+    if (!title.trim() || !content.trim() || !locationId) {
+      setError(t('create_post.all_fields_required_error')); // ✅ Локализация
+      setLoading(false);
+      return;
     }
 
     try {
-      const formData = new FormData()
-      formData.append('content', content.trim())
+      const formData = new FormData();
+      formData.append('title', title.trim()); // ✅ Title-ді қосу
+      formData.append('content', content.trim());
       if (savedImage) {
-        formData.append('image', savedImage)
+        formData.append('image', savedImage);
       }
-      formData.append('location_id', locationId)
+      formData.append('location_id', locationId);
 
-      // Axios-та `Content-Type` FormData үшін автоматты түрде орнатылады, қолмен беру қажет емес.
-      const response = await api.post('/posts', formData)
+      const response = await api.post('/posts', formData);
 
-      console.log('Пост жарияланды:', response.data)
-      setContent('')
-      setSavedImage(null)
-      setLocationId('')
-      setLoading(false)
-      alert('Пост сәтті жарияланды!')
-      navigate('/profile') // Профиль бетіне бағыттау
+      console.log('Пост жарияланды:', response.data);
+      setTitle(''); // ✅ Title-ді тазалау
+      setContent('');
+      setSavedImage(null);
+      setLocationId('');
+      setLoading(false);
+      alert(t('create_post.post_published_success')); // ✅ Локализация
+      navigate('/profile');
     } catch (err) {
       setError(
-        err.response?.data?.message ||
+          err.response?.data?.message ||
           err.message ||
-          'Постты жариялау кезінде қате кетті'
-      )
-      setLoading(false)
-      console.error('Постты жариялау қатесі:', err.response?.data || err)
+          t('create_post.post_publish_error') // ✅ Локализация
+      );
+      setLoading(false);
+      console.error('Постты жариялау қатесі:', err.response?.data || err);
     }
-  }
+  };
 
   return (
-    <FormContainer maxWidth="md">
-      <FormPaper elevation={3}>
-        <FormTitle variant="h4">Жаңа пост жазу</FormTitle>
+      <>
+        <Header />
+        <FormContainer maxWidth="md">
+          <FormPaper elevation={3}>
+            <FormTitle variant="h4">{t('create_post.new_post_heading')}</FormTitle> {/* ✅ Локализация */}
 
-        <StyledTextField
-          label="Немен бөліскіңіз келеді?"
-          multiline
-          rows={4}
-          fullWidth
-          value={content}
-          onChange={handleContentChange}
-          required // Міндетті өріс
-        />
+            {/* ✅ Title TextField */}
+            <StyledTextField
+                label={t('create_post.title_label')} // ✅ Локализация
+                fullWidth
+                value={title}
+                onChange={handleTitleChange}
+                margin="normal"
+                required
+            />
 
-        <FormControl fullWidth margin="normal" disabled={locationsLoading}>
-          <InputLabel id="location-id-label" required>
-            Локацияны таңдаңыз
-          </InputLabel>
-          <Select
-            labelId="location-id-label"
-            id="location-id"
-            value={locationId}
-            label="Локацияны таңдаңыз"
-            onChange={handleLocationIdChange}
-            required // Міндетті өріс
-          >
-            <MenuItem value="">
-              <em>Жоқ</em>
-            </MenuItem>
-            {locations.map((location) => (
-              <MenuItem key={location.id} value={location.id}>
-                {location.name}
-              </MenuItem>
-            ))}
-          </Select>
-          {locationsError && (
-            <Typography color="error" sx={{ mt: 1, fontSize: '0.85rem' }}>
-              Қате: {locationsError}
-            </Typography>
-          )}
-          {locationsLoading && (
-            <Typography
-              color="textSecondary"
-              sx={{ mt: 1, fontSize: '0.85rem' }}
+            <StyledTextField
+                label={t('create_post.share_thoughts_label')} // ✅ Локализация
+                multiline
+                rows={4}
+                fullWidth
+                value={content}
+                onChange={handleContentChange}
+                required
+                margin="normal" // margin prop-ын қосу
+            />
+
+            <FormControl fullWidth margin="normal" disabled={locationsLoading}>
+              <InputLabel id="location-id-label" required>
+                {t('create_post.select_location_label')}
+              </InputLabel>
+              <Select
+                  labelId="location-id-label"
+                  id="location-id"
+                  value={locationId}
+                  label={t('create_post.select_location_label')} // ✅ Локализация
+                  onChange={handleLocationIdChange}
+                  required
+              >
+                <MenuItem value="">
+                  <em>{t('common.none')}</em>
+                </MenuItem>
+                {locations.map((location) => {
+                  // ✅ Локация атауын локализациялау
+                  const currentLang = i18n.language;
+                  const localizedLocationName =
+                      location[`name_${currentLang}`] ||
+                      location.name_en ||
+                      location.name_kz ||
+                      location.name || // Егер API-да тек name болса
+                      '—';
+
+                  return (
+                      <MenuItem key={location.id} value={location.id}>
+                        {localizedLocationName} {/* ✅ Локализацияланған локация атауы */}
+                      </MenuItem>
+                  );
+                })}
+              </Select>
+              {locationsError && (
+                  <Typography color="error" sx={{ mt: 1, fontSize: '0.85rem' }}>
+                    {t('common.error')}: {locationsError}
+                  </Typography>
+              )}
+              {locationsLoading && (
+                  <Typography
+                      color="textSecondary"
+                      sx={{ mt: 1, fontSize: '0.85rem' }}
+                  >
+                    {t('create_post.loading_locations')}...
+                  </Typography>
+              )}
+            </FormControl>
+
+            <ImageUploadBox>
+              <UploadIconButton color="primary" component="label">
+                <PhotoCamera />
+                <input
+                    hidden
+                    accept="image/*"
+                    type="file"
+                    onChange={handleImageUpload}
+                />
+              </UploadIconButton>
+              <Typography sx={{ ml: 1, color: theme.palette.text.secondary }}>
+                {t('create_post.add_image')}
+              </Typography>
+              {savedImage && (
+                  <StyledPreviewImage
+                      src={URL.createObjectURL(savedImage)}
+                      alt={t('create_post.uploaded_image_alt')}
+                  />
+              )}
+            </ImageUploadBox>
+
+            {error && (
+                <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+                  {error}
+                </Alert>
+            )}
+
+            <SubmitButton
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={
+                    loading ||
+                    locationsLoading ||
+                    locationsError ||
+                    (locations.length === 0 && !locationId)
+                }
             >
-              Локациялар жүктелуде...
-            </Typography>
-          )}
-        </FormControl>
+              {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+              ) : (
+                  t('create_post.publish_button') /* ✅ Локализация */
+              )}
+            </SubmitButton>
+          </FormPaper>
+        </FormContainer>
+        <Footer />
+      </>
+  );
+};
 
-        <ImageUploadBox>
-          <UploadIconButton color="primary" component="label">
-            <PhotoCamera />
-            <input
-              hidden
-              accept="image/*"
-              type="file"
-              onChange={handleImageUpload}
-            />
-          </UploadIconButton>
-          <Typography sx={{ ml: 1, color: theme.palette.text.secondary }}>
-            Сурет қосу
-          </Typography>
-          {savedImage && (
-            <StyledPreviewImage
-              src={URL.createObjectURL(savedImage)}
-              alt="Жүктелген сурет"
-            />
-          )}
-        </ImageUploadBox>
-
-        {error && (
-          <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-            {error}
-          </Alert>
-        )}
-
-        <SubmitButton
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={
-            loading ||
-            locationsLoading ||
-            locationsError ||
-            (locations.length === 0 && !locationId)
-          }
-        >
-          {loading ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            'Жариялау'
-          )}
-        </SubmitButton>
-      </FormPaper>
-    </FormContainer>
-  )
-}
-
-export default CreatePost
+export default CreatePost;

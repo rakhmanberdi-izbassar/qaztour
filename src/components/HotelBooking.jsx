@@ -274,11 +274,11 @@ const HotelBooking = () => {
                   sx={{ backgroundColor: '#007bff' }}
                   onClick={handleSubmit}
               >
-                {t('hotel_booking_page.book_now_button')}
+                {t('hotel_booking_page.right_now')}
               </Button>
 
               <Button variant="outlined" fullWidth color="inherit">
-                {t('hotel_booking_page.cancel_button')}
+                {t('hotel_booking_page.cencel')}
               </Button>
             </Box>
           </Paper>
