@@ -202,21 +202,39 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
     setTabIndex(newValue)
   }
 
-  const handleLoginSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post(`${API_BASE_URL}/login`, {
-      email: loginEmail,
-      password: loginPassword,
-    });
-    localStorage.setItem('authToken', response.data.token);
-    window.location.href = '/';
-  } catch (error) {
-    console.error('Login error:', error.response ? error.response.data : error.message);
-    setErrorMessage('Login failed. Please check your credentials.');
-    setOpenSnackbar(true);
-  }
-};
+    const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(`${API_BASE_URL}/login`, {
+                email: loginEmail,
+                password: loginPassword,
+            });
+
+            // ✅ ТОКЕНДІ ЖӘНЕ USER ID-ДІ САҚТАУ:
+            localStorage.setItem('authToken', response.data.token);
+
+            if (response.data.user_id) { // ✅ user_id бар екенін тексеру
+                localStorage.setItem('userId', response.data.user_id); // Қолданушы ID-ін сақтау
+                // Егер user_name, user_email сияқты деректерді де қайтарса, оларды да сақтауға болады
+                // localStorage.setItem('userName', response.data.user_name);
+            } else {
+                console.warn('Login response did not contain user_id. Ensure your API returns user_id.');
+                // Егер userId міндетті болса, бұл жерде қателік хабарламасын көрсетуге болады
+                // немесе '/user' маршрутына қосымша сұрау жіберуді қарастыруға болады.
+            }
+
+            // Логин сәтті болғаннан кейін бас бетке бағыттау
+            window.location.href = '/';
+            // navigate('/') қолданған дұрыс, бірақ егер сізде толық бетті қайта жүктеу қажет болса, window.location.href қалады.
+            // const navigate = useNavigate(); // Компоненттің басында navigate хукын импорттау керек
+            // navigate('/');
+
+        } catch (error) {
+            console.error('Login error:', error.response ? error.response.data : error.message);
+            setErrorMessage(t('login_page.login_failed_credentials')); // ✅ Локализацияланған хабарлама
+            setOpenSnackbar(true);
+        }
+    };
 
 
   const handleRegisterSubmit = async (e) => {

@@ -27,15 +27,15 @@ import PlacesPage from './pages/PlacesPage'
 import PlacesDetailPage from './pages/PlacesDetailPage'
 import SingleEventsPage from './pages/SingleEventPage'
 import TourBookingPage from './pages/TourBookingPage'
-import BookingList from './components/BookingList'
 import AIAdvisor from './components/AIAdvisor'
+import BookingTourDetail from "./components/BookingTourDetail";
 
 function App() {
   return (
     <PayPalScriptProvider
       options={{
         'client-id':
-          'AYrGzAFKitQwR53r3vMV9RHt0Wrygn7UQNvhZBEbFkWvj7mAsbl3EKP7gBvePDUX2LQm6C87vSAF2TFm',
+          'AWnjmGK2MGnEqDIPVkvdUvTzpNVKQJ8tv0hg-_DlQ7dbuHOfqfp-uHoeg7H-b_lZ_gmptWzB7aWhYa7V',
         currency: 'USD',
       }}
     >
@@ -73,7 +73,8 @@ function App() {
               />
               <Route path="/places/" element={<PlacesPage />} />
               <Route path="/place/:id" element={<PlacesDetailPage />} />
-              <Route path="/tour_bookings" element={<BookingList />} />
+              <Route path="/booking-tour/:bookingId" element={<BookingTourDetail />} />
+
               <Route path="*" element={<h1>404 Not Found</h1>} />
             </Routes>
             <AIAdvisor />
