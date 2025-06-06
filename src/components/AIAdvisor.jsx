@@ -1,17 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
-  Container,
   TextField,
-  Button,
   Typography,
   CircularProgress,
-  Paper,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   Avatar,
   Dialog,
   DialogTitle,
@@ -25,7 +18,6 @@ import SendIcon from '@mui/icons-material/Send';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import PersonIcon from '@mui/icons-material/Person';
 import CloseIcon from '@mui/icons-material/Close';
-import ChatIcon from '@mui/icons-material/Chat';
 import { useTranslation } from 'react-i18next'; // ✅ useTranslation импорттау
 
 // --- Styled Components (бұрынғыдай қалады) ---
@@ -156,7 +148,7 @@ const AIAdvisor = () => {
                 boxShadow: theme.shadows[5],
               }}
           >
-            <ChatIcon fontSize="large" />
+            <SmartToyIcon fontSize="large" />
           </IconButton>
         </FABWrapper>
 
