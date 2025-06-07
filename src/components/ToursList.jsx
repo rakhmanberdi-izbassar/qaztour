@@ -17,29 +17,35 @@ import {
   Slider,
   CircularProgress,
   Rating,
+  useMediaQuery, // ✅ useMediaQuery импортталды
+  useTheme, // ✅ useTheme импортталды
 } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg'; // Әдепкі сурет
+import tourImg from './../assets/photos/5ftsj0mn7lkw08ws40k4w4wss.jpg';
 import { useTranslation } from 'react-i18next';
 
 
 const ToursList = () => {
   const navigate = useNavigate();
-  const [tours, setTours] = useState([]); // API-дан келген барлық турлар
-  const [filteredTours, setFilteredTours] = useState([]); // Сүзгіден өткен және сұрыпталған турлар
-  const [priceRange, setPriceRange] = useState([0, 500000]); // Баға диапазоны
-  const [maxPrice, setMaxPrice] = useState(500000); // Динамикалық максималды баға
-  const [selectedCategory, setSelectedCategory] = useState(''); // Санат сүзгісі
-  const [selectedDuration, setSelectedDuration] = useState(''); // Ұзақтық сүзгісі
-  const [searchQuery, setSearchQuery] = useState(''); // Іздеу жолы
+  const [tours, setTours] = useState([]);
+  const [filteredTours, setFilteredTours] = useState([]);
+  const [locations, setLocations] = useState([]); // ✅ Локациялар тізімін сақтау үшін
+  const [priceRange, setPriceRange] = useState([0, 500000]);
+  const [maxPrice, setMaxPrice] = useState(500000);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedDuration, setSelectedDuration] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState(''); // Сұрыптау кілті
-  const [sortDirection, setSortDirection] = useState('asc'); // Сұрыптау бағыты
+  const [sortBy, setSortBy] = useState('');
+  const [sortDirection, setSortDirection] = useState('asc');
 
   const BASE_URL = 'http://127.0.0.1:8000/storage/';
-  const { t, i18n } = useTranslation(); // ✅ i18n объектісін аламыз
-  const currentLang = i18n.language; // Ағымдағы тіл
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
@@ -48,13 +54,16 @@ const ToursList = () => {
   const initialStartDate = searchParams.get('startDate') || '';
   const initialEndDate = searchParams.get('endDate') || '';
 
-  // API-дан турларды жүктеу
+  // API-дан турлар мен локацияларды жүктеу
   useEffect(() => {
-    const fetchTours = async () => {
+    console.log('TOURS LIST: useEffect triggered. Current language:', i18n.language);
+
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/tours', { // api/tours/ емес, api/tours
+        // 1. Турларды жүктеу
+        const toursResponse = await axios.get('http://127.0.0.1:8000/api/tours', {
           params: {
             search: initialSearch,
             date: initialDate,
@@ -63,57 +72,55 @@ const ToursList = () => {
             endDate: initialEndDate,
           },
         });
-        console.log('API Response for Tours List:', response.data);
+        const fetchedTours = toursResponse.data?.data?.data || [];
 
-        // ✅ API жауабындағы тур деректерін дұрыс өңдейміз (response.data.data.data)
-        const fetchedTours = response.data?.data?.data || [];
+        // 2. Локацияларды жүктеу
+        const locationsResponse = await axios.get('http://127.0.0.1:8000/api/locations');
+        const fetchedLocations = locationsResponse.data.data || locationsResponse.data || [];
+        setLocations(fetchedLocations); // ✅ Локацияларды күйге сақтау
+
+
         setTours(fetchedTours);
-
-        // Максималды бағаны анықтау
         const prices = fetchedTours.map(tour => Number(tour.price));
         if (prices.length > 0) {
           const calculatedMaxPrice = Math.max(...prices);
           setMaxPrice(calculatedMaxPrice);
-          // Егер әдепкі диапазон максималдыдан үлкен болса, оны жаңарту
           if (priceRange[1] > calculatedMaxPrice) {
             setPriceRange([priceRange[0], calculatedMaxPrice]);
           }
         } else {
-          setMaxPrice(500000); // Әдепкі мән
+          setMaxPrice(500000);
         }
 
       } catch (err) {
-        console.error('Error fetching tours:', err);
-        setError(err.message || t('tours_list_page.failed_to_fetch_tours')); // Локализация
+        console.error('Error fetching data for ToursList:', err);
+        setError(err.message || t('tours_list_page.failed_to_fetch_tours'));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTours();
-  }, [initialSearch, initialDate, initialPeople, initialStartDate, initialEndDate, t]); // t-ны тәуелділікке қосу
+    fetchData();
+  }, [initialSearch, initialDate, initialPeople, initialStartDate, initialEndDate, t, i18n.language]);
 
-  // Турларды сүзу және сұрыптау
   useEffect(() => {
-    // effectiveLang-ты тілге байланысты name_kz/name_en таңдау үшін қолданамыз
-    const effectiveLang = currentLang === 'kk' ? 'kz' : currentLang;
-
     const filterAndSort = () => {
+      const effectiveLang = currentLang === 'kk' ? 'kz' : currentLang;
+
       const filtered = tours.filter((tour) => {
-        // ✅ Локализацияланған атау және сипаттама арқылы іздеу
-        const localizedName = tour[`name_${effectiveLang}`] || tour.name_kz || tour.name_en || '';
-        const localizedDescription = tour[`description_${effectiveLang}`] || tour.description_kz || tour.description_en || '';
+        const localizedName = tour[`name_${effectiveLang}`] || tour.name_en || tour.name_kz || '';
+        const localizedDescription = tour[`description_${effectiveLang}`] || tour.description_en || tour.description_kz || '';
 
         const matchesSearch = searchQuery
             ? localizedName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             localizedDescription.toLowerCase().includes(searchQuery.toLowerCase())
             : true;
 
-        const matchesCategory = selectedCategory ? (tour.category === selectedCategory) : true; // Категорияны API-дан тексеру керек
+        const matchesCategory = selectedCategory ? (tour.category === selectedCategory) : true;
 
         const matchesDuration = selectedDuration
             ? selectedDuration === '1-3'
-                ? (tour.duration >= 1 && tour.duration <= 3) // tour.duration API-да бар деп есептейміз
+                ? (tour.duration >= 1 && tour.duration <= 3)
                 : selectedDuration === '4-7'
                     ? (tour.duration >= 4 && tour.duration <= 7)
                     : selectedDuration === '7+'
@@ -126,7 +133,7 @@ const ToursList = () => {
             Number(tour.price) <= priceRange[1];
 
         const matchesPeople = initialPeople
-            ? (tour.volume ? tour.volume >= Number(initialPeople) : true) // tour.volume API-да бар деп есептейміз
+            ? (tour.volume ? tour.volume >= Number(initialPeople) : true)
             : true;
 
         const matchesDateRange =
@@ -145,21 +152,23 @@ const ToursList = () => {
         );
       });
 
-      const sorted = [...filtered].sort((a, b) => { // filtered массивін көшіріп аламыз
+      const sorted = [...filtered].sort((a, b) => {
         let comparison = 0;
         const effectiveLang = currentLang === 'kk' ? 'kz' : currentLang;
 
         if (sortBy === 'price') {
           comparison = Number(a.price) - Number(b.price);
         } else if (sortBy === 'location') {
-          // ✅ Локация атын локализациялап сұрыптау
-          const locationA = a.location?.[`name_${effectiveLang}`] || a.location?.name_kz || a.location?.name_en || '';
-          const locationB = b.location?.[`name_${effectiveLang}`] || b.location?.name_kz || b.location?.name_en || '';
-          comparison = locationA.localeCompare(locationB);
+          const locationA = locations.find(loc => loc.id === a.location_id);
+          const locationB = locations.find(loc => loc.id === b.location_id);
+
+          const localizedLocationA = locationA ? (locationA[`name_${effectiveLang}`] || locationA.name_kz || locationA.name_en || '') : '';
+          const localizedLocationB = locationB ? (locationB[`name_${effectiveLang}`] || locationB.name_kz || locationB.name_en || '') : '';
+
+          comparison = localizedLocationA.localeCompare(localizedLocationB);
         } else if (sortBy === 'date') {
           comparison = new Date(a.date) - new Date(b.date);
         } else if (sortBy === 'name') {
-          // ✅ Тур атауын локализациялап сұрыптау
           const nameA = a[`name_${effectiveLang}`] || a.name_kz || a.name_en || '';
           const nameB = b[`name_${effectiveLang}`] || b.name_kz || b.name_en || '';
           comparison = nameA.localeCompare(nameB);
@@ -171,9 +180,10 @@ const ToursList = () => {
       setFilteredTours(sorted);
     };
 
-    filterAndSort(); // Функцияны шақыру
+    filterAndSort();
   }, [
     tours,
+    locations, // ✅ locations-ты тәуелділікке қосу
     initialSearch,
     initialStartDate,
     initialEndDate,
@@ -184,24 +194,13 @@ const ToursList = () => {
     searchQuery,
     sortBy,
     sortDirection,
-    currentLang // ✅ Тіл өзгергенде сүзу мен сұрыптауды қайта орындау үшін
+    currentLang
   ]);
 
-  const handlePriceChange = (event, newValue) => {
-    setPriceRange(newValue);
-  };
-
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-  };
-
-  const handleDurationChange = (event) => {
-    setSelectedDuration(event.target.value);
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+  const handlePriceChange = (event, newValue) => { setPriceRange(newValue); };
+  const handleCategoryChange = (event) => { setSelectedCategory(event.target.value); };
+  const handleDurationChange = (event) => { setSelectedDuration(event.target.value); };
+  const handleSearchChange = (event) => { setSearchQuery(event.target.value); };
 
   const handleSortChange = (event) => {
     const value = event.target.value;
@@ -214,9 +213,7 @@ const ToursList = () => {
   };
 
   const calculateAverageRating = (reviews) => {
-    if (!reviews || reviews.length === 0) {
-      return 0;
-    }
+    if (!reviews || reviews.length === 0) { return 0; }
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
     return totalRating / reviews.length;
   };
@@ -224,21 +221,15 @@ const ToursList = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return tourImg;
     if (imagePath.startsWith('http')) return imagePath;
-    return `${BASE_URL}${imagePath}`;
+    return `<span class="math-inline">\{BASE\_URL\}</span>{imagePath}`;
   };
 
   if (loading) {
     return (
         <Container sx={{ paddingY: 14 }}>
-          <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '50vh',
-              }}
-          >
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
             <CircularProgress />
+            <Typography ml={2}>{t('common.loading_tours')}</Typography>
           </Box>
         </Container>
     );
@@ -246,17 +237,19 @@ const ToursList = () => {
 
   if (error) {
     return (
-        <Typography
-            variant="h6"
-            sx={{ textAlign: 'center', mt: 5, color: 'error.main' }}
-        >
-          Error: {error}
+        <Typography variant="h6" sx={{ textAlign: 'center', mt: 5, color: 'error.main' }}>
+          {t('common.error')}: {error}
         </Typography>
     );
   }
 
-  // API-да name_kk жоқ, сондықтан i18n.language 'kk' болса, 'kz' деп өңдейміз
   const effectiveLang = currentLang === 'kk' ? 'kz' : currentLang;
+
+  // ✅ Локацияларды локализациялау (locations күйінен аламыз)
+  const localizedLocations = locations.map(loc => ({
+    ...loc,
+    localizedName: loc[`name_${currentLang}`] || loc.name_en || loc.name_kz || loc.name,
+  }));
 
   return (
       <>
@@ -267,24 +260,24 @@ const ToursList = () => {
               alt={t('tours_list_page.tour_banner_alt')}
           />
         </Box>
-        <Container>
-          <Grid container spacing={3}>
+        <Container sx={{ paddingX: isMobile ? 1 : 3 }}>
+          <Grid container spacing={isMobile ? 1 : 3}>
             {/* Filters */}
             <Grid
                 item
                 xs={12}
                 md={3}
                 sx={{
-                  position: 'sticky',
-                  top: 80,
-                  height: '100vh',
-                  overflowY: 'auto',
+                  position: isMobile ? 'static' : 'sticky',
+                  top: isMobile ? 'auto' : 80,
+                  height: isMobile ? 'auto' : '100vh',
+                  overflowY: isMobile ? 'visible' : 'auto',
                 }}
             >
               <Card
                   sx={{
                     boxShadow: '0 6px 10px rgba(0, 0, 0, 0.2)',
-                    padding: 2,
+                    padding: isMobile ? 1 : 2,
                     borderRadius: '15px',
                   }}
               >
@@ -296,9 +289,33 @@ const ToursList = () => {
                       value={searchQuery}
                       onChange={handleSearchChange}
                       margin="normal"
+                      size={isMobile ? "small" : "medium"}
                   />
 
-                  <FormControl fullWidth margin="normal">
+                  {/* ✅ Категорияны сүзу (API-дан келетін деректерге байланысты) */}
+                  {/* Егер категориялар API-дан келетін болса, оларды да locations сияқты жүктеу керек */}
+                  {/* Қазіргі кодта categories массиві жоқ, сондықтан бұл түймесі қате шығаруы мүмкін. */}
+                  {/* Мысал үшін, егер categories API-дан келетін болса: */}
+                  {/*
+                  <FormControl fullWidth margin="normal" size={isMobile ? "small" : "medium"}>
+                      <InputLabel id="category-select-label">{t('tours_list_page.category')}</InputLabel>
+                      <Select
+                          labelId="category-select-label"
+                          value={selectedCategory}
+                          onChange={handleCategoryChange}
+                          label={t('tours_list_page.category')}
+                      >
+                          <MenuItem value="">{t('tours_list_page.all_categories')}</MenuItem>
+                          {categories.map((cat) => (
+                              <MenuItem key={cat.id} value={cat.id}>
+                                  {cat[`name_${currentLang}`] || cat.name_en || cat.name_kz || cat.name}
+                              </MenuItem>
+                          ))}
+                      </Select>
+                  </FormControl>
+                  */}
+
+                  <FormControl fullWidth margin="normal" size={isMobile ? "small" : "medium"}>
                     <InputLabel id="duration-select-label">
                       {t('tours_list_page.duration_days')}
                     </InputLabel>
@@ -316,7 +333,7 @@ const ToursList = () => {
                   </FormControl>
 
                   <FormControl fullWidth margin="normal">
-                    <Typography variant="body1" sx={{ mb: 1 }}>
+                    <Typography variant="body1" sx={{ mb: 1, fontSize: isMobile ? '0.85rem' : '1rem' }}>
                       {t('tours_list_page.price_range')}: ₸{priceRange[0]} - ₸{priceRange[1]}
                     </Typography>
                     <Slider
@@ -324,13 +341,13 @@ const ToursList = () => {
                         onChange={handlePriceChange}
                         valueLabelDisplay="auto"
                         min={0}
-                        max={maxPrice} // ✅ Динамикалық максималды баға
+                        max={maxPrice}
                         step={10000}
                         valueLabelFormat={(value) => `₸${value}`}
                     />
                   </FormControl>
 
-                  <FormControl fullWidth margin="normal">
+                  <FormControl fullWidth margin="normal" size={isMobile ? "small" : "medium"}>
                     <InputLabel id="sort-by-label">
                       {t('tours_list_page.sort_by')}
                     </InputLabel>
@@ -353,7 +370,7 @@ const ToursList = () => {
             </Grid>
 
             {/* Tours List */}
-            <Grid item xs={12} md={9} container spacing={3}>
+            <Grid item xs={12} md={9} container spacing={isMobile ? 1 : 3}>
               {Array.isArray(filteredTours) && filteredTours.length > 0 ? (
                   filteredTours.map((tour) => (
                       <Grid item xs={12} sm={6} md={4} key={tour.id}>
@@ -378,10 +395,10 @@ const ToursList = () => {
                           <ImageListItem sx={{ mb: 0 }}>
                             <img
                                 src={getImageUrl(tour.image)}
-                                alt={tour[`name_${effectiveLang}`] || tour.name_en || tour.name_kz || t('tours_list_page.no_name')} // ✅ Локализацияланған alt мәтін
+                                alt={tour[`name_${effectiveLang}`] || tour.name_en || tour.name_kz || t('tours_list_page.no_name')}
                                 style={{
                                   width: '100%',
-                                  height: '200px',
+                                  height: isMobile ? '150px' : '200px',
                                   objectFit: 'cover',
                                   borderRadius: '10px',
                                 }}
@@ -393,18 +410,19 @@ const ToursList = () => {
                           </ImageListItem>
 
                           <CardContent sx={{ paddingTop: 0, paddingBottom: 1 }}>
-                            <Typography variant="h6" fontWeight="bold">
-                              {tour[`name_${effectiveLang}`] || tour.name_kz || tour.name_en || t('tours_list_page.no_name')} {/* ✅ Локализацияланған атау */}
+                            <Typography variant={isMobile ? "h6" : "h5"} fontWeight="bold">
+                              {tour[`name_${effectiveLang}`] || tour.name_kz || tour.name_en || t('tours_list_page.no_name')}
                             </Typography>
-                            <Typography variant="subtitle2" color="text.secondary">
-                              {tour.location?.[`name_${effectiveLang}`] || tour.location?.name_kz || tour.location?.name_en || t('tours_list_page.unknown_location')} {/* ✅ Локализацияланған локация */}
+                            <Typography variant={isMobile ? "body2" : "subtitle2"} color="text.secondary">
+                              {/* ✅ Локация атауын localizedCities массивінен табу */}
+                              {localizedLocations.find(loc => loc.id === tour.location_id)?.localizedName || t('tours_list_page.unknown_location')}
                             </Typography>
                             <Typography
-                                variant="body2"
+                                variant={isMobile ? "caption" : "body2"}
                                 color="text.secondary"
-                                sx={{ mt: 0.5, mb: 1 }}
+                                sx={{ mt: 0.5, mb: 1, height: isMobile ? 'auto' : '60px', overflow: 'hidden' }}
                             >
-                              {tour[`description_${effectiveLang}`]?.length > 80 // ✅ Локализацияланған сипаттама
+                              {tour[`description_${effectiveLang}`]?.length > 80
                                   ? `${(tour[`description_${effectiveLang}`] || tour.description_kz || tour.description_en || '').substring(0, 80)}...`
                                   : (tour[`description_${effectiveLang}`] || tour.description_kz || tour.description_en || t('tours_list_page.no_description'))}
                             </Typography>
@@ -425,13 +443,13 @@ const ToursList = () => {
                               </Typography>
                             </Box>
                             <Typography variant="caption" color="text.secondary">
-                              {t('tours_list_page.date')}: {new Date(tour.date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')} {/* ✅ Датаны локализациялау */}
+                              {t('tours_list_page.date')}: {new Date(tour.date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')}
                             </Typography>
                             <Typography
-                                variant="h6"
+                                variant={isMobile ? "h6" : "h5"}
                                 sx={{ color: '#ff9800', fontWeight: 'bold', mt: 1 }}
                             >
-                              ₸{parseFloat(tour.price).toLocaleString('kk-KZ')} {/* Баға форматы */}
+                              ₸{parseFloat(tour.price).toLocaleString('kk-KZ')}
                             </Typography>
                           </CardContent>
                         </Card>
@@ -451,7 +469,7 @@ const ToursList = () => {
                           <CircularProgress />
                       ) : (
                           <Typography variant="h6" color="text.secondary">
-                            {t('tours_list_page.no_tours_found_criteria')} {/* Локализация */}
+                            {t('tours_list_page.no_tours_found_criteria')}
                           </Typography>
                       )}
                     </Box>

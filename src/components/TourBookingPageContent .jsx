@@ -307,7 +307,7 @@ const TourBookingPage = () => { // Компонент атауы TourBookingPage
                                 </Button>
 
                                 <Button variant="outlined" fullWidth color="inherit">
-                                    {t('tour_booking_page.cancel_button')}
+                                    {t('hotel_booking_page.cencel')}
                                 </Button>
                             </Box>
                         </form>

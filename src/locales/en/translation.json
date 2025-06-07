@@ -63,7 +63,10 @@
     "total_price": "Total price",
     "stars": "stars",
     "status": "Status",
-    "guests_count": "Guests count"
+    "guests_count": "Guests count",
+    "status_": "status",
+    "status_pending": "status pending",
+    "booking_details_heading": "Booking details"
   },
   "tour_detail_page": {
     "overview": "Overview",
@@ -423,5 +426,46 @@
     "advisor_label": "Advisor",
     "loading_response": "AI preparing response",
     "input_placeholder": "Enter your question..."
+  },
+  "tour_booking_page": {
+    "book_tour_title": "Book a tour",
+    "tour_information": "Tour information",
+    "booking_form_heading": "Booking form",
+    "location": "Location",
+    "price_per_person": "Price per person",
+    "max_volume": "Maximum capacity",
+    "booking_date": "Booking date",
+    "number_of_guests": "Number of guests",
+    "notes_label": "Optional",
+    "total_price": "Total price",
+    "book_now_button": "Book now",
+    "user_not_authorized_booking": "User not authorized to book",
+    "booking_successful": "Booking successful",
+    "error_booking_id_missing": "Booking error",
+    "error_occurred_check_data": "Data check error",
+    "tour_not_found_info": "Tour information not found",
+    "submitting": "Submitting..."
+  },
+  "booking_tour_detail": {
+    "booking_details": "Брондау мәліметтері"
+  },
+  "my_bookings_page": {
+    "my_bookings_title": "My Bookings",
+    "auth_required": "Please log in to view your bookings.",
+    "failed_to_load_bookings": "Failed to load bookings.",
+    "error": "Error",
+    "no_bookings_found": "No bookings found.",
+    "no_tour_name": "No Tour Name",
+    "no_hotel_name": "No Hotel Name",
+    "unknown_booking_type": "Unknown Booking Type",
+    "unknown_location": "Unknown Location",
+    "unknown_address": "Unknown Address",
+    "date": "Date",
+    "total_price": "Total Price",
+    "guests": "Guests",
+    "status": "Status",
+    "view_details": "View Details",
+    "download_receipt": "Download Receipt",
+    "downloading_receipt": "Downloading {{type}} booking {{id}} receipt..."
   }
 }

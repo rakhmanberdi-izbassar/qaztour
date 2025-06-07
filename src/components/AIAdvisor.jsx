@@ -18,7 +18,8 @@ import SendIcon from '@mui/icons-material/Send';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import PersonIcon from '@mui/icons-material/Person';
 import CloseIcon from '@mui/icons-material/Close';
-import { useTranslation } from 'react-i18next'; // ✅ useTranslation импорттау
+import { useTranslation } from 'react-i18next';
+import api from './../utils/axios'; // axios инстансын импорттау
 
 // --- Styled Components (бұрынғыдай қалады) ---
 const FABWrapper = styled(Box)(({ theme }) => ({
@@ -59,7 +60,8 @@ const ChatWindow = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(1.5),
-  maxHeight: '400px',
+  // max_height: '400px', // ✅ Бұл жерде қателік болуы мүмкін, алып тастадық немесе үлкен мән бердік
+  // Чат терезесінің биіктігі DialogContent-ке байланысты
 }));
 
 const MessageBubble = styled(Box)(({ theme, sender }) => ({
@@ -83,52 +85,62 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const AIAdvisor = () => {
   const [open, setOpen] = useState(false);
-  // ✅ Тек UI-ді көрсету үшін Mock хабарламалар (Өзгеріссіз қалады)
+  // ✅ Бастапқы хабарламалар (система хабарламасы)
   const [messages, setMessages] = useState([
-    {
-      sender: 'ai',
-      text: 'Сәлеметсіз бе! Мен сіздің Қазақстан бойынша саяхат кеңесшіңізбін. Қалай көмектесе аламын?',
-    },
-    { sender: 'user', text: 'Алматыда қай жерлерге баруға болады?' },
-    {
-      sender: 'ai',
-      text: 'Алматыда Көктөбеге, Медеуге, Шарын каньонына, Қайыңды көліне, Үлкен Алматы көліне баруға болады. Қала ішіндегі Орталық мешітке, Панфиловшылар саябағына, Арбатқа да баруыңызға болады.',
-    },
+    { sender: 'ai', text: 'Сәлеметсіз бе! Мен сіздің Қазақстан бойынша саяхат кеңесшіңізбін. Қалай көмектесе аламын?' },
   ]);
   const [inputPrompt, setInputPrompt] = useState('');
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [error, setError] = useState(null);
   const theme = useTheme();
-  const { t } = useTranslation(); // ✅ t (translate) функциясын алу
+  const { t } = useTranslation();
 
   const chatWindowRef = useRef(null);
   useEffect(() => {
+    // Чат терезесінің ең соңына скролл жасау
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages]); // messages өзгергенде скролл жасайды
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputPrompt.trim()) return;
 
-    const newUserMessage = { sender: 'user', text: inputPrompt };
-    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-    setInputPrompt('');
+    const userQuestion = inputPrompt; // Пайдаланушының нақты сұрағы
+    // UI-ға пайдаланушы хабарламасын қосу (функционалдық жаңарту)
+    setMessages((prevMessages) => [...prevMessages, { sender: 'user', text: userQuestion }]);
+    setInputPrompt(''); // Енгізу өрісін тазалау
+    setLoadingResponse(true); // Жүктелуді бастау
+    setError(null); // Алдыңғы қатені тазалау
 
-    setLoadingResponse(true);
-    setTimeout(() => {
-      // Mock AI жауабы (өзгеріссіз қалады)
-      const mockAIResponse = {
-        sender: 'ai',
-        text: `Сіздің сұрағыңыз: "${newUserMessage.text}". Мен әлі толық жауап бере алмаймын, бірақ сізді тыңдап тұрмын!`,
-      };
-      setMessages((prevMessages) => [...prevMessages, mockAIResponse]);
-      setLoadingResponse(false);
-      setError(null);
-    }, 1500);
+    try {
+      // ✅ API-ге сұрау жіберу
+      // Бэкэнд AIChatController 'messages' массивін күтеді
+      // Біз бұрынғы барлық хабарламаларды (соның ішінде жаңа пайдаланушы хабарламасын) жібереміз.
+      // API-ге жіберілетін messages массиві role және content кілттерімен болуы керек.
+      const apiMessages = messages.map(msg => ({ // ✅ Бұрынғы хабарламаларды role: text форматына ауыстыру
+        role: msg.sender === 'user' ? 'user' : 'assistant', // AI үшін assistant
+        content: msg.text // Front-end-те text, Back-end-те content
+      }));
+      apiMessages.push({ role: 'user', content: userQuestion }); // ✅ Жаңа пайдаланушы хабарламасын қосу
+
+      const response = await api.post('/ai-chat', { messages: apiMessages }); // ✅ 'messages' массивін жіберу
+
+      const aiAnswer = response.data.answer;
+      // UI-ға AI жауабын қосу (функционалдық жаңарту)
+      setMessages((prevMessages) => [...prevMessages, { sender: 'ai', text: aiAnswer }]);
+    } catch (err) {
+      console.error('AI жауап беру кезінде қате кетті:', err.response?.data || err);
+      const errorMessage = err.response?.data?.message || err.message || t('ai_advisor.failed_to_get_response');
+      setError(errorMessage);
+      // ✅ Қателік хабарламасын чатқа қосу
+      setMessages((prevMessages) => [...prevMessages, { sender: 'ai', text: errorMessage }]);
+    } finally {
+      setLoadingResponse(false); // Жүктелуді тоқтату
+    }
   };
 
   return (
@@ -179,43 +191,34 @@ const AIAdvisor = () => {
           </DialogTitle>
           <DialogContent dividers sx={{ p: 0 }}>
             <ChatWindow ref={chatWindowRef}>
-              {messages.length === 0 ? (
-                  <Typography
-                      variant="body1"
-                      color="text.secondary"
-                      textAlign="center"
-                  >
-                    {t('ai_advisor.initial_prompt')}
-                  </Typography>
-              ) : (
-                  messages.map((msg, index) => (
-                      <MessageBubble key={index} sender={msg.sender}>
-                        <Box display="flex" alignItems="center" mb={0.5}>
-                          <Avatar
-                              sx={{
-                                width: 24,
-                                height: 24,
-                                mr: 1,
-                                bgcolor:
-                                    msg.sender === 'user'
-                                        ? theme.palette.secondary.main
-                                        : theme.palette.primary.main,
-                              }}
-                          >
-                            {msg.sender === 'user' ? (
-                                <PersonIcon fontSize="small" />
-                            ) : (
-                                <SmartToyIcon fontSize="small" />
-                            )}
-                          </Avatar>
-                          <Typography variant="caption" fontWeight="bold">
-                            {msg.sender === 'user' ? t('ai_advisor.you_label') : t('ai_advisor.advisor_label')}
-                          </Typography>
-                        </Box>
-                        <Typography variant="body2">{msg.text}</Typography>
-                      </MessageBubble>
-                  ))
-              )}
+              {/* Бастапқы хабарлама әрқашан болады, сондықтан messages.length === 0 шарты әдетте орындалмайды */}
+              {messages.map((msg, index) => (
+                  <MessageBubble key={index} sender={msg.sender}>
+                    <Box display="flex" alignItems="center" mb={0.5}>
+                      <Avatar
+                          sx={{
+                            width: 24,
+                            height: 24,
+                            mr: 1,
+                            bgcolor:
+                                msg.sender === 'user'
+                                    ? theme.palette.secondary.main
+                                    : theme.palette.primary.main,
+                          }}
+                      >
+                        {msg.sender === 'user' ? (
+                            <PersonIcon fontSize="small" />
+                        ) : (
+                            <SmartToyIcon fontSize="small" />
+                        )}
+                      </Avatar>
+                      <Typography variant="caption" fontWeight="bold">
+                        {msg.sender === 'user' ? t('ai_advisor.you_label') : t('ai_advisor.advisor_label')}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2">{msg.text}</Typography> {/* ✅ msg.text-ті көрсетеміз */}
+                  </MessageBubble>
+              ))}
               {loadingResponse && (
                   <Box alignSelf="center">
                     <CircularProgress size={20} />

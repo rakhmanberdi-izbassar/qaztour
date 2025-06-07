@@ -213,25 +213,25 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
             // ✅ ТОКЕНДІ ЖӘНЕ USER ID-ДІ САҚТАУ:
             localStorage.setItem('authToken', response.data.token);
 
-            if (response.data.user_id) { // ✅ user_id бар екенін тексеру
+            // ✅ user_id бар екенін тексеру және сақтау
+            if (response.data.user_id) {
                 localStorage.setItem('userId', response.data.user_id); // Қолданушы ID-ін сақтау
                 // Егер user_name, user_email сияқты деректерді де қайтарса, оларды да сақтауға болады
                 // localStorage.setItem('userName', response.data.user_name);
             } else {
-                console.warn('Login response did not contain user_id. Ensure your API returns user_id.');
+                console.warn('Login response did not contain user_id. Please check your API response.');
                 // Егер userId міндетті болса, бұл жерде қателік хабарламасын көрсетуге болады
-                // немесе '/user' маршрутына қосымша сұрау жіберуді қарастыруға болады.
             }
 
             // Логин сәтті болғаннан кейін бас бетке бағыттау
-            window.location.href = '/';
-            // navigate('/') қолданған дұрыс, бірақ егер сізде толық бетті қайта жүктеу қажет болса, window.location.href қалады.
-            // const navigate = useNavigate(); // Компоненттің басында navigate хукын импорттау керек
+            window.location.href = '/'; // Бұл толық бетті қайта жүктейді
+            // Алтернативті: navigate('/') қолданған дұрыс, егер React Router пайдалансаңыз
+            // const navigate = useNavigate(); // Компоненттің басында импорттау керек
             // navigate('/');
 
         } catch (error) {
             console.error('Login error:', error.response ? error.response.data : error.message);
-            setErrorMessage(t('login_page.login_failed_credentials')); // ✅ Локализацияланған хабарлама
+            setErrorMessage(t('login_page.login_failed_credentials')); // Локализацияланған хабарлама
             setOpenSnackbar(true);
         }
     };

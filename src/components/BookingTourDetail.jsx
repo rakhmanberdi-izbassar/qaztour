@@ -193,7 +193,7 @@ const BookingTourDetail = () => {
 
     return (
         <>
-            {/* <Header /> */}
+             <Header />
             <Box sx={{ maxWidth: 1240, margin: 'auto', padding: 3, mt: 14 }}>
                 <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, borderRadius: 4 }}>
                     <Typography
@@ -208,7 +208,7 @@ const BookingTourDetail = () => {
                     {/* Тур ақпараты */}
                     <Box sx={{ mb: 4 }}>
                         <Typography variant="h6" gutterBottom fontWeight="bold">
-                            {t('booking_tour_detail.tour_information')}
+                            {t('tour_booking_page.tour_information')}
                         </Typography>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
@@ -230,13 +230,13 @@ const BookingTourDetail = () => {
                                     {tourDescription}
                                 </Typography>
                                 <Typography variant="body2">
-                                    {t('booking_tour_detail.location')}: {tourLocationName}
+                                    {t('tour_booking_page.location')}: {tourLocationName}
                                 </Typography>
                                 <Typography variant="body2">
-                                    {t('booking_tour_detail.price_per_person')}: {tour?.price || 'N/A'} KZT
+                                    {t('tour_booking_page.price_per_person')}: {tour?.price || 'N/A'} KZT
                                 </Typography>
                                 <Typography variant="body2">
-                                    {t('booking_tour_detail.max_volume')}: {tour?.volume || 'N/A'}
+                                    {t('tour_booking_page.max_volume')}: {tour?.volume || 'N/A'}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -245,26 +245,26 @@ const BookingTourDetail = () => {
                     {/* Брондау детализациясы */}
                     <Box sx={{ mb: 4 }}>
                         <Typography variant="h6" gutterBottom fontWeight="bold">
-                            {t('booking_tour_detail.booking_details_heading')}
+                            {t('hotel_booking_page.booking_details_heading')}
                         </Typography>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
                                 <Typography variant="body2">
-                                    {t('booking_tour_detail.booking_date')}: {new Date(booking_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')}
+                                    {t('tour_booking_page.booking_date')}: {new Date(booking_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US')}
                                 </Typography>
                                 <Typography variant="body2">
-                                    {t('booking_tour_detail.guests_count')}: {guests_count}
+                                    {t('hotel_booking_page.guests_count')}: {guests_count}
                                 </Typography>
                                 <Typography variant="body2">
-                                    {t('booking_tour_detail.notes')}: {notes || t('booking_tour_detail.none')}
+                                    {t('tour_booking_page.notes_label')}: {notes || t('create_post_page.none')}
                                 </Typography>
                                 <Typography variant="body2">
-                                    {t('booking_tour_detail.status')}: {t(`booking_tour_detail.status_${status}`)} {/* Статусты локализациялау */}
+                                    {t('hotel_booking_page.status')}: {t(`hotel_booking_page.status_${status}`)} {/* Статусты локализациялау */}
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <Typography variant="h5" color="primary" fontWeight="bold">
-                                    {t('booking_tour_detail.total_price')}: {total_price} KZT
+                                    {t('tour_booking_page.total_price')}: {total_price} KZT
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -281,7 +281,7 @@ const BookingTourDetail = () => {
                                 sx={{ borderRadius: 2, py: 1.5, fontWeight: 'bold' }}
                                 onClick={handleCancelBooking}
                             >
-                                {t('booking_tour_detail.cancel_booking_button')}
+                                {t('hotel_booking_page.cencel')}
                             </Button>
 
                             <Box sx={{ flexGrow: 1 }}>
@@ -329,7 +329,7 @@ const BookingTourDetail = () => {
                 </Alert>
             </Snackbar>
 
-            {/* <Footer /> */}
+             <Footer />
         </>
     );
 };

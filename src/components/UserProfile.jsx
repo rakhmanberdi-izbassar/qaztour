@@ -256,7 +256,7 @@ const UserProfile = () => {
           <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 1 }}>
             <Button
                 component={NavLink}
-                to="/bookmarked-hotels"
+                to="/my-bookings"
                 startIcon={<AddIcon />}
                 variant="contained"
                 color="primary"

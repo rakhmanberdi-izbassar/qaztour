@@ -62,8 +62,11 @@
     "nights":"түндер",
     "total_price": "Жалпы баға",
     "stars": "жұлдыз",
-    "status": "Статус",
-    "guests_count": "Қонақтар саны"
+    "status": "Күй",
+    "guests_count": "Қонақтар саны",
+    "status_": "күй",
+    "status_pending": "күй күтуде",
+    "booking_details_heading": "Толығырақ"
   },
   "tour_detail_page": {
     "overview": "Шолу",
@@ -423,6 +426,46 @@
     "advisor_label": "Кеңесші",
     "loading_response": "AI жауап дайындауда",
     "input_placeholder": "Сұрағыңызды енгізіңіз..."
+  },
+  "tour_booking_page": {
+    "book_tour_title": "Турды брондау",
+    "tour_information": "Тур ақпараты",
+    "booking_form_heading": "Брондау формасы",
+    "location": "Локация",
+    "price_per_person": "Бір адамға арналған баға",
+    "max_volume": "Барлық орын саны",
+    "booking_date": "Брондау күні",
+    "number_of_guests": "Келуші саны",
+    "notes_label": "Қосымша",
+    "total_price": "Жалпы баға",
+    "book_now_button": "Қазір брондау",
+    "user_not_authorized_booking": "Пайдаланушыға брондау рұқсат етілмеген",
+    "booking_successful": "Брондау сәтті өтті",
+    "error_booking_id_missing": "Брондау қатесі",
+    "error_occurred_check_data":"Деректерді тексеру қатесі",
+    "tour_not_found_info": "Тур ақпараты табылмады",
+    "submitting": "Брондалып жатыр..."
+  },
+  "my_bookings_page": {
+    "my_bookings_title": "Менің броньдауларым",
+    "auth_required": "Броньдауларды көру үшін авторизациядан өтіңіз.",
+    "failed_to_load_bookings": "Броньдауларды жүктеу мүмкін болмады.",
+    "error": "Қате",
+    "no_bookings_found": "Броньдаулар табылмады.",
+    "no_tour_name": "Тур атауы жоқ",
+    "no_hotel_name": "Қонақүй атауы жоқ",
+    "unknown_booking_type": "Белгісіз брондау түрі",
+    "unknown_location": "Белгісіз орын",
+    "unknown_address": "Белгісіз мекенжай",
+    "date": "Күні",
+    "total_price": "Жалпы баға",
+    "guests": "Қонақтар",
+    "status": "Статус",
+    "view_details": "Толығырақ",
+    "download_receipt": "Чекті жүктеу",
+    "downloading_receipt": "{{type}} броньдау {{id}} чегі жүктелуде..."
+  },
+  "booking_tour_detail": {
+    "booking_details": "Booking details"
   }
-
 }
