@@ -221,7 +221,7 @@ const ToursList = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return tourImg;
     if (imagePath.startsWith('http')) return imagePath;
-    return `<span class="math-inline">\{BASE\_URL\}</span>{imagePath}`;
+    return `${BASE_URL}${imagePath}`;
   };
 
   if (loading) {
@@ -408,7 +408,6 @@ const ToursList = () => {
                                 }}
                             />
                           </ImageListItem>
-
                           <CardContent sx={{ paddingTop: 0, paddingBottom: 1 }}>
                             <Typography variant={isMobile ? "h6" : "h5"} fontWeight="bold">
                               {tour[`name_${effectiveLang}`] || tour.name_kz || tour.name_en || t('tours_list_page.no_name')}

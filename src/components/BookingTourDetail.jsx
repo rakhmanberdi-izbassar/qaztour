@@ -195,7 +195,7 @@ const BookingTourDetail = () => {
         <>
              <Header />
             <Box sx={{ maxWidth: 1240, margin: 'auto', padding: 3, mt: 14 }}>
-                <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, borderRadius: 4 }}>
+                <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, borderRadius: 4 }} id="booking-receipt-content">
                     <Typography
                         variant="h4"
                         gutterBottom

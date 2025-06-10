@@ -29,7 +29,7 @@ import SingleEventsPage from './pages/SingleEventPage'
 import TourBookingPage from './pages/TourBookingPage'
 import AIAdvisor from './components/AIAdvisor'
 import BookingTourDetail from "./components/BookingTourDetail";
-import MyBookingsPage from "./components/MyBookingsPage";
+import MyBookingsList from "./pages/MyBookingList";
 
 function App() {
   return (
@@ -76,7 +76,7 @@ function App() {
               <Route path="/places/" element={<PlacesPage />} />
               <Route path="/place/:id" element={<PlacesDetailPage />} />
               <Route path="/booking-tour/:bookingId" element={<BookingTourDetail />} />
-              <Route path="/my-bookings" element={<MyBookingsPage />}/>
+              <Route path="/my-bookings" element={<MyBookingsList />}/>
               <Route path="*" element={<h1>404 Not Found</h1>} />
             </Routes>
             <AIAdvisor />

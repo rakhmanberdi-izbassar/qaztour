@@ -242,7 +242,7 @@ export default function Header() {
                             </MenuItem>
                             <MenuItem
                                 component={NavLink}
-                                to="/settings"
+                                to="/my-bookings"
                                 onClick={handleMobileMenuClose}
                                 sx={{ color: 'black', justifyContent: 'flex-start' }}
                             >
@@ -457,7 +457,7 @@ export default function Header() {
                     <MenuItem component={NavLink} to="/profile" onClick={handleUserMenuClose}>
                       {t('header.profile')}
                     </MenuItem>
-                    <MenuItem component={NavLink} to="/settings" onClick={handleUserMenuClose}>
+                    <MenuItem component={NavLink} to="/my-bookings" onClick={handleUserMenuClose}>
                       {t('header.settings')}
                     </MenuItem>
                     <MenuItem onClick={handleLogout}>{t('header.logout')}</MenuItem>

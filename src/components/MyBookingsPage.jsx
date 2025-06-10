@@ -1,150 +1,168 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-    Container,
-    Grid,
-    Card,
-    CardContent,
-    Typography,
-    CircularProgress,
-    Alert,
-    Box,
-    Divider,
-    Button,
+    Container, Grid, Card, CardContent, Typography, CircularProgress, Box,
+    Divider, Button, useMediaQuery, useTheme, CardMedia
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import GetAppIcon from '@mui/icons-material/GetApp'; // Жүктеу иконкасы
-
-// Header және Footer компоненттері, егер бар болса
-// import Header from './Header';
-// import Footer from './Footer';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable'; // ❗️default export ретінде алу керек
 
 const MyBookingsPage = () => {
-    const [bookings, setBookings] = useState([]);
+    const [tourBookings, setTourBookings] = useState([]);
+    const [hotelBookings, setHotelBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('authToken');
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const effectiveLang = i18n.language === 'kk' ? 'kz' : i18n.language;
+
+    const showAlert = (severity, message) => alert(message);
 
     useEffect(() => {
         const fetchMyBookings = async () => {
             setLoading(true);
             setError(null);
-
             if (!userId || !token) {
-                setError(t('my_bookings.auth_required'));
+                setError(t('my_bookings_page.auth_required'));
                 setLoading(false);
-                // navigate('/auth'); // Авторизациядан өтпесе, логинге бағыттау
                 return;
             }
-
             try {
-                // 1. Тур броньдауларын жүктеу
-                const tourBookingsResponse = await axios.get(`http://127.0.0.1:8000/api/bookings_tours/user`, {
+                const tourRes = await axios.get(`http://127.0.0.1:8000/api/bookings_tours/user`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const fetchedTourBookings = tourBookingsResponse.data?.bookings || [];
-                console.log('Fetched Tour Bookings:', fetchedTourBookings);
-
-                // 2. Қонақүй броньдауларын жүктеу
-                // Ескерту: сізде bookings/user/{userId} немесе bookings/user деген маршрут болуы керек
-                const hotelBookingsResponse = await axios.get(`http://127.0.0.1:8000/api/bookings/user/${userId}`, { // userId қажет болса
+                const hotelRes = await axios.get(`http://127.0.0.1:8000/api/bookings/user/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const fetchedHotelBookings = hotelBookingsResponse.data?.bookings || [];
-                console.log('Fetched Hotel Bookings:', fetchedHotelBookings);
-
-                // 3. Екі тізімді біріктіру және броньдау түрін белгілеу
-                const combinedBookings = [
-                    ...fetchedTourBookings.map(b => ({ ...b, type: 'tour' })),
-                    ...fetchedHotelBookings.map(b => ({ ...b, type: 'hotel' })),
-                ];
-
-                // Күні бойынша сұрыптау (жаңа броньдар бірінші)
-                combinedBookings.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-                setBookings(combinedBookings);
-
+                setTourBookings(tourRes.data?.bookings.map(b => ({ ...b, type: 'tour' })) || []);
+                setHotelBookings(hotelRes.data?.bookings?.data.map(b => ({ ...b, type: 'hotel' })) || []);
             } catch (err) {
                 console.error('My Bookings Page Error:', err.response ? err.response.data : err.message);
-                setError(t('my_bookings.failed_to_load_bookings'));
+                setError(err.message || t('my_bookings_page.failed_to_load_bookings'));
             } finally {
                 setLoading(false);
             }
         };
-
         fetchMyBookings();
-    }, [userId, token, t, navigate]);
+    }, [userId, token, t, i18n.language]);
 
-    // API-да name_kk, description_kk жоқ, сондықтан i18n.language 'kk' болса, 'kz' деп өңдейміз
-    const effectiveLang = i18n.language === 'kk' ? 'kz' : i18n.language;
+    const getBookingTitle = (b) => b.type === 'tour'
+        ? b.tour?.[`name_${effectiveLang}`] || b.tour?.name_kz || b.tour?.name_en
+        : b.hotel?.[`name_${effectiveLang}`] || b.hotel?.name_kz || b.hotel?.name_en || b.hotel?.name;
 
-    const getBookingTitle = (booking) => {
-        if (booking.type === 'tour') {
-            return booking.tour?.[`name_${effectiveLang}`] || booking.tour?.name_kz || booking.tour?.name_en || t('my_bookings.no_tour_name');
-        } else if (booking.type === 'hotel') {
-            return booking.hotel?.name || t('my_bookings.no_hotel_name');
-        }
-        return t('my_bookings.unknown_booking_type');
+    const getBookingLocation = (b) => b.type === 'tour'
+        ? b.tour?.location?.[`name_${effectiveLang}`] || b.tour?.location?.name_kz || b.tour?.location?.name_en
+        : b.hotel?.[`address_${effectiveLang}`] || b.hotel?.address_kz || b.hotel?.address_en || b.hotel?.address;
+
+    const getBookingDateRange = (b) => {
+        const l = effectiveLang === 'kz' ? 'kk-KZ' : 'en-US';
+        return b.type === 'tour'
+            ? new Date(b.tour?.date || b.created_at).toLocaleDateString(l)
+            : `${new Date(b.check_in_date).toLocaleDateString(l)} - ${new Date(b.check_out_date).toLocaleDateString(l)}`;
     };
 
-    const getBookingLocation = (booking) => {
-        if (booking.type === 'tour') {
-            return booking.tour?.location?.[`name_${effectiveLang}`] || booking.tour?.location?.name_kz || booking.tour?.location?.name_en || t('my_bookings.unknown_location');
-        } else if (booking.type === 'hotel') {
-            return booking.hotel?.address_kz || booking.hotel?.address_en || t('my_bookings.unknown_address');
-        }
-        return '';
-    };
+    const getGuests = (b) => b.type === 'tour' ? b.seats : b.guests_count || b.number_of_guests;
 
-    const getBookingDateRange = (booking) => {
-        if (booking.type === 'tour') {
-            return new Date(booking.booking_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US');
-        } else if (booking.type === 'hotel') {
-            const checkIn = new Date(booking.check_in_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US');
-            const checkOut = new Date(booking.check_out_date).toLocaleDateString(effectiveLang === 'kz' ? 'ru-RU' : 'en-US');
-            return `${checkIn} - ${checkOut}`;
-        }
-        return '';
-    };
+    const navigateToDetail = (b) => navigate(b.type === 'tour' ? `/tour/${b.tour.id}` : `/hotels/${b.hotel.id}`);
 
-    const navigateToDetail = (booking) => {
-        if (booking.type === 'tour') {
-            navigate(`/booking-tour/${booking.id}`);
-        } else if (booking.type === 'hotel') {
-            navigate(`/booking-room/${booking.id}`);
-        }
-    };
-
-    // ✅ Чекті жүктеу функциясы (болашақ үшін)
     const handleDownloadReceipt = (booking) => {
-        alert(t('my_bookings.downloading_receipt', { type: booking.type, id: booking.id }));
-        // Чекті генерациялау логикасы осында орналасады
-        // Бұл frontend-те PDF генерациялау немесе backend-тен PDF алу болуы мүмкін.
-        // Осы жерде AVENTRA авторлық чегін жасау логикасы қосылады.
-        console.log(`Downloading receipt for ${booking.type} booking ID: ${booking.id}`);
-        // Қосымша: PDF генерациялау және жүктеу
-        // (html2canvas + jspdf немесе backend API шақыру)
+        const doc = new jsPDF();
+
+        doc.setFontSize(24);
+        doc.text(t('my_bookings_page.receipt_title'), doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+        doc.setFontSize(10);
+        doc.text('AVENTRA', doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
+        doc.text(t('my_bookings_page.receipt_contact_info_short'), doc.internal.pageSize.getWidth() / 2, 35, { align: 'center' });
+
+        doc.setFontSize(12);
+        doc.text(`${t('my_bookings_page.receipt_booking_id')}: ${booking.id}`, 20, 50);
+
+        const tableData = [
+            [t('my_bookings_page.receipt_item'), t('my_bookings_page.receipt_value')],
+        ];
+
+        const formattedTotalPrice = booking.total_price
+            ? `${parseFloat(booking.total_price).toLocaleString('kk-KZ')} KZT`
+            : 'N/A';
+
+        if (booking.type === 'tour') {
+            tableData.push([t('my_bookings_page.receipt_type'), t('my_bookings_page.tour')]);
+            tableData.push([t('my_bookings_page.receipt_name'), getBookingTitle(booking)]);
+            tableData.push([t('my_bookings_page.receipt_location'), getBookingLocation(booking)]);
+            tableData.push([t('my_bookings_page.receipt_date'), getBookingDateRange(booking)]);
+        } else {
+            tableData.push([t('my_bookings_page.receipt_type'), t('my_bookings_page.hotel')]);
+            tableData.push([t('my_bookings_page.receipt_name'), getBookingTitle(booking)]);
+            tableData.push([t('my_bookings_page.receipt_address'), getBookingLocation(booking)]);
+            tableData.push([t('my_bookings_page.receipt_check_in_out'), getBookingDateRange(booking)]);
+        }
+
+        tableData.push([t('my_bookings_page.receipt_guests'), getGuests(booking)]);
+        tableData.push([t('my_bookings_page.receipt_total_price'), formattedTotalPrice]);
+        tableData.push([t('my_bookings_page.receipt_status'), t(`booking_room.status_${booking.status}`)]);
+        tableData.push([t('my_bookings_page.receipt_booking_time'), new Date(booking.created_at).toLocaleString()]);
+
+        autoTable(doc, {
+            startY: 60,
+            head: [tableData[0]],
+            body: tableData.slice(1),
+        });
+
+        doc.save(`${booking.type}_booking_${booking.id}_receipt.pdf`);
+        showAlert('success', t('my_bookings_page.download_successful'));
     };
+
+
+    const renderBookingCard = (b) => (
+        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 3, boxShadow: 3 }}>
+            <CardContent>
+                {b.type === 'tour' && b.tour?.image && (
+                    <CardMedia component="img" image={`http://127.0.0.1:8000/storage/${encodeURIComponent(b.tour.image)}`} sx={{ borderRadius: 2, height: 120, mb: 1.5 }} />
+                )}
+                {b.type === 'hotel' && b.hotel?.image && (
+                    <CardMedia component="img" image={`http://127.0.0.1:8000/storage/${encodeURIComponent(b.hotel.image)}`} sx={{ borderRadius: 2, height: 120, mb: 1.5 }} />
+                )}
+                <Typography variant="h6" fontWeight="bold">{getBookingTitle(b)}</Typography>
+                <Typography variant="body2" color="text.secondary"><LocationOnIcon sx={{ fontSize: 16 }} /> {getBookingLocation(b)}</Typography>
+                <Typography variant="body2" color="text.secondary"><CalendarTodayIcon sx={{ fontSize: 16 }} /> {getBookingDateRange(b)}</Typography>
+                <Typography variant="body2" color="text.secondary"><AttachMoneyIcon sx={{ fontSize: 16 }} /> {parseFloat(b.total_price).toLocaleString('kk-KZ')} KZT</Typography>
+                <Typography variant="body2" color="text.secondary">{t('my_bookings_page.guests')}: {getGuests(b)}</Typography>
+                <Typography variant="body2" color="text.secondary">{t('my_bookings_page.status')}: {t(`booking_room.status_${b.status}`)}</Typography>
+                <Divider sx={{ my: 2 }} />
+                <Box display="flex" justifyContent="space-between">
+                    <Button size="small" onClick={() => navigateToDetail(b)}>{t('my_bookings_page.view_details')}</Button>
+                    {['confirmed', 'paid'].includes(b.status) && (
+                        <Button
+                            size="small"
+                            variant="contained"
+                            startIcon={<GetAppIcon />}
+                            onClick={() => handleDownloadReceipt(b)}
+                        >
+                            {t('my_bookings_page.download_receipt')}
+                        </Button>
+                    )}
+                </Box>
+            </CardContent>
+        </Card>
+    );
 
     if (loading) {
         return (
-            <Container sx={{ paddingY: 14 }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '50vh',
-                    }}
-                >
+            <Container>
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
                     <CircularProgress />
+                    <Typography ml={2}>{t('common.loading_bookings')}</Typography>
                 </Box>
             </Container>
         );
@@ -152,84 +170,43 @@ const MyBookingsPage = () => {
 
     if (error) {
         return (
-            <Container sx={{ paddingY: 14 }}>
-                <Typography variant="h6" color="error" textAlign="center">
-                    {t('my_bookings.error')}: {error}
-                </Typography>
-            </Container>
+            <Typography variant="h6" color="error" align="center" mt={5}>
+                {t('common.error')}: {error}
+            </Typography>
         );
     }
 
     return (
-        <Container sx={{ py: 14 }}>
-            {/* <Header /> */}
-            <Typography variant="h4" fontWeight="bold" gutterBottom textAlign="center" mb={4}>
-                {t('my_bookings.my_bookings_title')}
+        <Container>
+            <Typography variant="h4" fontWeight="bold" textAlign="center" mb={14}>
+                {t('my_bookings_page.my_bookings_title')}
             </Typography>
 
-            {bookings.length > 0 ? (
-                <Grid container spacing={3}>
-                    {bookings.map((booking) => (
-                        <Grid item xs={12} sm={6} md={4} key={`${booking.type}-${booking.id}`}>
-                            <Card
-                                sx={{
-                                    height: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    borderRadius: 3,
-                                    boxShadow: 3,
-                                    transition: 'transform 0.2s ease-in-out',
-                                    '&:hover': { transform: 'translateY(-5px)' },
-                                }}
-                            >
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography variant="h6" component="div" fontWeight="bold">
-                                        {getBookingTitle(booking)}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                                        <LocationOnIcon sx={{ mr: 0.5, fontSize: 'inherit' }} /> {getBookingLocation(booking)}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                                        <CalendarTodayIcon sx={{ mr: 0.5, fontSize: 'inherit' }} /> {t('my_bookings.date')}: {getBookingDateRange(booking)}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                                        <AttachMoneyIcon sx={{ mr: 0.5, fontSize: 'inherit' }} /> {t('my_bookings.total_price')}: {booking.total_price} KZT
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                                        {t('my_bookings.guests')}: {booking.guests_count || booking.seats}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                                        {t('my_bookings.status')}: {t(`booking_room.status_${booking.status}`)} {/* BookingRoom/Detail статустарын қайта қолданамыз */}
-                                    </Typography>
-
-                                    <Divider sx={{ my: 2 }} />
-
-                                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                                        <Button variant="outlined" size="small" onClick={() => navigateToDetail(booking)}>
-                                            {t('my_bookings.view_details')}
-                                        </Button>
-                                        {booking.status === 'confirmed' && ( // Тек расталған броньдар үшін чекті жүктеу
-                                            <Button
-                                                variant="contained"
-                                                size="small"
-                                                startIcon={<GetAppIcon />}
-                                                onClick={() => handleDownloadReceipt(booking)}
-                                            >
-                                                {t('my_bookings.download_receipt')}
-                                            </Button>
-                                        )}
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            ) : (
-                <Typography variant="h6" color="text.secondary" textAlign="center" sx={{ mt: 5 }}>
-                    {t('my_bookings.no_bookings_found')}
-                </Typography>
+            {tourBookings.length > 0 && (
+                <>
+                    <Typography variant="h6" fontWeight="bold" mt={4} mb={2}>{t('my_bookings_page.tour_bookings_title')}</Typography>
+                    <Grid container spacing={3}>
+                        {tourBookings.map(b => (
+                            <Grid item xs={12} sm={6} md={4} key={`tour-${b.id}`}>
+                                {renderBookingCard(b)}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </>
             )}
-            {/* <Footer /> */}
+
+            {hotelBookings.length > 0 && (
+                <>
+                    <Typography variant="h6" fontWeight="bold" mt={6} mb={2}>{t('my_bookings_page.hotel_bookings_title')}</Typography>
+                    <Grid container spacing={3}>
+                        {hotelBookings.map(b => (
+                            <Grid item xs={12} sm={6} md={4} key={`hotel-${b.id}`}>
+                                {renderBookingCard(b)}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </>
+            )}
         </Container>
     );
 };
