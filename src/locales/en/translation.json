@@ -26,7 +26,11 @@
     "login_failed": "Login failed. Please check your credentials.",
     "registration_successful": "Registration successful!",
     "registration_failed": "Registration failed. Please try again.",
-    "terms_conditions": "By continuing, you agree to our Terms & Conditions."
+    "terms_conditions": "By continuing, you agree to our Terms & Conditions.",
+    "forgot_password": "Forgot Password?",
+    "reset_password": "Reset Password",
+    "login_failed_credentials": "Login failed. Please check your email and password.",
+    "reset_link_sent": "Reset link sent to your email."
   },
   "hotel_booking_page": {
     "hotel_booking": "Hotel Booking",
@@ -395,6 +399,7 @@
     "details_heading": "More",
     "video_heading": "Video",
     "location_on_map_heading": "Location on map"
+
   },
   "common": {
     "loading": "Loading...",
@@ -404,6 +409,7 @@
     "anonymous": "Anonymous",
     "loading_tours": "Tours are loading...",
     "error_fetching_tours": "Error fetching tours: {{errorMessage}}"
+
   },
   "create_post": {
     "new_post_heading": "Create New Post",
@@ -418,6 +424,7 @@
     "post_published_success": "Post published successfully!",
     "post_publish_error": "An error occurred while publishing the post",
     "publish_button": "Publish"
+
   },
   "ai_advisor": {
     "title": "🤖 Smart Travel Advisor",
@@ -426,6 +433,7 @@
     "advisor_label": "Advisor",
     "loading_response": "AI preparing response",
     "input_placeholder": "Enter your question..."
+
   },
   "tour_booking_page": {
     "book_tour_title": "Book a tour",
@@ -445,9 +453,11 @@
     "error_occurred_check_data": "Data check error",
     "tour_not_found_info": "Tour information not found",
     "submitting": "Submitting..."
+
   },
   "booking_tour_detail": {
     "booking_details": "Брондау мәліметтері"
+
   },
   "my_bookings_page": {
     "my_bookings_title": "My Bookings",
@@ -467,5 +477,39 @@
     "view_details": "View Details",
     "download_receipt": "Download Receipt",
     "downloading_receipt": "Downloading {{type}} booking {{id}} receipt..."
+
+  },
+  "tourist_info_page": {
+    "useful_info_for_tourist": "Useful information for tourists",
+    "visa_requirements": {
+      "title": "Visa Requirements",
+      "desc": "Details about tourist visas, documentation, and border regulations.",
+      "content": "## Entry Rules to Kazakhstan\n\n### Visa-free Entry\n\n**Countries allowed visa-free entry for up to 30 days:**\n- Azerbaijan, Argentina, Brazil, South Korea, United Arab Emirates, Serbia, Turkey, Uzbekistan, Ecuador.\n- Australia, Austria, Luxembourg, Hungary, Vatican City, Israel, Qatar, Kuwait, Greece, Ireland, Iceland, Italy, Canada, Liechtenstein, Monaco, Bahrain, Belgium, Denmark, Spain, the Netherlands, Norway, Thailand, Sweden, Latvia, Lithuania, Malaysia, Mexico, United States, New Zealand, Portugal, Bulgaria, Indonesia, Cyprus, Colombia, Malta, Poland, Singapore, Slovenia, Philippines, Croatia, Chile, Romania, Saudi Arabia, Slovakia, United Kingdom, United States (again), Vietnam, Oman, Germany, Finland, France, Czech Republic, Switzerland, Estonia, Japan.\n\n**Countries allowed visa-free entry for up to 90 days:**\n- Armenia, Belarus, Georgia, Kyrgyzstan, Moldova, Mongolia, Russia, Tajikistan, Ukraine.\n\n### Visa Application\n\nForeign nationals requiring a visa to Kazakhstan have several options:\n\n1. **Apply through Kazakhstan’s Ministry of Foreign Affairs missions.** Multi-entry visas may be granted upon invitation from a host organization.\n2. **Apply for an electronic visa.** Kazakhstan’s Ministry of Interior and National Security Committee issue e‑Visas (e‑Visa) via the vmp.gov.kz portal. You need an invitation number, passport details, and payment of the consular fee.\n\n**e‑Visa Categories:**\n- **B1, B2, B3** – business\n- **B12** – tourism\n- **C12** – medical treatment\n\nE‑Visas are issued based on an invitation by a Kazakh entity (individual or organization). These visas are non‑extendable.\n\n### Immigration Registration\n\n- Foreign visitors staying up to 30 days do **not** need to register.\n- Hosts (hotels, dorms, private rentals, etc.) must **notify migration services within 3 working days** of the guest’s arrival.\n- Notifications can be submitted via the “eQonaq” system.\n- Visitors staying more than 30 days require **temporary residence registration**.\n\n### Transit through Kazakhstan\n\n- Travelers transiting through Kazakhstan **need a transit visa**.\n- Transit by car is only allowed on open international roads."
+    },
+    "language_barriers": {
+      "title": "Language Barriers",
+      "desc": "Key phrases, translation apps, and language assistance services.",
+      "content": "## Languages in Kazakhstan\nThe state language is Kazakh; Russian is also officially used in government bodies and local administration.\n\nAround 80–90% of the population speak Russian fluently. In tourism-focused businesses, hotels, restaurants, and shops in major cities, staff typically know English.\n\nIf you’re traveling, it’s handy to have a Kazakh–Russian–English phrasebook or an offline translation app downloaded (e.g., Google Translate offline packs). In remote areas, internet access may be unreliable, so offline options are recommended.\n\n### Fun language facts:\n\n* Many locals speak three languages fluently (Kazakh, Russian, English), thanks to national language policies;\n* Kazakh belongs to the Turkic language family;\n* In 2017, Kazakhstan issued a decree to transition the Kazakh alphabet from Cyrillic to Latin script, with full implementation planned by 2025."
+    },
+    "local_cuisine": {
+      "title": "Local Cuisine",
+      "desc": "Must-try traditional dishes and recommended places to eat.",
+      "content": "## Traditional Dishes\nKazakh cuisine reflects the culture of nomadic heritage, focused on meat and dairy products. Must-try dishes include:\n\n* **Beshbarmak:** The nation’s signature dish made with meat and flat noodles—typically horse, lamb, or beef.\n* **Kazy, karta, shuzhuk:** Horse meat delicacies served at celebrations.\n* **Baursak:** Small deep-fried dough balls served with tea.\n* **Kuyrdak:** A hearty mix of fried meat, liver, kidney, and potatoes.\n* **Nauryz kozhe:** A traditional soup made with seven ingredients, prepared during Nauryz celebrations.\n\n**Where to try them:**\n\n* **Restaurants:** In major cities like Almaty and Astana, restaurants such as “Qagan” or “Navat” serve national cuisine.\n* **Local cafés:** Smaller towns offer simple yet flavorful options.\n* **Markets:** Great for tasting street food and local specialties."
+    },
+    "safety_measures": {
+      "title": "Safety Measures",
+      "desc": "Safety tips and regulations for tourists.",
+      "content": "## Safety Tips\nKazakhstan is generally safe for tourists, but keep the following in mind:\n\n* **Personal belongings:** Watch your valuables in crowded places like markets and public transport.\n* **Travel documents:** Keep a copy of your passport with you and store the original in a hotel safe.\n* **Public transport:** Use licensed taxi apps (e.g., KZM, Yandex Taxi).\n* **Water:** Drink only bottled water—not tap.\n* **Emergencies:** Know the following numbers:\n  * Police: 102\n  * Ambulance: 103\n  * Fire brigade: 101\n* **Traffic safety:** Use pedestrian crossings and watch for traffic.\n* **Caution at night:** Avoid walking alone in unlit or unfamiliar areas."
+    },
+    "transport_directions": {
+      "title": "Transport & Directions",
+      "desc": "Public transit, rental services, and navigation tips.",
+      "content": "## Transport Infrastructure\nKazakhstan has a well-developed transport system, including 20 major airports—11 of which serve international flights.\n\n**Railways:**\nRail travel is essential for both passengers and freight. Kazakhstan has over 15,000 km of rails, with 16 international crossings connecting to neighboring countries: 11 to Russia, 1 to Kyrgyzstan, 2 to Uzbekistan, and 2 to China. Passenger service is available on 116 routes.\n\n**Public Transport:**\nCities have bus networks, some still maintain trams, and Almaty has a metro system. Taxis and ride‑hail services are widely available.\n\n**Bicycle Rental:**\nIn summer, city bike-sharing is common in major cities.\n\n**Taxi Services:**\nFor longer trips or convenient travel within a city, use licensed taxis. Taxis with rooftop signs are plentiful near airports, metro stations, bus stops, malls, and markets."
+    },
+    "medical_assistance": {
+      "title": "Medical Assistance",
+      "desc": "Pharmacies, hospitals, and emergency medical contact info.",
+      "content": "## Healthcare Services\nMedical care in Kazakhstan varies in quality. In emergencies or if you need medical help, consider the following:\n\n* **Emergency services:** Call **103** for an ambulance—emergency care is free.\n* **Hospitals:** Major cities have both public and private hospitals; private clinics usually offer better service but are paid.\n* **Pharmacies:** Widely available; most medications are OTC, but some require prescriptions.\n* **Insurance:** Purchase travel health insurance before departure to cover unexpected medical costs.\n* **Consultations:** If you need a doctor, ask hotel staff or locals to assist."
+    }
   }
 }
