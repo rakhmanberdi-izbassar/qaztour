@@ -79,7 +79,7 @@ const EventsPage = () => {
         console.log('API Response for Events:', response.data)
 
         // ✅ Деректерді дұрыс жолмен алу: response.data.data.data
-        const fetchedEvents = response.data?.data?.data || []
+        const fetchedEvents = response.data || []
         setEvents(fetchedEvents)
       } catch (err) {
         console.error('Оқиғаларды жүктеу кезінде қате кетті:', err)

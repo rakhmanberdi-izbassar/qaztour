@@ -68,12 +68,12 @@ const SingleEventPage = () => {
       setError(null);
       try {
         const response = await axios.get(
-            `http://127.0.0.1:8000/api/events/${id}`
+            `https://cloud-aventra-kz.onrender.com/api/events/${id}`
         );
         console.log('API Response for Single Event:', response.data); // Бұл жолы толық жауапты қараңыз
 
         // ✅ API жауабының құрылымын тексеру: response.data.data
-        const fetchedEvent = response.data?.data;
+        const fetchedEvent = response.data;
         if (fetchedEvent) {
           setEvent(fetchedEvent);
         } else {

@@ -48,7 +48,7 @@ const PlaceDetail = () => {
       setError(null);
       try {
         const response = await axios.get(
-            `http://127.0.0.1:8000/api/places/${id}`
+            `https://cloud-aventra-kz.onrender.com/api/places/${id}`
         );
         console.log('API Response for PlaceDetail:', response.data);
         // ✅ API жауабында place дерегі тікелей response.data-да келеді деп болжаймыз
